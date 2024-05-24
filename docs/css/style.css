@@ -1,0 +1,43 @@
+@charset "utf-8";
+/*
+* {
+    padding: 0;
+    margin: 0;
+}
+body {
+    --line-of-chars:40;
+    font-size: calc(100vw / (var(--line-of-chars)));
+}
+*/
+:root {
+    --font-size:max(16px, calc(100vw / 42));
+    --em-style:filled sesame;
+    --em-color:#fff;
+    --color:#fff;
+    --a-color:#ff0;
+    --background-color:#000;
+    --selection-color:#000;
+    --selection-background-color:#aa0;
+    --a-selection-color:#ee0;
+    --a-selection-background-color:#00f;
+    --caret-color: auto;
+    --outline-color:#fff;
+    --outline-style:solid;
+    --outline-width:2px;
+    --button-focus-color:#000;
+    --button-focus-background-color:#aa0;
+}
+img.icon {
+    width: 1em;
+    height: 1em;
+}
+footer {
+    text-align:center;
+}
+
+em {
+    font-style: normal; /* 非イタリック化 */
+    text-emphasis: var(--em-style) var(--em-color);
+    -webkit-text-emphasis: var(--em-style) var(--em-color);
+}
+
