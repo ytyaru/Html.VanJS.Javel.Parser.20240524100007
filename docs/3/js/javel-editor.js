@@ -3,6 +3,7 @@ class JavelEditor {
     constructor() {
         this.viewer = new SingleScreen() 
         this.parser = new JavelParser()
+        this.counter = new JavelCounter()
         this.manuscript = van.state('')
         this.textBlocks = van.derive(()=>this.parser.Javel.toBlocks(this.manuscript.val))
         this.els = van.derive(()=>this.parser.Javel.toElements(this.textBlocks.val))
@@ -17,7 +18,7 @@ class JavelEditor {
         document.querySelector('textarea').focus()
         this.manuscript.val = `# 原稿《げんこう》
 
-　《《ここ》》に書いたテキストは下に表示《ひょうじ》されます。
+　《《ここ》》に書いたテキストは下に表示《ひょうじ》されます。｜H《Hyper》｜T《Text》｜M《Markup》｜L《Language》形式で出力します。
 
 　２つ以上の連続改行があると次の段落になります。
 　１つだけの改行だと段落内改行です。
@@ -29,6 +30,10 @@ class JavelEditor {
 
 「セリフなど鉤括弧があるときはインデントしないよ」
 
+「同じ字が３つ以上続いたら１字とみなすよおおおおおおおおお」
+
+「GAAAAAAAAAAAAA!!!!!!!!!」
+
 ――そのとき、神風が吹いた`
 
         // パース確認（Javel, Element, HTMLの相互変換）
@@ -39,6 +44,9 @@ class JavelEditor {
         console.log(this.parser.Html.toJavel(this.parser.Javel.toHtml(this.manuscript.val, true), true)) // HTML→Javel
         console.log(this.parser.Html.toElements(this.parser.Javel.toHtml(this.manuscript.val, true), true)) // HTML→El
         console.log(this.parser.Javel.toElements(this.manuscript.val, true)) // Javel→El
+
+        console.log('MAX:', this.counter.Write.getMax(this.manuscript.val))
+        console.log('MIN:', this.counter.Write.getMin(this.manuscript.val))
     }
     fontSize(uiWidth) {
         const minLineChars = uiWidth / 16
