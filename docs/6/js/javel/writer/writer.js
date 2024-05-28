@@ -89,6 +89,9 @@ class JavelEditor {
         const columns = sizes[0]
         const rows = sizes[1]
         this.fontSize(uiWidth)
+        console.log(`grid-template-columns:${columns};grid-template-rows:${rows};`)
+        //document.title = `grid-template-columns:${columns};grid-template-rows:${rows};`
+        document.title = `${columns};${rows};`
         return `grid-template-columns:${columns};grid-template-rows:${rows};`
     }
 }
