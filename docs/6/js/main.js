@@ -1,7 +1,7 @@
 window.addEventListener('DOMContentLoaded', (event) => {
     console.log('DOMContentLoaded!!');
-    const editor = new JavelEditor()
-    editor.init()
+    const app = new JavelWriter()
+    app.init()
 
     const client = new ClientJS();
     const fingerprint = client.getFingerprint();

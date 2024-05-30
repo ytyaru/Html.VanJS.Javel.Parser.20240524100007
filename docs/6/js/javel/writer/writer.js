@@ -1,8 +1,6 @@
 const {div, textarea, button} = van.tags
-class JavelEditor {
+class JavelWriter {
     constructor() {
-        this.viewer = new SingleScreen() 
-        this.viewer.toggleWritingMode()
         this.parser = new JavelParser()
         this.counter = new JavelCounter(this.parser)
         this.exporter = new JavelExporter()
@@ -10,14 +8,28 @@ class JavelEditor {
         this.textBlocks = van.derive(()=>this.parser.Javel.toBlocks(this.manuscript.val))
         this.els = van.derive(()=>this.parser.Javel.toElements(this.textBlocks.val))
         this.size = van.derive(()=>this.parser.Javel.calcSize(this.els.val))
+        this.viewer = new SingleScreen() 
+        this.viewer.toggleWritingMode()
+        this.editor = textarea({rows:5, cols:40, oninput:(e)=>this.manuscript.val=e.target.value}, ()=>this.manuscript.val)
     }
     init() {
         van.derive(()=>this.viewer.children=this.els.val) // this.elsが作成されたらビューアにセットして表示する
+        /*
+        this.layout = new TripleScreen()
+        this.layout.left.children = [this.editor]
+        this.layout.right.children = [this.viewer]
+        this.layout.center.children = [
+            button({style:`word-break:break-all;padding:0;margin:0;line-height:1em;letter-spacing:0;`, onclick:()=>this.exporter.export(this.manuscript.val)},()=>`${this.size.val}字`),
+        ]
+        this.layout.center.gridTemplateColumns = `repeat(${this.layout.center.children.length}, 1fr)`
+        van.add(document.body, div(()=>this.layout.el))
+        */
         van.add(document.body, div({style:()=>this.style()}, textarea({rows:5, cols:40, oninput:(e)=>this.manuscript.val=e.target.value}, ()=>this.manuscript.val), button({style:`word-break:break-all;padding:0;margin:0;line-height:1em;letter-spacing:0;`, onclick:()=>this.exporter.export(this.manuscript.val)},()=>`${this.size.val}字`), ()=>{return this.viewer.el}))
 //        new ResizeObserver(entries=>{
 //            for (let entry of entries) { this.resize(entry.contentRect.width, entry.contentRect.height) }
 //        }).observe(document.querySelector('body'));
-        window.addEventListener('resize', (event) => { this.resize() })
+        //window.addEventListener('resize', (event) => { this.resize(); this.layout.resize(); })
+        window.addEventListener('resize', (event) => { this.resize(); })
         document.querySelector('textarea').focus()
         this.manuscript.val = `# 原稿《げんこう》
 
@@ -168,3 +180,52 @@ class SingleScreen {
         }
     }
 }
+class TripleScreen {
+    constructor() {
+        this._left = new SingleScreen()
+        this._right = new SingleScreen()
+        this._center = new SingleScreen()
+        //this._center = new GridScreen()
+        this._gridTemplateColumns = van.state('48% 4% 48%')
+        this._gridTemplateRows = van.state(document.body.clientHeight)
+        this._div = van.tags.div({style:()=>`padding:0;margin:0;box-sizing:border-box;display:grid;grid-template-columns:${this._gridTemplateColumns.val};grid-template-rows:${this._gridTemplateRows.val};`}, this._left.el, this._center.el, this._right.el)
+    }
+    get el() { return this._div }
+    get left() { return this._left }
+    get right() { return this._right }
+    get center() { return this._center }
+    resize() {
+        this.#setGridTemplate()
+        this._center.wordBreak = ((this.#isLandscape) ? 'break-all' : 'normal')
+        this.left.resize()
+        this.right.resize()
+        this.center.resize()
+    }
+    #setGridTemplate() {
+        const screenSize = Math.floor(this.#longEdgeSize * 0.48)
+        const centerSize = Math.floor(Math.max(18, this.#longEdgeSize * 0.04))
+        const longEdgeGrid = `${screenSize}px ${centerSize}px ${screenSize}px`
+        const shortEdgeGrid = `${Math.floor(this.#shortEdgeSize)}px`
+        this._gridTemplateColumns.val = ((this.#isLandscape) ? longEdgeGrid : shortEdgeGrid)
+        this._gridTemplateRows.val = ((this.#isLandscape) ? shortEdgeGrid : longEdgeGrid)
+        console.log(this._gridTemplateColumns.val)
+        console.log(this._gridTemplateRows.val)
+        this.center.isVertical = this.#isLandscape
+        this.center.gridTemplateRows = `${centerSize}px`
+        console.log(this.center.gridTemplateColumns)
+        console.log(this.center.gridTemplateRows)
+        console.log(this.center.children[0], this.center.children[0].width, this.center.children[0].height)
+        //this.center.gridTemplateRows = `${centerSize}px`
+        //this.center.gridTemplateRows = `${this.#height}px`
+        //console.error('this.center.isVertical:', this.center.isVertical, this.center._writingMode.val, this.center.gridTemplateColumns)
+        //console.error(this.#isLandscape, this.#width, this.#height)
+//        this._left.children = [p('isLandscape:', this.#isLandscape), p('body.client:', document.body.clientWidth, ',', document.body.clientHeight), p('documentElement.client:', document.documentElement.clientWidth, ',', document.documentElement.clientHeight), p('window.inner:', window.innerWidth, ',', window.innerHeight), p('long,short:', this.#longEdgeSize, ',', this.#longEdgeSize), p('gridTemplateColumns:', this._gridTemplateColumns.val), p('gridTemplateRows:', this._gridTemplateRows.val)]
+    }
+    get #longEdgeSize() { return Math.max(this.#width, this.#height) }
+    get #shortEdgeSize() { return Math.min(this.#width, this.#height) }
+    get #width() { return document.body.clientWidth; }
+    get #height() { return document.documentElement.clientHeight; }
+    get #isLandscape() { return (this.#height < this.#width) }
+    get #isPortrate() { return !this.#isLandscape }
+}
+
