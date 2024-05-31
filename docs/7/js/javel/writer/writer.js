@@ -13,12 +13,12 @@ class JavelWriter {
         this.viewer = new Viewer() 
         this.editor = textarea({style:()=>`box-sizing:border-box;width:100%;height:100%;resize:none;`, oninput:(e)=>this.manuscript.val=e.target.value}, ()=>this.manuscript.val)
         this.menu = new MenuScreen([
-            div({style:`tabindex:0;box-sizing:border-box;word-break:break-all;padding:0;margin:0;line-height:1em;letter-spacing:0;cursor:pointer;user-select:none;`},'題'),
-            div({style:`tabindex:0;box-sizing:border-box;word-break:break-all;padding:0;margin:0;line-height:1em;letter-spacing:0;cursor:pointer;user-select:none;`, onclick:()=>this.exporter.export(this.manuscript.val)},()=>`${this.size.val}字`),
-            div({style:`tabindex:0;box-sizing:border-box;word-break:break-all;padding:0;margin:0;line-height:1em;letter-spacing:0;cursor:pointer;user-select:none;`},'⚠'),
-            div({style:`tabindex:0;box-sizing:border-box;word-break:break-all;padding:0;margin:0;line-height:1em;letter-spacing:0;cursor:pointer;user-select:none;`, onclick:()=>this.colorScheme.toggle()}, ()=>this.colorScheme.nextName),
-            div({style:`tabindex:0;box-sizing:border-box;word-break:break-all;padding:0;margin:0;line-height:1em;letter-spacing:0;cursor:pointer;user-select:none;`, onclick:()=>this.viewer.toggleWritingMode()}, ()=>this.viewer.getNextWritingModeName()),
-            div({style:`tabindex:0;box-sizing:border-box;word-break:break-all;padding:0;margin:0;line-height:1em;letter-spacing:0;cursor:pointer;user-select:none;`},'？'),
+            div({class:'button', tabindex:0, style:`box-sizing:border-box;word-break:break-all;padding:0;margin:0;line-height:1em;letter-spacing:0;cursor:pointer;user-select:none;`},'題'),
+            div({class:'button', tabindex:0, style:`box-sizing:border-box;word-break:break-all;padding:0;margin:0;line-height:1em;letter-spacing:0;cursor:pointer;user-select:none;`, onclick:()=>this.exporter.export(this.manuscript.val)},()=>`${this.size.val}字`),
+            div({class:'button', tabindex:0, style:`box-sizing:border-box;word-break:break-all;padding:0;margin:0;line-height:1em;letter-spacing:0;cursor:pointer;user-select:none;`},'⚠'),
+            div({class:'button', tabindex:0, style:`box-sizing:border-box;word-break:break-all;padding:0;margin:0;line-height:1em;letter-spacing:0;cursor:pointer;user-select:none;`, onclick:()=>this.colorScheme.toggle()}, ()=>this.colorScheme.nextName),
+            div({class:'button', tabindex:0, style:`box-sizing:border-box;word-break:break-all;padding:0;margin:0;line-height:1em;letter-spacing:0;cursor:pointer;user-select:none;`, onclick:()=>this.viewer.toggleWritingMode()}, ()=>this.viewer.getNextWritingModeName()),
+            div({class:'button', tabindex:0, style:`box-sizing:border-box;word-break:break-all;padding:0;margin:0;line-height:1em;letter-spacing:0;cursor:pointer;user-select:none;`},'？'),
         ])
         this.layout.first = this.editor
         this.layout.menu = this.menu.el
@@ -50,6 +50,7 @@ class JavelWriter {
 「あ゛あ゛あ゛あ゛」
 
 ――そのとき、神風が吹いた`
+        focusLooper.setup(this.editor)
 
         // パース確認（Javel, Element, HTMLの相互変換）
         console.log(this.parser.Javel.toHtml(this.els.val, true)) // El→HTML
@@ -98,7 +99,7 @@ class Viewer {
         this._textOrient = van.state(`mixed`) // mixed/upright
         this._overflow = van.state(`y`) // y/x
         this.toggleWritingMode()
-        this._el = van.tags.div({style:()=>this.#style(), onwheel:(e)=>this.#onWheel(e)}, ()=>van.tags.div(this._children.val))
+        this._el = van.tags.div({tabindex:0, style:()=>this.#style(), onwheel:(e)=>this.#onWheel(e)}, ()=>van.tags.div(this._children.val))
     }
     get el() { return this._el }
     get children( ) { return this._children.val }

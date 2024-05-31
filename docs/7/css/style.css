@@ -29,6 +29,10 @@ body {
     outline-style: var(--outline-style);
     outline-width: var(--outline-width);
 }
+div.button:focus {
+    color: var(--button-focus-color);
+    background-color: var(--button-focus-background-color);
+}
 button:focus {
     color: var(--button-focus-color);
     background-color: var(--button-focus-background-color);
