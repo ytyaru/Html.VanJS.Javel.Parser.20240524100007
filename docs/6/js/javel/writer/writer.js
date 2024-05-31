@@ -8,9 +8,28 @@ class JavelWriter {
         this.textBlocks = van.derive(()=>this.parser.Javel.toBlocks(this.manuscript.val))
         this.els = van.derive(()=>this.parser.Javel.toElements(this.textBlocks.val))
         this.size = van.derive(()=>this.parser.Javel.calcSize(this.els.val))
-        this.viewer = new SingleScreen() 
-        this.viewer.toggleWritingMode()
-        this.editor = textarea({rows:5, cols:40, oninput:(e)=>this.manuscript.val=e.target.value}, ()=>this.manuscript.val)
+        this.layout = new Triple()
+        this.viewer = new Viewer() 
+//        this.viewer = new SingleScreen() 
+//        this.viewer.toggleWritingMode()
+        //this.editor = textarea({rows:5, cols:40, oninput:(e)=>this.manuscript.val=e.target.value}, ()=>this.manuscript.val)
+        this.editor = textarea({style:()=>`box-sizing:border-box;width:100%;height:100%;resize:none;`, oninput:(e)=>this.manuscript.val=e.target.value}, ()=>this.manuscript.val)
+        this.menu = new MenuScreen([
+//            button({style:`box-sizing:border-box;word-break:break-all;padding:0;margin:0;line-height:1em;letter-spacing:0;`, onclick:()=>this.exporter.export(this.manuscript.val)},()=>`${this.size.val}字`),
+            div({style:`tabindex:0;box-sizing:border-box;word-break:break-all;padding:0;margin:0;line-height:1em;letter-spacing:0;cursor:pointer;user-select:none;`},'題'),
+            div({style:`tabindex:0;box-sizing:border-box;word-break:break-all;padding:0;margin:0;line-height:1em;letter-spacing:0;cursor:pointer;user-select:none;`, onclick:()=>this.exporter.export(this.manuscript.val)},()=>`${this.size.val}字`),
+            div({style:`tabindex:0;box-sizing:border-box;word-break:break-all;padding:0;margin:0;line-height:1em;letter-spacing:0;cursor:pointer;user-select:none;`},'⚠'),
+            div({style:`tabindex:0;box-sizing:border-box;word-break:break-all;padding:0;margin:0;line-height:1em;letter-spacing:0;cursor:pointer;user-select:none;`},'白'),
+            div({style:`tabindex:0;box-sizing:border-box;word-break:break-all;padding:0;margin:0;line-height:1em;letter-spacing:0;cursor:pointer;user-select:none;`, onclick:()=>this.viewer.toggleWritingMode()}, ()=>this.viewer.getNextWritingModeName()),
+            div({style:`tabindex:0;box-sizing:border-box;word-break:break-all;padding:0;margin:0;line-height:1em;letter-spacing:0;cursor:pointer;user-select:none;`},'？'),
+        ])
+        /*
+        this.menu.add(button({style:`box-sizing:border-box;word-break:break-all;padding:0;margin:0;line-height:1em;letter-spacing:0;`, onclick:()=>this.exporter.export(this.manuscript.val)},()=>`${this.size.val}字`))
+        this.menu.add(div('xxxx字'))
+        */
+        this.layout.first = this.editor
+        this.layout.menu = this.menu.el
+        this.layout.last = this.viewer.el
     }
     init() {
         van.derive(()=>this.viewer.children=this.els.val) // this.elsが作成されたらビューアにセットして表示する
@@ -24,12 +43,14 @@ class JavelWriter {
         this.layout.center.gridTemplateColumns = `repeat(${this.layout.center.children.length}, 1fr)`
         van.add(document.body, div(()=>this.layout.el))
         */
-        van.add(document.body, div({style:()=>this.style()}, textarea({rows:5, cols:40, oninput:(e)=>this.manuscript.val=e.target.value}, ()=>this.manuscript.val), button({style:`word-break:break-all;padding:0;margin:0;line-height:1em;letter-spacing:0;`, onclick:()=>this.exporter.export(this.manuscript.val)},()=>`${this.size.val}字`), ()=>{return this.viewer.el}))
+        van.add(document.body, this.layout.el)
+//        van.add(document.body, div({style:()=>this.style()}, textarea({rows:5, cols:40, oninput:(e)=>this.manuscript.val=e.target.value}, ()=>this.manuscript.val), button({style:`word-break:break-all;padding:0;margin:0;line-height:1em;letter-spacing:0;`, onclick:()=>this.exporter.export(this.manuscript.val)},()=>`${this.size.val}字`), ()=>{return this.viewer.el}))
 //        new ResizeObserver(entries=>{
 //            for (let entry of entries) { this.resize(entry.contentRect.width, entry.contentRect.height) }
 //        }).observe(document.querySelector('body'));
         //window.addEventListener('resize', (event) => { this.resize(); this.layout.resize(); })
-        window.addEventListener('resize', (event) => { this.resize(); })
+        //window.addEventListener('resize', (event) => { this.resize(); })
+        window.addEventListener('resize', (event) => { this.layout.resize(); this.menu.resize(); })
         document.querySelector('textarea').focus()
         this.manuscript.val = `# 原稿《げんこう》
 
@@ -81,6 +102,7 @@ class JavelWriter {
         return screen
     }
     */
+    /*
     fontSize(uiWidth) {
         const minLineChars = uiWidth / 16
         if (minLineChars <= 30) { Css.set('--font-size', '16px'); return; } // Screen<=480px: 16px/1字 1〜30字/行
@@ -106,6 +128,82 @@ class JavelWriter {
         document.title = `${columns};${rows};`
         return `grid-template-columns:${columns};grid-template-rows:${rows};`
     }
+    */
+}
+class MenuScreen {
+    constructor(items) {
+        //this._items = van.state([])
+        this._items = van.state((Array.isArray(items)) ? items : [])
+        this._writingMode = van.state(`vertical-rl`) // horizontal-tb/vertical-rl
+        this._textOrient = van.state('upright') // mixed/upright
+        this._columns = van.state(`repeat(${this._items.length}, 1fr)`)
+        this._rows = van.state(`1fr`)
+        //this._el = div({style:()=>this.#style()}, ()=>div(this._items.val))
+        this._el = div({style:()=>this.#style()})
+        if (Array.isArray(items)) { for (let el of items) { this.add(el) } }
+        this.resize()
+    }
+    get el() { return this._el }
+    get items() { return this._items.val }
+    add(item) { this._el.appendChild(item) }
+    resize() { if (this.#isLandscape) {this.setVertical()} else {this.setHorizontal()} }
+    //#style() { return `${this.#writingMode()}${this.#grid()}` }
+    #style() { console.log(`${this.#writingMode()}${this.#grid()}`); return `${this.#writingMode()}${this.#grid()}` }
+    #writingMode() { return `writing-mode:${this._writingMode.val};text-orientation:${this._textOrient.val};` }
+    #grid() { return `display:grid;grid-template-columns:${this._columns.val};grid-template-rows:${this._rows.val};` }
+    setVertical() { this._writingMode.val = 'vertical-rl'; this._textOrient.val = 'upright'; this._columns.val = `repeat(${this._el.children.length}, 1fr)`; }
+    setHorizontal() { this._writingMode.val = 'horizontal-tb'; this._textOrient.val = 'mixed'; this._columns.val = `repeat(${this._el.children.length}, 1fr)`; }
+    get #width() { return document.body.clientWidth; }
+    get #height() { return document.documentElement.clientHeight; }
+    get #isLandscape() { return (this.#height < this.#width) }
+    get #isPortrate() { return !this.#isLandscape }
+
+    /*
+    setVertical() {
+        this._writingMode.val = 'vertical-rl'
+        this._textOrient.val = 'upright'
+        this._columns 
+    }
+    setHorizontal() { this._writingMode.val = 'horizontal-tb'; this._textOrient.val = 'mixed'; }
+    */
+}
+class Viewer {
+    constructor() {
+        this._children = van.state([])
+        this._writingMode = van.state(`horizontal-tb`) // horizontal-tb/vertical-rl
+        this._textOrient = van.state(`mixed`) // mixed/upright
+        this._overflow = van.state(`y`) // y/x
+        this.toggleWritingMode()
+        this._el = van.tags.div({style:()=>this.#style(), onwheel:(e)=>this.#onWheel(e)}, ()=>van.tags.div(this._children.val))
+    }
+    get el() { return this._el }
+    get children( ) { return this._children.val }
+    set children(v) { this._children.val = v }
+    #style() { return `${this.#writingMode()}${this.#break()}` }
+    #writingMode() { return `writing-mode:${this._writingMode.val};text-orientation:${this._textOrient.val};overflow-${this._overflow.val}:scroll;` }
+    #break() { return `word-break:break-all;overflow-wrap:anywhere;hyphens:auto;` }
+    #onWheel(e) {
+        if ('vertical-rl'===this._writingMode.val) {
+            if (Math.abs(e.deltaY) < Math.abs(e.deltaX)) return;
+            this._el.scrollLeft += e.deltaY;
+            e.preventDefault();
+        }
+    }
+    toggleWritingMode() { ((this.isVertical()) ? this.setHorizontal() : this.setVertical()) }
+    isVertical() { return 'vertical-rl'===this._writingMode.val }
+    isHorizontal() { return 'horizontal-tb'===this._writingMode.val }
+    setVertical() {
+        this._writingMode.val = 'vertical-rl'
+        this._textOrient.val = 'upright'
+        this._overflow.val = 'x'
+    }
+    setHorizontal() {
+        this._writingMode.val = 'horizontal-tb'
+        this._textOrient.val = 'mixed'
+        this._overflow.val = 'y'
+    }
+    getWritingModeName() { return ((this.isVertical()) ? '縦' : '横') }
+    getNextWritingModeName() { return ((this.isVertical()) ? '横' : '縦') }
 }
 class SingleScreen {
     constructor() {
@@ -121,7 +219,7 @@ class SingleScreen {
         this._border = van.state('solid 1px #000')
         this._wordBreak = van.state('normal')
         this._fontSize = van.state(16)
-        this._div = van.tags.div({onwheel:(e)=>this.#onWheel(e), style:()=>`padding:0;margin:0;font-size:${this._fontSize.val}px;display:grid;display:grid;grid-template-columns:1fr;grid-template-rows:${this._gridTemplateRows.val};box-sizing:border-box;border:${this._border.val};writing-mode:${this._writingMode.val};overflow-x:${this._overflowX.val};overflow-y:${this._overflowY.val};text-orientation:${this._textOrient.val};word-break:${this._wordBreak.val};`}, ()=>div({style:`padding:0;margin:0;font-size:${this._fontSize.val}px;display:grid;display:grid;grid-template-columns:${this._gridTemplateColumns.val};grid-template-rows:${this._gridTemplateRows.val};box-sizing:border-box;`}, this.children))
+        this._div = van.tags.div({onwheel:(e)=>this.#onWheel(e), style:()=>`padding:0;margin:0;font-size:${this._fontSize.val}px;display:grid;display:grid;grid-template-columns:1fr;grid-template-rows:${this._gridTemplateRows.val};box-sizing:border-box;border:${this._border.val};writing-mode:${this._writingMode.val};overflow-x:${this._overflowX.val};overflow-y:${this._overflowY.val};text-orientation:${this._textOrient.val};word-break:${this._wordBreak.val};overflow-wrap:break-word;text-overflow:ellipsis;`}, ()=>div({style:`padding:0;margin:0;font-size:${this._fontSize.val}px;display:grid;display:grid;grid-template-columns:${this._gridTemplateColumns.val};grid-template-rows:${this._gridTemplateRows.val};box-sizing:border-box;`}, this.children))
     }
     get el() { return this._div }
     get children( ) { return this._children.val }
@@ -162,7 +260,7 @@ class SingleScreen {
         }
     }
     resize() { this.#setFontSize() }
-    #setFontSize() { console.log('this.el:',this.el);this._fontSize.val = Font.calc(this.el); this.#setFontSizeElements(); }
+    #setFontSize() { console.log('this.el:',this.el);this._fontSize.val = Font.calc(this.el); this.#setFontSizeElements(); console.log('FontSize:',this._fontSize.val);}
     //#setFontSize() { console.log('this.el:',this.el);Font.resize();this._fontSize.val = Font.size; this.#setFontSizeElements(); }
     #setFontSizeElements() {
         console.log('#setFontSizeElements()')
