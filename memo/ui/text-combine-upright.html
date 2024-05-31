@@ -1,0 +1,59 @@
+<style>
+body {
+    font-size: max(16px, calc(100vw / 42));
+    font-family: 'Noto Serif JP', 'Source Han Serif JP', 'Noto Color Emoji', serif; 
+}
+.horizontal {
+    writing-mode: horizontal-tb;
+    text-orientation: mixed;
+}
+.vertical {
+    writing-mode: vertical-rl;
+    text-orientation: upright;
+}
+.tc { text-combine-upright:all; }
+.tcw { text-combine-upright:all; transform:scaleX(2.5); }
+</style>
+
+<body>
+    <main style="display:grid;grid-template-columns:50% 50%;grid-template-rows:100%;">
+        <div class="horizontal">
+            <p>「あ゛あ゛あ゛あ゛」</p>
+            <p>「あﾞあﾞあﾞあﾞ」</p><!-- https://tools.ikunaga.net/dakuten/ -->
+            <p>「<span class="tc">あ゛</span><span class="tc">あ゛</span><span class="tc">あ゛</span><span class="tc">あ゛</span>」</p>
+            <p>「<span class="tc">あﾞ</span><span class="tc">あﾞ</span><span class="tc">あﾞ</span><span class="tc">あﾞ</span>」</p><!-- https://tools.ikunaga.net/dakuten/ -->
+            <p>「<span class="tcw">あ゛</span><span class="tc">あ゛</span><span class="tc">あ゛</span><span class="tc">あ゛</span>」</p>
+            <p>「<span class="tcw">あﾞ</span><span class="tc">あﾞ</span><span class="tc">あﾞ</span><span class="tc">あﾞ</span>」</p><!-- https://tools.ikunaga.net/dakuten/ -->
+
+            <!--
+            <p style="transform:scaleX(2)transform-origin:top left;width:50%;">「<span class="tcw">あ゛</span><span class="tc">あ゛</span><span class="tc">あ゛</span><span class="tc">あ゛</span>」</p>
+            -->
+
+            <p>「がががが」</p>
+            <p>「かﾞかﾞかﾞかﾞ」</p>
+            <p>「<span class="tc">が</span><span class="tc">が</span><span class="tc">が</span><span class="tc">が</span>」</p>
+            <p>「<span class="tc">かﾞ</span><span class="tc">かﾞ</span><span class="tc">かﾞ</span><span class="tc">かﾞ</span>」</p>
+            <p>「<span class="tcw">が</span><span class="tc">が</span><span class="tc">が</span><span class="tc">が</span>」</p>
+            <p>「<span class="tcw">かﾞ</span><span class="tc">かﾞ</span><span class="tc">かﾞ</span><span class="tc">かﾞ</span>」</p>
+        </div>
+        <div class="vertical">
+            <p>「あ゛あ゛あ゛あ゛」</p>
+            <p>「あﾞあﾞあﾞあﾞ」</p><!-- https://tools.ikunaga.net/dakuten/ -->
+            <p>「<span class="tc">あ゛</span><span class="tc">あ゛</span><span class="tc">あ゛</span><span class="tc">あ゛</span>」</p>
+            <p>「<span class="tc">あﾞ</span><span class="tc">あﾞ</span><span class="tc">あﾞ</span><span class="tc">あﾞ</span>」</p><!-- https://tools.ikunaga.net/dakuten/ -->
+            <p>「<span class="tcw">あ゛</span><span class="tc">あ゛</span><span class="tc">あ゛</span><span class="tc">あ゛</span>」</p>
+            <p>「<span class="tcw">あﾞ</span><span class="tc">あﾞ</span><span class="tc">あﾞ</span><span class="tc">あﾞ</span>」</p><!-- https://tools.ikunaga.net/dakuten/ -->
+
+            <!--
+            <p style="transform:scaleX(2)transform-origin:top left;width:50%;">「<span class="tcw">あ゛</span><span class="tc">あ゛</span><span class="tc">あ゛</span><span class="tc">あ゛</span>」</p>
+            -->
+
+            <p>「がががが」</p>
+            <p>「かﾞかﾞかﾞかﾞ」</p>
+            <p>「<span class="tc">が</span><span class="tc">が</span><span class="tc">が</span><span class="tc">が</span>」</p>
+            <p>「<span class="tc">かﾞ</span><span class="tc">かﾞ</span><span class="tc">かﾞ</span><span class="tc">かﾞ</span>」</p>
+            <p>「<span class="tcw">が</span><span class="tc">が</span><span class="tc">が</span><span class="tc">が</span>」</p>
+            <p>「<span class="tcw">かﾞ</span><span class="tc">かﾞ</span><span class="tc">かﾞ</span><span class="tc">かﾞ</span>」</p>
+        </div>
+    </main>
+</body>
