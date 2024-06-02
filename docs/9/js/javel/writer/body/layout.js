@@ -25,7 +25,7 @@ class Triple {
         if (0===width) { width = document.documentElement.clientWidth }
         if (0===height) { height = document.documentElement.clientHeight }
         const isLandscape = (height <= width)
-        const menuBlockSize = 16 + 4
+        const menuBlockSize = 16
         const uiWidth = (isLandscape) ? ((width - menuBlockSize) / 2) : width
         const uiHeight = (isLandscape) ? height : ((height - menuBlockSize) / 2)
         const landscapeSizes = [`${uiWidth}px ${menuBlockSize}px ${uiWidth}px`, `${uiHeight}px`]

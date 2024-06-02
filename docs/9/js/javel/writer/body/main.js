@@ -12,7 +12,7 @@ class JavelBodyWriter {
         this.size = van.derive(()=>this.parser.Javel.calcSize(this.els.val))
         this.layout = new Triple()
         this.viewer = new Viewer() 
-        this.editor = textarea({style:()=>`box-sizing:border-box;width:100%;height:100%;resize:none;`, oninput:(e)=>this.manuscript.val=e.target.value}, ()=>this.manuscript.val)
+        this.editor = textarea({placeholder:`# 原稿《げんこう》\n\n　本文。《《強調》》\n段落内改行。`, style:()=>`box-sizing:border-box;width:100%;height:100%;resize:none;`, oninput:(e)=>this.manuscript.val=e.target.value}, ()=>this.manuscript.val)
         /*
         this.menu = new MenuScreen([
             div({class:'button', tabindex:0, style:`box-sizing:border-box;word-break:break-all;padding:0;margin:0;line-height:1em;letter-spacing:0;cursor:pointer;user-select:none;`},'題'),
@@ -28,14 +28,12 @@ class JavelBodyWriter {
         const aboutBtn = DivButton.make(()=>{}, '？')
         aboutBtn.dataset.select = 'javel-writer-about'
         this.menu = new MenuScreen([
-            //DivButton.make(()=>{}, '題'),
             headBtn,
             DivButton.make(()=>this.exporter.export(this.manuscript.val), ()=>`${this.size.val}字`),
             DivButton.make(()=>{}, '⚠'),
             DivButton.make(()=>this.colorScheme.toggle(), ()=>this.colorScheme.nextName),
             DivButton.make(()=>this.viewer.toggleWritingMode(), ()=>this.viewer.getNextWritingModeName()),
-            //DivButton.make(()=>{}, '？'),
-            DivButton.make(()=>{}, '？'),
+            aboutBtn,
         ])
         this.layout.first = this.editor
         this.layout.menu = this.menu.el
@@ -94,7 +92,8 @@ class MenuScreen {
         this._writingMode = van.state(`vertical-rl`) // horizontal-tb/vertical-rl
         this._textOrient = van.state('upright') // mixed/upright
         this._columns = van.state(`repeat(${this._items.length}, 1fr)`)
-        this._rows = van.state(`1fr`)
+        //this._rows = van.state(`1fr`)
+        this._rows = van.state(`16px`)
         this._el = div({style:()=>this.#style()})
         if (Array.isArray(items)) { for (let el of items) { this.add(el) } }
         this.resize()
@@ -103,9 +102,10 @@ class MenuScreen {
     get items() { return this._items.val }
     add(item) { this._el.appendChild(item) }
     resize() { if (this.#isLandscape) {this.setVertical()} else {this.setHorizontal()} }
-    #style() { console.log(`${this.#writingMode()}${this.#grid()}`); return `${this.#writingMode()}${this.#grid()}` }
+    #style() { console.log(`${this.#writingMode()}${this.#grid()}`); return `${this.#writingMode()}${this.#grid()}${this.#zero()}` }
     #writingMode() { return `writing-mode:${this._writingMode.val};text-orientation:${this._textOrient.val};` }
     #grid() { return `display:grid;grid-template-columns:${this._columns.val};grid-template-rows:${this._rows.val};` }
+    #zero() { return `padding:0;margin:0;line-height:1em;letter-spacing:0;` }
     setVertical() { this._writingMode.val = 'vertical-rl'; this._textOrient.val = 'upright'; this._columns.val = `repeat(${this._el.children.length}, 1fr)`; }
     setHorizontal() { this._writingMode.val = 'horizontal-tb'; this._textOrient.val = 'mixed'; this._columns.val = `repeat(${this._el.children.length}, 1fr)`; }
     get #width() { return document.body.clientWidth; }

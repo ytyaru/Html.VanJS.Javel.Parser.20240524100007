@@ -1,17 +1,17 @@
 (function(){
 class FocusLooper {
     #FOCUSABLE_ELEMENTS = [
-        'a[href]',
-        'area[href]',
-        'input:not([disabled]):not([type="hidden"]):not([aria-hidden])',
-        'select:not([disabled]):not([aria-hidden])',
-        'textarea:not([disabled]):not([aria-hidden])',
-        'button:not([disabled]):not([aria-hidden])',
-        'iframe',
-        'object',
-        'embed',
-        '[contenteditable]',
-        '[tabindex]:not([tabindex^="-"])',
+        'a[href]:not([display="none"])',
+        'area[href]:not([display="none"])',
+        'input:not([disabled]):not([type="hidden"]):not([aria-hidden]):not([display="none"])',
+        'select:not([disabled]):not([aria-hidden]):not([display="none"])',
+        'textarea:not([disabled]):not([aria-hidden]):not([display="none"])',
+        'button:not([disabled]):not([aria-hidden]):not([display="none"])',
+        'iframe:not([display="none"])',
+        'object:not([display="none"])',
+        'embed:not([display="none"])',
+        '[contenteditable]:not([display="none"])',
+        '[tabindex]:not([tabindex^="-"]):not([display="none"])',
         '*.focusable'
     ]
     setup(textarea) {
@@ -29,10 +29,22 @@ class FocusLooper {
         }
         this.#setFocusToFirstNode()
     }
-    #getFocusableNodes() { return [...document.querySelectorAll(this.#FOCUSABLE_ELEMENTS)] }
+    reset() { this.#setFocusToFirstNode() }
+    //#getFocusableNodes() { return [...document.querySelectorAll(this.#FOCUSABLE_ELEMENTS)] }
+    //#getShowNode() { return document.querySelector(`[data-sid]:not([display="none"]`) || document } // 動的変更したdisplay値が取得できない！
+    #getShowNode() {
+        for (let el of document.querySelectorAll(`[data-sid]`)) {
+            const display = Css.get('display', el)
+            console.log('display:', display)
+            if ('none'!==display) { return el }
+        }
+        return document
+    }
+    #getFocusableNodes() { console.log(this.#getShowNode());return [...this.#getShowNode().querySelectorAll(this.#FOCUSABLE_ELEMENTS)] }
     #setFocusToFirstNode() {
         const nodes = this.#getFocusableNodes()
         if (nodes.length > 0) nodes[0].focus()
+        console.log(nodes)
     }
     #retainFocus(e) {
         console.log(`e.code:${e.code}`, e)
