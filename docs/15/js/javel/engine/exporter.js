@@ -1,28 +1,45 @@
 class JavelExporter {
-    constructor(parser, counter) {
-        this.parser = parser || new JavelParser()
-        this.counter = counter || new JavelCounter(this.parser)
+//    constructor(parser, counter) {
+    constructor(manuscript, parser, counter) {
+        this._manuscript = manuscript
+        this._parser = parser || new JavelParser()
+        this._counter = counter || new JavelCounter(this._parser)
     }
-    async export(headData, body, type, platform, isCmp=true, cmpLv=9) {
-        this.#setHead(headData, body)
-        await this.#exportZip(headData, body)
+    //async export(headData, body, type, platform, isCmp=true, cmpLv=9) {
+    async export(type, platform, isCmp=true, cmpLv=9) {
+        //this.#setHead(headData, body)
+        //await this.#exportZip(headData, body)
+        this.#setHead()
+        await this.#exportZip()
     }
-    #setHead(headData, body) {
+    #setHead() {
+    //#setHead(headData, body) {
+        /*
         console.error(Date.toIso())
         if (!headData.created.val) { headData.created.val = Date.toIso() }
         else { headData.updated.val = Date.toIso() }
         if (!headData.uuid.val) { headData.uuid.val = crypto.randomUUID() }
-        const count = this.counter.Word.count(body)
+        const count = this._counter.Word.count(body)
         if (0===headData.writeWordCount.val) { headData.writeWordCount.val = count.write }
         if (0===headData.printWordCount.val) { headData.printWordCount.val = count.print }
         if (0===headData.readWordCount.val) { headData.readWordCount.val = count.read }
+        */
+        if (!this._manuscript.head.created.val) { this._manuscript.head.created.val = Date.toIso() }
+        else { this._manuscript.head.updated.val = Date.toIso() }
+        if (!this._manuscript.head.uuid.val) { this._manuscript.head.uuid.val = crypto.randomUUID() }
+        const count = this._counter.Word.count(body)
+        if (0===this._manuscript.head.writeWordCount.val) { this._manuscript.head.writeWordCount.val = count.write }
+        if (0===this._manuscript.head.printWordCount.val) { this._manuscript.head.printWordCount.val = count.print }
+        if (0===this._manuscript.head.readWordCount.val) { this._manuscript.head.readWordCount.val = count.read }
     }
-    #toFrontMatter(headData) { return `---\n${headData.yaml}---` }
-    async #exportZip(headData, body, type, platform, isCmp=true, cmpLv=9) { // javel:テキスト, 他:ZIPオプション（未設定でもいい感じにしてくれる）
+    //#toFrontMatter(headData) { return `---\n${headData.yaml}---` }
+    //async #exportZip(headData, body, type, platform, isCmp=true, cmpLv=9) { // javel:テキスト, 他:ZIPオプション（未設定でもいい感じにしてくれる）
+    async #exportZip(type, platform, isCmp=true, cmpLv=9) { // javel:テキスト, 他:ZIPオプション（未設定でもいい感じにしてくれる）
         const zip = new JSZip();
-        const javel = this.#toFrontMatter(headData) + '\n\n' + body
-        zip.file('manuscript.md', javel)
-        zip.file('index.html', this.parser.Javel.toHtml(body))
+        //const javel = this.#toFrontMatter(headData) + '\n\n' + body
+        //zip.file('manuscript.md', javel)
+        zip.file('manuscript.md', this._manuscript.javel)
+        zip.file('index.html', this._parser.Javel.toHtml(body))
 //        const html = zip.folder('html')
         await zip.generateAsync(this.#option(type,platform,isCmp,cmpLv)).then((content)=>{console.log('ZIP:',content.size, 'Byte');File.download(content, 'javel.zip')})
     }
@@ -30,7 +47,7 @@ class JavelExporter {
     exportZip(javel, type, platform, isCmp=true, cmpLv=9) { // javel:テキスト, 他:ZIPオプション（未設定でもいい感じにしてくれる）
         const zip = new JSZip();
         zip.file('manuscript.md', javel)
-        zip.file('index.html', this.parser.Javel.toHtml(javel))
+        zip.file('index.html', this._parser.Javel.toHtml(javel))
 //        const html = zip.folder('html')
         zip.generateAsync(this.#option(type,platform,isCmp,cmpLv)).then((content)=>{console.log('ZIP:',content.size, 'Byte');File.download(content, 'javel.zip')})
     }

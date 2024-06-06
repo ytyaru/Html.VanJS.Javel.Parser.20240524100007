@@ -1,7 +1,9 @@
 class JavelHeadWriter {
-    constructor(headData) {
+//    constructor(headData) {
         //this._data = new HeadData()
-        this._data = headData
+    constructor(manuscript) {
+        this._manuscript = manuscript
+        this._data = this._manuscript.head
         this._backBtn = DivButton.make(null, ()=>'戻')
         this._backBtn.dataset.select = 'javel-body-writer'
         this._authBtn = DivButton.make(null, ()=>'著者')
@@ -109,11 +111,14 @@ class JavelHeadWriter {
 
         [...Object.entries(this._data.warning.items)].filter(kv=>kv[1])
         */
+
+        /*
         console.error(this._data.warning.val)
         console.error([...Object.entries(this._data.warning.val)])
         console.error([...Object.entries(this._data.warning.val)].filter(kv=>kv[1]))
         console.log()
         console.log()
+        */
         this._viewer.children = [
             ...[
                 van.tags.h1(()=>this._data.title.val),
@@ -121,8 +126,9 @@ class JavelHeadWriter {
                 van.tags.p(()=>this._data.intro.val),
                 van.tags.p(()=>{
                     console.log(this._ja.category.options[this._data.category.val], this._ja.genre.options[this._data.genre.val])
-                    console.log(this._ja.category.options[this._data.category.val].l, this._ja.genre.options[this._data.genre.val].l)
-                    return this._ja.category.options[this._data.category.val].l + '　' + this._ja.genre.options[this._data.genre.val].l}),
+//                    console.log(this._ja.category.options[this._data.category.val].l, this._ja.genre.options[this._data.genre.val].l)
+//                    return this._ja.category.options[this._data.category.val].l + '　' + this._ja.genre.options[this._data.genre.val].l}),
+                    return this._ja.category.options[this._data.category.val] + '　' + this._ja.genre.options[this._data.genre.val]}),
                 //van.tags.p(()=>this._ja.category.options[this._data.category.val] + '　' + this._ja.genre.options[this._data.genre.val]),
                 //van.tags.p(()=>this._ja.category.options[this._data.category.val].l + '　' + this._ja.genre.options[this._data.genre.val].l),
                 van.tags.p(()=>this._data.keyword.val),

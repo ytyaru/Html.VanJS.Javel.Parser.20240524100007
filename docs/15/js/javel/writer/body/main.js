@@ -1,7 +1,9 @@
 const {div, textarea, button} = van.tags
 class JavelBodyWriter {
-    constructor(headData) {
-        this._headData = headData
+    //constructor(headData) {
+//        this._headData = headData
+    constructor(manuscript) {
+        this._manuscript = manuscript
         this.colorScheme = new ColorScheme()
         this.parser = new JavelParser()
         this.counter = new JavelCounter(this.parser)
@@ -15,10 +17,12 @@ class JavelBodyWriter {
         this.editor = textarea({placeholder:`# 原稿《げんこう》\n\n　本文。《《強調》》\n段落内改行。`, style:()=>`box-sizing:border-box;width:100%;height:100%;resize:none;`, oninput:(e)=>{this.manuscript.val=e.target.value; if(0===this.manuscript.val.length){this._anyoneBtn.showImport()}else{this._anyoneBtn.showExport()}}}, ()=>this.manuscript.val)
         const headBtn = DivButton.make(()=>{}, '題')
         headBtn.dataset.select = 'javel-head-writer'
-        this._anyoneBtn = new AnyOneButton(this._headData, this.editor, this.exporter, this.colorScheme)
+//        this._anyoneBtn = new AnyOneButton(this._headData, this.editor, this.exporter, this.colorScheme)
+        this._anyoneBtn = new AnyOneButton(this._manuscript, this.editor, this.exporter, this.colorScheme)
         this.menu = new MenuScreen([
             headBtn,
-            DivButton.make(()=>this.exporter.export(this._headData.yaml + this.manuscript.val), ()=>`${this.size.val}字`),
+            //DivButton.make(()=>this.exporter.export(this._headData.yaml + this.manuscript.val), ()=>`${this.size.val}字`),
+            DivButton.make(()=>alert('字数カウント画面表示'), ()=>`${this.size.val}字`),
             DivButton.make(()=>{}, '⚠'),
             DivButton.make(()=>this.colorScheme.toggle(), ()=>this.colorScheme.nextName),
             DivButton.make(()=>this.viewer.toggleWritingMode(), ()=>this.viewer.getNextWritingModeName()),
@@ -103,8 +107,10 @@ class MenuScreen {
     get #isPortrate() { return !this.#isLandscape }
 }
 class AnyOneButton { // ButtonSelector 常にどれか一つのボタンだけ表示する
-    constructor(headData, editor, exporter, colorScheme) {
-        this._headData = headData
+//    constructor(headData, editor, exporter, colorScheme) {
+    constructor(manuscript, editor, exporter, colorScheme) {
+        //this._headData = headData
+        this._manuscript = manuscript
         this._exporter = exporter
         this._colorScheme = colorScheme 
         this._editor = editor
@@ -113,7 +119,8 @@ class AnyOneButton { // ButtonSelector 常にどれか一つのボタンだけ�
         this._aboutBtn.dataset.select = 'javel-writer-about'
         //this._expBtn = DivButton.make(()=>{this._exporter.export(this._manuscript.val);this.showAbout();this._expBtn.focus();Toastify({text:'ファイル出力しました',duration:3000,position:'center'}).showToast();}, ()=>`出`)
         this._toast = new PopToast();
-        this._expBtn = DivButton.make(async()=>{await this._exporter.export(this._headData, this._editor.value);this.showAbout();this._expBtn.focus();this._toast.show('ファイル出力しました', {type:'success',position:'top-right',style:{backgroundColor:this._colorScheme.reverseBg, color:this._colorScheme.reverseFg, fontFamily:['Noto Sans JP', 'Source Han Sans JP', 'Noto Color Emoji', 'sans-serif']}});}, ()=>`出`)
+        //this._expBtn = DivButton.make(async()=>{await this._exporter.export(this._headData, this._editor.value);this.showAbout();this._expBtn.focus();this._toast.show('ファイル出力しました', {type:'success',position:'top-right',style:{backgroundColor:this._colorScheme.reverseBg, color:this._colorScheme.reverseFg, fontFamily:['Noto Sans JP', 'Source Han Sans JP', 'Noto Color Emoji', 'sans-serif']}});}, ()=>`出`)
+        this._expBtn = DivButton.make(async()=>{await this._exporter.export(this._manuscript);this.showAbout();this._expBtn.focus();this._toast.show('ファイル出力しました', {type:'success',position:'top-right',style:{backgroundColor:this._colorScheme.reverseBg, color:this._colorScheme.reverseFg, fontFamily:['Noto Sans JP', 'Source Han Sans JP', 'Noto Color Emoji', 'sans-serif']}});}, ()=>`出`)
         this._impBtn = DivButton.make(async()=>{
             const file = await FileOpener.openDialog();
             const content = await FileOpener.readAsText(file);

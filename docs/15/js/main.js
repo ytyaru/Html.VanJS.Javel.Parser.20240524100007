@@ -1,6 +1,7 @@
 window.addEventListener('DOMContentLoaded', (event) => {
     console.log('DOMContentLoaded!!');
     const app = new JavelWriter()
+//    acceptDragDrop();
 //    app.init()
 
     /*
