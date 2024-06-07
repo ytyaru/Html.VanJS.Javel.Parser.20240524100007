@@ -13,12 +13,14 @@ class DragAndDrop {
     #enabled(e) {
         console.error(`#enabled`)
         const overlay = this.overlay
+        console.error(overlay)
         Css.set('filter', 'opacity(1)', overlay);
         Css.set('visibility', 'visible', overlay);
     }
     #disabled(e) {
         console.error(`#disabled`)
         const overlay = this.overlay
+        console.error(overlay)
         Css.set('filter', 'opacity(0)', overlay);
         Css.set('visibility', 'hidden', overlay);
     }

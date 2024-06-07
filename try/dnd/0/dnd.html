@@ -1,0 +1,30 @@
+<style>
+#overlay {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  z-index: 32;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  filter: opacity(0);
+  visibility: hidden;
+  color: #fff;
+  font-size: 4.75rem;
+  background-color: rgba(#000,.75);
+  transition: .24s;
+}
+#form {
+  #error {
+    color: tomato;
+  }
+}
+</style>
+<div id="overlay">Drop CSV file here</div>
+<div id="form">
+  <p>Please drag'n'drop a CSV file on the this window</p>
+</form>
+
+<script src="dnd-0.js"></script>

@@ -1,0 +1,43 @@
+<style>
+#overlay {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  z-index: 0;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  filter: opacity(0);
+  visibility: hidden;
+  color: #fff;
+  font-size: 4.75rem;
+  background-color: rgba(#000,.75);
+  transition: .24s;
+}
+#form {
+  #error {
+    color: tomato;
+  }
+}
+</style>
+<script src="../../../docs/lib/van/1.2.6/nomodule.min.js"></script>
+<script src="../../../docs/lib/util/type.js"></script>
+<script src="../../../docs/lib/util/css.js"></script>
+<script src="dnd-2.js"></script>
+<!--<script src="dnd-1.js"></script>-->
+<!--<script src="dnd-0.js"></script>-->
+<!--<script src="dnd.js"></script>-->
+<script>
+document.addEventListener('DOMContentLoaded', e => {
+//    const dnd = new DragAndDrop()
+//    dnd.acceptDragDrop();
+});
+</script>
+
+<div id="overlay">Drop CSV file here</div>
+<div id="form">
+  <p>Please drag'n'drop a CSV file on the this window</p>
+</div>
+
