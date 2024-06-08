@@ -26,7 +26,7 @@ class Head {
         this.category = van.state('')
         this.genre = van.state('')
         this.keyword = van.state('')
-        this.warning = van.state({sex:false,violence:false,cruelty:false})
+        this.warning = van.state('')
         this.created = van.state('')
         this.updated = van.state('')
         this.published = van.state('')
