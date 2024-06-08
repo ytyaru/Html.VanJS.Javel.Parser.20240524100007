@@ -21,6 +21,6 @@ class JavelWriter {
         console.log(this.about.el.dataset.sid)
         this.selector = new ElementSelector(document.body, 'javel-body-writer')
         this.selector.sid = 'javel-body-writer'
-        this.dnd = new DragAndDrop()
+//        this.dnd = new DragAndDrop()
     }
 }

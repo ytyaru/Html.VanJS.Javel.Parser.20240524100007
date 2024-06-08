@@ -27,7 +27,8 @@ class JavelExporter {
         if (!this._manuscript.head.created.val) { this._manuscript.head.created.val = Date.toIso() }
         else { this._manuscript.head.updated.val = Date.toIso() }
         if (!this._manuscript.head.uuid.val) { this._manuscript.head.uuid.val = crypto.randomUUID() }
-        const count = this._counter.Word.count(body)
+        //const count = this._counter.Word.count(body)
+        const count = this._counter.Word.count(this._manuscript.body.val)
         if (0===this._manuscript.head.writeWordCount.val) { this._manuscript.head.writeWordCount.val = count.write }
         if (0===this._manuscript.head.printWordCount.val) { this._manuscript.head.printWordCount.val = count.print }
         if (0===this._manuscript.head.readWordCount.val) { this._manuscript.head.readWordCount.val = count.read }
@@ -39,7 +40,8 @@ class JavelExporter {
         //const javel = this.#toFrontMatter(headData) + '\n\n' + body
         //zip.file('manuscript.md', javel)
         zip.file('manuscript.md', this._manuscript.javel)
-        zip.file('index.html', this._parser.Javel.toHtml(body))
+        //zip.file('index.html', this._parser.Javel.toHtml(body))
+        zip.file('index.html', this._parser.Javel.toHtml(this._manuscript.body.val))
 //        const html = zip.folder('html')
         await zip.generateAsync(this.#option(type,platform,isCmp,cmpLv)).then((content)=>{console.log('ZIP:',content.size, 'Byte');File.download(content, 'javel.zip')})
     }

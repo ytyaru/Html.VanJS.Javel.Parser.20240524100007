@@ -6,11 +6,17 @@ class Manuscript { // van.state()
     }
     get javel( ) { return `---\n${this.head.yaml}---\n\n${this.body.val}` } // manuscript
     set javel(v) {
-        const matches = [...v.matchAll(/^[---]$/)]
-        if (2 <= matches) {
+        //const matches = [...v.matchAll(/^[---]$/g)]
+        //const matches = [...v.matchAll(/^[\-]{3}$/g)]
+        const matches = [...v.matchAll(/^[\-]{3}$/gm)]
+        console.error(matches)
+        if (2 <= matches.length) {
             const yaml = v.slice(matches[0].index+3, matches[1].index)
+            console.error(yaml)
             this.head.yaml = yaml
-            this.body.val = matches[1].index + 3
+            this.body.val = v.slice(matches[1].index + 3).trimLine()
+            console.log(this.head.yaml)
+            console.log(this.body.val)
         } else { this.body.val = v }
     }
 }
@@ -38,7 +44,9 @@ class Head {
     get yaml( ) { return jsyaml.dump(Object.assign(...[...Object.keys(this)].map(k=>({[k]:this[k].val})))) }
     set yaml(v) {
         const obj = jsyaml.load(v)
-        for (let key of Object.keys(obj)) { this[key].val = obj[key] }
+        console.error(obj)
+        //for (let key of Object.keys(obj)) { this[key].val = obj[key] }
+        for (let key of Object.keys(obj)) { this[key].val = obj[key]; console.log(key, this[key].val); }
     }
 }
 window.Manuscript = Manuscript

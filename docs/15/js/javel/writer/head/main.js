@@ -78,13 +78,16 @@ class JavelHeadWriter {
         }
     }
     #makeLabel(k,v) { return van.tags.label(v.l || k) }
-    #makeSelect(k,v) { return [van.tags.select({name:k, oninput:(e)=>{this._data[k].val=e.target.value;console.error(`${k}-summary`, k, this._data[k].val);console.error(this._ja[k].options[e.target.value].l);document.querySelector(`[name="${k}-summary"]`).innerHTML=v.options[e.target.value].d;}}, this.#makeOptions(v)), van.tags.span({name:`${k}-summary`,style:`font-size:16px;`}, '')] }
+    #makeSelect(k,v) { return [van.tags.select({name:k, oninput:(e)=>{this._data[k].val=e.target.value;console.error(`${k}-summary`, k, this._data[k].val);console.error(this._ja[k].options[e.target.value].l);document.querySelector(`[name="${k}-summary"]`).innerHTML=v.options[e.target.value].d;}}, this.#makeOptions(k,v)), van.tags.span({name:`${k}-summary`,style:`font-size:16px;`}, '')] }
     //#makeSelect(k,v) { return van.tags.select({name:k, oninput:(e)=>this._data[k].val=e.target.value}, this.#makeOptions(v)) }
     //#makeOptions(v) { return [...Object.entries(v.options).map(e=>van.tags.option({value:e[0]}, e[1]))] }
-    #makeOptions(v) { return [...Object.entries(v.options).map(e=>van.tags.option({value:e[0]}, e[1].l))] }
+    //#makeOptions(v) { return [...Object.entries(v.options).map(e=>van.tags.option({value:e[0]}, e[1].l))] }
+    //#makeOptions(k,v) { return [...Object.entries(v.options).map(e=>van.tags.option({value:e[0], selected:(e[0]===this._data[k].val)}, e[1].l))] }
+    #makeOptions(k,v) { return [...Object.entries(v.options).map(e=>{console.error(k,e[0],':',this._data,this._data['category'],this._data[k].val);return van.tags.option({value:e[0], selected:(e[0]===this._data[k].val)}, e[1].l)})] }
     #makeCheckbox(k,v) { return [...Object.entries(v.items)].map(e=>van.tags.label(van.tags.input({type:'checkbox', name:`${k}-${e[0]}`, checked:e[1].c, 'data-key':k, 'data-value':e[0], onchange:(E)=>this._data[k].val[e[0]] = E.target.checked}, e[1].l), e[1].l)) }
-    #makeText(k,v) { return van.tags.input({name:k, type:'text', maxlength:v.wcl, oninput:(e)=>this._data[k].val=e.target.value, style:`box-sizing:border-box;width:100%;`}) }
-    #makeTextarea(k,v) { return van.tags.textarea({name:k, maxlength:v.wcl, oninput:(e)=>{this._data[k].val=e.target.value;console.log(this._data)}, style:`box-sizing:border-box;width:100%;resize:none;`}) }
+    //#makeText(k,v) { return van.tags.input({name:k, type:'text', maxlength:v.wcl, oninput:(e)=>this._data[k].val=e.target.value, style:`box-sizing:border-box;width:100%;`}, ()=>this._data[k].val/*this._manuscript.head[k].val*/) }
+    #makeText(k,v) { return van.tags.input({name:k, type:'text', maxlength:v.wcl, value:()=>this._data[k].val, oninput:(e)=>this._data[k].val=e.target.value, style:`box-sizing:border-box;width:100%;`}) }
+    #makeTextarea(k,v) { return van.tags.textarea({name:k, maxlength:v.wcl, value:()=>this._data[k].val, oninput:(e)=>{this._data[k].val=e.target.value;console.log(this._data)}, style:`box-sizing:border-box;width:100%;resize:none;`}) }
     #makeDefault(k,v) {return van.tags[v.t](((Object.hasOwnProperty(v.o)) ? d.o : null))}
     #makeTr(lb, el, wc) { return van.tags.tr({style:`padding:0;margin:0;`}, van.tags.th({style:`padding:0;margin:0;`}, lb), van.tags.td({style:`padding:0;margin:0;`,colspan:((Array.isArray(el) && 'select'===el[0].tagName.toLowerCase()) ? 2 : 1)}, el), van.tags.td({style:`padding:0;margin:0;`}, wc)) }
     #makeCounter(k, t, max) { return (('textarea,text'.split(',').includes(t)) ? div({style:`font-size:16px;padding:0;margin:0;`}, ()=>this._data[k].val.Graphemes.length, `/`, `${max}字`) : null) }

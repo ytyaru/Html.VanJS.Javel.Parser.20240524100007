@@ -7,18 +7,22 @@ class JavelBodyWriter {
         this.colorScheme = new ColorScheme()
         this.parser = new JavelParser()
         this.counter = new JavelCounter(this.parser)
-        this.exporter = new JavelExporter(this.parser, this.counter)
-        this.manuscript = van.state('')
-        this.textBlocks = van.derive(()=>this.parser.Javel.toBlocks(this.manuscript.val))
+        this.exporter = new JavelExporter(this._manuscript, this.parser, this.counter)
+//        this.manuscript = van.state('')
+//        this.textBlocks = van.derive(()=>this.parser.Javel.toBlocks(this.manuscript.val))
+        this.textBlocks = van.derive(()=>this.parser.Javel.toBlocks(this._manuscript.body.val))
         this.els = van.derive(()=>this.parser.Javel.toElements(this.textBlocks.val))
         this.size = van.derive(()=>this.parser.Javel.calcSize(this.els.val))
         this.layout = new Triple()
         this.viewer = new Viewer() 
-        this.editor = textarea({placeholder:`# 原稿《げんこう》\n\n　本文。《《強調》》\n段落内改行。`, style:()=>`box-sizing:border-box;width:100%;height:100%;resize:none;`, oninput:(e)=>{this.manuscript.val=e.target.value; if(0===this.manuscript.val.length){this._anyoneBtn.showImport()}else{this._anyoneBtn.showExport()}}}, ()=>this.manuscript.val)
+        //this.editor = new Editor(this._manuscript, this._anyoneBtn)
+        this.editor = new Editor(this._manuscript)
+        //this.editor = textarea({placeholder:`# 原稿《げんこう》\n\n　本文。《《強調》》\n段落内改行。`, style:()=>`box-sizing:border-box;width:100%;height:100%;resize:none;`, oninput:(e)=>{this.manuscript.val=e.target.value; if(0===this.manuscript.val.length){this._anyoneBtn.showImport()}else{this._anyoneBtn.showExport()}}}, ()=>this.manuscript.val)
         const headBtn = DivButton.make(()=>{}, '題')
         headBtn.dataset.select = 'javel-head-writer'
 //        this._anyoneBtn = new AnyOneButton(this._headData, this.editor, this.exporter, this.colorScheme)
-        this._anyoneBtn = new AnyOneButton(this._manuscript, this.editor, this.exporter, this.colorScheme)
+        this._anyoneBtn = new AnyOneButton(this._manuscript, this.editor.el, this.exporter, this.colorScheme)
+        this.editor.AnyoneBtn = this._anyoneBtn
         this.menu = new MenuScreen([
             headBtn,
             //DivButton.make(()=>this.exporter.export(this._headData.yaml + this.manuscript.val), ()=>`${this.size.val}字`),
@@ -28,7 +32,7 @@ class JavelBodyWriter {
             DivButton.make(()=>this.viewer.toggleWritingMode(), ()=>this.viewer.getNextWritingModeName()),
             this._anyoneBtn.el,
         ])
-        this.layout.first = this.editor
+        this.layout.first = this.editor.el
         this.layout.menu = this.menu.el
         this.layout.last = this.viewer.el
         this.#init()
@@ -39,7 +43,8 @@ class JavelBodyWriter {
         van.add(document.body, this.layout.el)
         window.addEventListener('resize', (event) => { this.layout.resize(); this.menu.resize(); })
         document.querySelector('textarea').focus()
-        this.manuscript.val = `# 原稿《げんこう》
+        //this.manuscript.val = `# 原稿《げんこう》
+        this._manuscript.body.val = `# 原稿《げんこう》
 
 　《《ここ》》に書いたテキストは下に表示《ひょうじ》されます。｜H《Hyper》｜T《Text》｜M《Markup》｜L《Language》形式で出力します。
 
@@ -62,18 +67,23 @@ class JavelBodyWriter {
 「あﾞあﾞあﾞあﾞ」
 
 ――そのとき、神風が吹いた`
-        focusLooper.setup(this.editor)
+        focusLooper.setup(this.editor.el)
 
         // パース確認（Javel, Element, HTMLの相互変換）
         console.log(this.parser.Javel.toHtml(this.els.val, true)) // El→HTML
-        console.log(this.parser.Javel.toHtml(this.manuscript.val, true)) // Javel→HTML
+        //console.log(this.parser.Javel.toHtml(this.manuscript.val, true)) // Javel→HTML
+        console.log(this.parser.Javel.toHtml(this._manuscript.body.val, true)) // Javel→HTML
         console.log(this.parser.Html.toJavel(this.els.val, true)) // El→Javel
         console.log(this.parser.Html.toJavel(this.parser.Javel.toHtml(this.els.val, true), true)) // HTML→Javel
-        console.log(this.parser.Html.toJavel(this.parser.Javel.toHtml(this.manuscript.val, true), true)) // HTML→Javel
-        console.log(this.parser.Html.toElements(this.parser.Javel.toHtml(this.manuscript.val, true), true)) // HTML→El
-        console.log(this.parser.Javel.toElements(this.manuscript.val, true)) // Javel→El
+//        console.log(this.parser.Html.toJavel(this.parser.Javel.toHtml(this.manuscript.val, true), true)) // HTML→Javel
+//        console.log(this.parser.Html.toElements(this.parser.Javel.toHtml(this.manuscript.val, true), true)) // HTML→El
+        console.log(this.parser.Html.toJavel(this.parser.Javel.toHtml(this._manuscript.body.val, true), true)) // HTML→Javel
+        console.log(this.parser.Html.toElements(this.parser.Javel.toHtml(this._manuscript.body.val, true), true)) // HTML→El
+        //console.log(this.parser.Javel.toElements(this.manuscript.val, true)) // Javel→El
+        console.log(this.parser.Javel.toElements(this._manuscript.body.val, true)) // Javel→El
         // 字数
-        const count = this.counter.Word.count(this.manuscript.val)
+        //const count = this.counter.Word.count(this.manuscript.val)
+        const count = this.counter.Word.count(this._manuscript.body.val)
         console.log('Write:', count.write)
         console.log('Print:', count.print)
         console.log('Read :', count.read)
@@ -144,6 +154,38 @@ class AnyOneButton { // ButtonSelector 常にどれか一つのボタンだけ�
     #hide(el) { this.#setDisp(el, false) }
     #show(el) { this.#setDisp(el, true) }
     #setDisp(el, isShow) { el.style.setProperty('display', ((isShow) ? 'block' : 'none')) }
+}
+class Editor {
+    constructor(manuscript, anyoneBtn) {
+        this._manuscript = manuscript
+        this._anyoneBtn = anyoneBtn
+        this._el = textarea({
+            placeholder:`# 原稿《げんこう》\n\n　本文。《《強調》》\n段落内改行。`, 
+            style:()=>`box-sizing:border-box;width:100%;height:100%;resize:none;`, 
+            //oninput:this.onInput.apply(this),
+            oninput:(e)=>this.onInput(e),
+            ondrop:async(e)=>{await this.onDrop()},
+            }, 
+            ()=>this._manuscript.body.val)
+    }
+    get el() { return this._el }
+    get AnyoneBtn( ) {return this._anyoneBtn}
+    set AnyoneBtn(v) {this._anyoneBtn = v}
+    onInput(e) {
+        this._manuscript.body.val = e.target.value
+        if(0===this._manuscript.body.val.length){this._anyoneBtn.showImport()}
+        else{this._anyoneBtn.showExport()}
+    }
+    onDrop(e) {
+        console.log(`drop`);
+        event.preventDefault();
+        const file = event.dataTransfer.files[0];
+        const r = new FileReader();
+        //r.onload = (ev)=>this._manuscript.body.val = ev.target.result
+        //r.onload = (ev)=>{this._manuscript.body.val = ev.target.result;this._el.value = ev.target.result;}
+        r.onload = (ev)=>{this._manuscript.javel = ev.target.result;this._el.value = this._manuscript.body.val;}
+        r.readAsText(file);
+    }
 }
 class Viewer {
     constructor() {
