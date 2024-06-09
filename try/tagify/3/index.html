@@ -1,0 +1,535 @@
+<!--https://qiita.com/qwe001/items/db553bff75353f60320d-->
+<!--https://codepen.io/qwe001/pen/eVdqeV-->
+<style>
+ul {list-style:none;}
+.button {
+	cursor: pointer;
+	overflow: visible;
+	display: inline-block;
+	outline: none;
+	margin-right: 5px;
+	padding: 0 0.5em;
+	vertical-align: middle;
+	line-height: 1.75em;
+	white-space: nowrap;
+	border: 1px solid #666;
+	background-color: #ffffff;
+	color: #666;
+	font-size: 12px;
+	font-weight: normal;
+	text-decoration: none;
+	border-radius: 3px;
+}
+.button.delete-all {
+	background: #ff3860;
+	color: #FFF;
+}
+.tagify-container > span.has_url {
+	color: #EB7E14;
+	font-weight: bold;
+	cursor: pointer;
+}
+.tagify-container > span > a:last-child:hover{
+	color: red;
+}
+</style>
+<!--
+<link rel="stylesheet" href="../../../docs/lib/tagify/4.26.5/min.css">
+<link rel="stylesheet" href="../../../docs/lib/tagify/dragsort/1.3.2/min.css">
+-->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css">
+<link rel="stylesheet" href="https://cdn.rawgit.com/alicial/jQuery.Tagify/master/tagify-style.css">
+<!--
+<script src="../../../docs/lib/van/1.2.6/nomodule.min.js"></script>
+<script src="../../../docs/lib/tagify/4.26.5/min.js"></script>
+<script src="../../../docs/lib/tagify/dragsort/1.3.2/min.js"></script>
+-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+<script>
+$(function(){
+    /**
+     * Generate Tagify Element
+     * 
+     * @params str target
+     * @return void
+     */
+    function generateTagify(target)
+    {
+        var target = $('#' + target);
+        var dataArrs = [
+            ["やまだ", "山田"],
+            ["たなか", "田中"],
+            ["すずき", "鈴木"],
+        ];
+
+        // make tagify elements
+        var myTextArea = target.tagify({
+            delimiters: [13, 188, 44], // [enter], [comma], [dot]
+            outputDelimiter: "、",
+            cssClass: 'tagify-container',
+            addTagPrompt: "タグを追加...",
+            addTagOnBlur: false,
+        });
+
+        // make autocomplete elements
+        myTextArea.tagify('inputField').autocomplete({
+            source: function(request, response){
+                // ひらがなで入力しても漢字で候補を出すようにする
+                var re = new RegExp('^(' + request.term + ')');
+                var list = [];
+
+                $.each(dataArrs, function(i, values){
+                    if(values[0].match(re) || values[1].match(re)){
+                        list.push(values[1]);
+                    }
+                });
+                response(list);
+            },
+            position: {
+                of: myTextArea.tagify('containerDiv')
+            },
+            select: function(event, ui) {
+                // 入力候補をEnterキー押下で選択した時だけでなく、マウスクリックした時もタグ追加できるようにする
+                var origEvent = event;
+
+                while(origEvent.originalEvent !== undefined){
+                    origEvent = origEvent.originalEvent;
+
+                    if(origEvent.type == 'keydown' || origEvent.type == 'click'){
+                        myTextArea.tagify('add', ui.item.value);
+                        return false; // タグ追加後、入力中のテキストをクリアする
+                    }
+                }
+            },
+            close: function(event, ui) {
+                // 公式ドキュメントには、TagifyのAutocompleteはここに書く例があるが、
+                // ここに書くと、入力候補がなくなった瞬間にタグ追加が発生するため、
+                // 入力候補にないタグの入力が阻害され、ユーザビリティが下がるので select イベントを使用した。
+            }
+        });
+    }
+
+    /**
+     * Append Url To Tag
+     * Need To Make Click Event For Link Movement
+     * 
+     * @params str target
+     * @return bool
+     */
+    function appendUrlToTag(target)
+    {
+        var dataArrs, text, gen, filtered, html, remove_button;
+
+        dataArrs = [
+            { name: "山田", url: "https://www.google.com" },
+            { name: "田中", url: "https://www.yahoo.com" },
+            { name: "鈴木", url: "https://www.microsoft.com" },
+        ];
+
+        text = target.text(); // 山田x
+        gen = text.slice(0, -1); // 山田
+
+        filtered = $.grep(dataArrs, function(obj, index){ // PHPで言うところの array_search 的なやつ
+            return (obj.name === gen); // object
+        });
+
+        if(filtered.length === 0){
+            target.addClass('no_url');
+            target.attr('data-href', null);
+
+            return false;
+        }
+
+        // [CAUTION] If you append anchor tag to span, Tagify element will NOT work normally. That is why I use data href attribute.
+        //html = '<a href="' + filtered[0].url + '" target="_blank" class="has_url">' + text + '</a>';
+        //remove_button = '<a href="#">x</a>';
+
+        target.addClass('has_url');
+        target.attr('data-href', filtered[0].url);
+        target.attr('title', filtered[0].url);
+
+        return true;
+    }
+
+    /**
+     * Copy Text To Clipboard
+     * 
+     * @params str textVal
+     * @return bool
+     */
+    function copyTextToClipboard(textVal)
+    {
+        var copyFrom, bodyElm, result;
+
+        copyFrom = document.createElement("textarea");
+        copyFrom.textContent = textVal;
+
+        bodyElm = document.getElementsByTagName("body")[0];
+        bodyElm.appendChild(copyFrom);
+
+        copyFrom.select();
+        result = document.execCommand('copy'); // copy text from selection and return boolean value
+
+        bodyElm.removeChild(copyFrom);
+
+        return result;
+    }
+
+    /**
+     * Detect Whether Browser Type Is IE Or Not
+     * 
+     * @return bool
+     */
+    function isIE()
+    {
+        var userAgent = window.navigator.userAgent.toLowerCase();
+
+        if(userAgent.match(/(msie|MSIE)/) || userAgent.match(/(T|t)rident/)){
+            return true;
+        }
+
+        return false;
+    }
+
+    // make tagify elements
+    $('.tagify').each(function(){
+        var elem = $(this).attr('id');
+        generateTagify(elem);
+    });
+
+    // change tagify element to default textarea
+    var tag_type = $('.tag_switch:checked').val();
+
+    if(tag_type == 1){
+        $('#textarea1').tagify('destroy');
+        $('span[data-delete-from=textarea1]').hide();
+    }
+
+    // switch tagify element or default textarea
+    $('.tag_switch').click(function(){
+        var tag_type = $(this).val();
+
+        if(tag_type == 1){
+            var tag_text = $('#textarea1').tagify('serialize');
+            $('#textarea1').val(tag_text);
+            $('#textarea1').tagify('destroy');
+            $('span[data-delete-from=textarea1]').hide();
+        }
+        else {
+            generateTagify('textarea1');
+            $('span[data-delete-from=textarea1]').show();
+
+            $('#textarea1').next('.tagify-container').children('span').each(function(){
+                appendUrlToTag($(this));
+            });
+        }
+    });
+
+    // append url to tag when document on ready
+    $('#textarea1').next('.tagify-container').children('span').each(function(){
+        appendUrlToTag($(this));
+    });
+
+    // append url to tag when new one insert
+    $('#textarea1').next('.tagify-container').on('DOMSubtreeModified propertychange', function(){
+
+        // [NOTICE] DOMSubtreeModified Event is deprecated to use
+        // @see http://logroid.blogspot.jp/2013/07/javascript-dom-mutation-events-observer.html
+
+        if(isIE()){
+            // IE11だけブラウザがフリーズする致命的なバグが発生し、対処方法が思いつかなかったので蓋をした ^o^
+            return false;
+        }
+
+        $(this).children('span').each(function(){
+            // [WARNING] This function may CRASH via IE 11
+            appendUrlToTag($(this));
+        });
+
+        return true;
+    });
+
+    // tag link movement
+    $('.tagify_table').on('click', '.has_url', function(){
+        $(this).children('a').click(function(event){
+            event.stopPropagation(); // tag remove
+
+            return false;
+        });
+
+        window.open($(this).attr('data-href'), '_blank');
+
+        return true;
+    });
+
+    $('form').submit(function() {
+        $('.tagify').each(function(){
+            $(this).tagify('serialize');
+        });
+    });
+
+    $('.copy').click(function(){
+        var from = $(this).data('copy-from');
+        from = $('#' + from);
+
+        if(from.val()){
+            try {
+                var copy = copyTextToClipboard(from.val());
+
+                if(copy){
+                    alert("クリップボードにコピーしました");
+                    return true;
+                }
+            }
+            catch(e){
+                alert("コピー失敗：" + "ブラウザが対応していない可能性があります");
+                throw console.log("copy failed:" + e);
+            }
+        }
+
+        return false;
+    });
+
+    $('.delete-all').click(function(){
+        var from = $(this).data('delete-from');
+        from = $('#' + from);
+
+        if(from.val()){
+            try {
+                var tagIndex = from.tagify('inputTagIndex'); // this method is self made. NOT INCLUDE in original js files.
+
+                if(tagIndex !== 0){
+                    if(confirm("タグを全削除します。よろしいですか？")){
+                        for(i = 0; i < tagIndex; i++){
+                            from.tagify('remove');
+                        }
+                        from.val("");
+                        return true;
+                    }
+                }
+            }
+            catch(e){
+                alert("削除失敗：" + "ブラウザが対応していない可能性があります");
+                throw console.log("delete failed:" + e);
+            }
+        }
+
+        return false;
+    });
+
+});
+
+/* Author: Alicia Liu */
+
+(function ($) {
+	
+	$.widget("ui.tagify", {
+		options: {
+			delimiters: [13, 188, 44],          // what user can type to complete a tag in char codes: [enter], [comma]
+			outputDelimiter: ',',           // delimiter for tags in original input field
+			cssClass: 'tagify-container',   // CSS class to style the tagify div and tags, see stylesheet
+			addTagPrompt: 'add tags',       // placeholder text
+			addTagOnBlur: false				// Add a tag on blur when not empty
+		},
+		
+		_create: function() {
+			var self = this,
+				el = self.element,
+				opts = self.options;
+
+			this.tags = [];
+			
+			// hide text field and replace with a div that contains it's own input field for entering tags
+			this.tagInput = $("<input type='text'>")
+				.attr( 'placeholder', opts.addTagPrompt )
+				.keypress( function(e) {
+					var $this = $(this),
+					    pressed = e.which;
+
+					for ( i in opts.delimiters ) {
+						
+						if (pressed == opts.delimiters[i]) {
+							self.add( $this.val() );
+							e.preventDefault(); 
+							return false;
+						}
+					}
+				})
+				// we record the value of the textfield before the key is pressed
+				// so that we get rid of the backspace issue
+				.keydown(function(e){
+					self.keyDownValue = $(this).val();
+				})
+				// for some reason, in Safari, backspace is only recognized on keyup
+				.keyup( function(e) {
+					var $this = $(this),
+					    pressed = e.which;
+
+					// if backspace is hit with no input, remove the last tag
+					if (pressed == 8) { // backspace
+						if ( self.keyDownValue == '' ) {
+							self.remove();
+							return false;
+						}
+						return;
+					}
+				});
+			
+			// Add tags blur event when required	
+			if (opts.addTagOnBlur) {
+				// When needed, add tags on blur
+				this.tagInput.blur( function(e) {
+					var $this = $(this);
+					
+					// if lose focus on input field, check if length is empty
+					if ('' !== $this.val()) {
+						self.add( $this.val() );
+						e.preventDefault(); 
+						return false;
+					}
+				})
+			}	
+				
+			this.tagDiv = $("<div></div>")
+			    .addClass( opts.cssClass )
+			    .click( function() {
+			        $(this).children('input').focus();
+			    })
+			    .append( this.tagInput )
+				.insertAfter( el.hide() );
+				
+			// if the field isn't empty, parse the field for tags, and prepopulate existing tags
+			var initVal = $.trim( el.val() );
+
+			if ( initVal ) {
+				var initTags = initVal.split( opts.outputDelimiter );
+				$.each( initTags, function(i, tag) {
+				    self.add( tag );
+				});
+			}
+		},
+		
+		_setOption: function( key, value ) {
+			options.key = value;
+		},
+		
+		// add a tag, public function		
+		add: function(text) {
+    		var self = this;
+			text = text || self.tagInput.val();
+			if (text) {
+				var tagIndex = self.tags.length;
+				
+				var removeButton = $("<a href='#'>x</a>")
+					.click( function() {
+						self.remove( tagIndex );
+						return false;
+					});
+				var newTag = $("<span></span>")
+					.text( text )
+					.append( removeButton );
+				
+				self.tagInput.before( newTag );
+				self.tags.push( text );
+				self.tagInput.val('');
+			}
+		},
+		
+		// remove a tag by index, public function
+		// if index is blank, remove the last tag
+		remove: function( tagIndex ) {
+			var self = this;
+			if ( tagIndex == null  || tagIndex === (self.tags.length - 1) ) {
+				this.tagDiv.children("span").last().remove();
+				self.tags.pop();
+			}
+			if ( typeof(tagIndex) == 'number' ) {
+				// otherwise just hide this tag, and we don't mess up the index
+				this.tagDiv.children( "span:eq(" + tagIndex + ")" ).hide();
+				 // we rely on the serialize function to remove null values
+				delete( self.tags[tagIndex] );
+			}
+		},
+		
+		// serialize the tags with the given delimiter, and write it back into the tagified field
+		serialize: function() {
+			var self = this;
+			var delim = self.options.outputDelimiter;
+			var tagsStr = self.tags.join( delim );
+			
+			// our tags might have deleted entries, remove them here
+			var dupes = new RegExp(delim + delim + '+', 'g'); // regex: /,,+/g
+			var ends = new RegExp('^' + delim + '|' + delim + '$', 'g');  // regex: /^,|,$/g
+			var outputStr = tagsStr.replace( dupes, delim ).replace(ends, '');
+			
+			self.element.val(outputStr);
+			return outputStr;
+		},
+		
+		inputField: function() {
+		    return this.tagInput;
+		},
+		
+		containerDiv: function() {
+		    return this.tagDiv;
+		},
+
+		// NOT INCLUDE IN ORIGINAL JS
+		inputTagIndex: function() {
+		    return this.tags.length;
+		},
+
+		// remove the div, and show original input
+		destroy: function() {
+		    $.Widget.prototype.destroy.apply(this);
+			this.tagDiv.remove();
+			this.element.show();
+		}
+	});
+
+})(jQuery);
+</script>
+
+<form action="store" method="POST">
+	<h1>タグ入力機能をさいつよにする</h1>
+	<h3>@see <a href="https://qiita.com/qwe001/items/db553bff75353f60320d">https://qiita.com/qwe001/items/db553bff75353f60320d</a></h3>
+	<p>テキストエリアに「やまだ」とか「鈴木」とか入れてみてください</p>
+    <table class="tagify_table">
+        <tbody>
+            <tr>
+                <th>タグ入力切替</th>
+                <td>
+                    <ul>
+                        <li>
+                            <input type="radio" name="tag_switch" value="0" id="tag_switch_1" class="tag_switch" checked="checked">
+                            <label for="tag_switch_1">タグ入力フィールドにする</label>
+                        </li>
+                        <li>
+                            <input type="radio" name="tag_switch" value="1" id="tag_switch_2" class="tag_switch">
+                            <label for="tag_switch_2">テキストエリアにする</label>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    <span>テキストエリア1(URL自動付与Ver)</span>
+                    <br>
+                    <span class="button copy" data-copy-from="textarea1">コピー</span>
+                    <span class="button delete-all" data-delete-from="textarea1">全削除</span>
+                </th>
+                <td><textarea name="textarea1" id="textarea1" class="tagify">田中、山田、鈴木、平野、村井、東</textarea></td>
+            </tr>
+            <tr>
+                <th>
+                    <span>テキストエリア2(タグ入力+入力候補表示のみ)</span>
+                    <br>
+                    <span class="button copy" data-copy-from="textarea2">コピー</span>
+                    <span class="button delete-all" data-delete-from="textarea2">全削除</span>
+                </th>
+                <td><textarea name="textarea2" id="textarea2" class="tagify">田中、山田、西野、河合、谷口</textarea></td>
+            </tr>
+        </tbody>
+    </table>
+</form>

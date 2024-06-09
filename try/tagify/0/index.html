@@ -1,0 +1,15 @@
+<style>
+</style>
+<link rel="stylesheet" href="../../../docs/lib/tagify/4.26.5/min.css">
+<script src="../../../docs/lib/van/1.2.6/nomodule.min.js"></script>
+<script src="../../../docs/lib/tagify/4.26.5/min.js"></script>
+<script>
+window.addEventListener('DOMContentLoaded', (event) => {
+    console.log('DOMContentLoaded!!');
+    const textarea = van.tags.textarea()
+    textarea.addEventListener('change', (e)=>console.log(e.target.value))
+    van.add(document.body, textarea)
+    const tag = new Tagify(textarea, {})
+    tag.focus()
+});
+</script>
