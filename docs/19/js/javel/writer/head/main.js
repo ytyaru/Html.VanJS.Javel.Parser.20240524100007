@@ -118,11 +118,6 @@ class HeadViewer extends Viewer {
                 van.tags.h2(()=>this._data.catch.val),
                 van.tags.p(()=>this._data.intro.val),
                 van.tags.p(()=>`${this._category.val}　${this._genre.val}`),
-                //van.tags.p(()=>this._data.keywords.val),
-                //van.tags.p(()=>this._data.keywords.val.split(',').filter(v=>v).join(' ')),
-                //van.tags.p(()=>this._data.keywords.val.split(',').filter(v=>v).map(k=>van.tags.span(k))),
-                //van.tags.ul(()=>this._data.keywords.val.split(',').filter(v=>v).map(k=>van.tags.li(k))),
-                //van.tags.ul(this._data.keywords.val.split(',').filter(v=>v).map(k=>van.tags.li(k))),
                 ()=>van.tags.ul({class:`keywords`},this._data.keywords.val.split(',').filter(v=>v).map(k=>van.tags.li({class:`keyword`},k))),
                 van.tags.p(
                     ()=>`${this._warningHead.val}`, 
@@ -131,6 +126,7 @@ class HeadViewer extends Viewer {
                     ()=>van.tags.span(()=>`${this._warningCruelty.val}`),
                     ()=>`${this._warningTail.val}`, 
                 ),
+                van.tags.p(()=>`${this._data.readWordCount.val}字`)
         ]
     }
 }

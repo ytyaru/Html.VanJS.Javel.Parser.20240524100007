@@ -1,20 +1,26 @@
 class JavelCounter {
-    constructor() {
-        this._word = new WordCounter()     // 字数カウンタ
-        this._file = new FileSizeCounter() // ファイルサイズ予想
-        this._rateS = new CharRate()        // 文種比（SentenceRate）
-        this._rateC = new CharRate()        // 字種比（CharacterRate）
+    constructor(manuscript) {
+        this._manuscript = manuscript
+        this._word = new WordCounter(this._manuscript)     // 字数カウンタ
+        this._file = new FileSizeCounter(this._manuscript) // ファイルサイズ予想
+        this._rateS = new CharRate(this._manuscript)       // 文種比（SentenceRate）
+        this._rateC = new CharRate(this._manuscript)       // 字種比（CharacterRate）
     }
     get Word() { return this._word }
     get File() { return this._file }
     get Rate() { return this._rate }
 }
 class WordCounter {
+    constructor(manuscript) { this._manuscript = manuscript; }
+    countup() { this.Write; this.Print; this.Read; }
     count(text) { return { // https://inside.pixiv.blog/2020/05/13/181507
         write: this.write(text), // 書字数：全字数
         print: this.print(text), // 印字数：一部除去（書字からJavelメタ文字とルビを消す）
         read: this.read(text),   // 読字数：一部除去（印字から空白文字と記号を消し３連続同字１化）
     }}
+    get Write() { return this._manuscript.head.writeWordCount.val = this._manuscript.body.val.Graphemes.length }
+    get Print() { return this._manuscript.head.printWordCount.val = this.#print(this._manuscript.body.val).Graphemes.length }
+    get Read() { return this._manuscript.head.readWordCount.val = this.read(this._manuscript.body.val) }
     write(text) { return text.Graphemes.length } // 書字数
     print(text) {  return this.#print(text).Graphemes.length } // 印字数
     read(text) { // 読字数

@@ -3,15 +3,15 @@ class JavelBodyWriter {
     constructor(manuscript) {
         this._manuscript = manuscript
         this.parser = new JavelParser()
-        this.counter = new JavelCounter(this.parser)
+        this.counter = new JavelCounter(this._manuscript)
         this.exporter = new JavelExporter(this._manuscript, this.parser, this.counter)
         this.textBlocks = van.derive(()=>this.parser.Javel.toBlocks(this._manuscript.body.val))
         this.els = van.derive(()=>this.parser.Javel.toElements(this.textBlocks.val))
         this.size = van.derive(()=>this.parser.Javel.calcSize(this.els.val))
         this.layout = new Triple()
         this.viewer = new Viewer() 
-        this.editor = new Editor(this._manuscript)
-        const headBtn = DivButton.make(()=>{}, '題')
+        this.editor = new Editor(this._manuscript, null, this.counter)
+        const headBtn = DivButton.make(()=>{alert('表紙設定')}, '題')
         headBtn.dataset.select = 'javel-head-writer'
         this._anyoneBtn = new AnyOneButton(this._manuscript, this.editor.el, this.exporter)
         this.editor.AnyoneBtn = this._anyoneBtn
@@ -134,9 +134,10 @@ class AnyOneButton { // ButtonSelector 常にどれか一つのボタンだけ�
     #setDisp(el, isShow) { el.style.setProperty('display', ((isShow) ? 'block' : 'none')) }
 }
 class Editor {
-    constructor(manuscript, anyoneBtn) {
+    constructor(manuscript, anyoneBtn, counter) {
         this._manuscript = manuscript
         this._anyoneBtn = anyoneBtn
+        this._counter = counter
         this._el = textarea({
             placeholder:`# 原稿《げんこう》\n\n　本文。《《強調》》\n段落内改行。`, 
             style:()=>`box-sizing:border-box;width:100%;height:100%;resize:none;`, 
@@ -152,6 +153,8 @@ class Editor {
         this._manuscript.body.val = e.target.value
         if(0===this._manuscript.body.val.length){this._anyoneBtn.showImport()}
         else{this._anyoneBtn.showExport()}
+        console.log(this._counter)
+        this._counter.Word.countup()
     }
     onDrop(e) {
         console.log(`drop`);

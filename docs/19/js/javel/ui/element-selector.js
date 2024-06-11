@@ -37,7 +37,7 @@ class ElementSelector { // 複数子要素[data-sid="..."]のうち一つだけ�
             const sid = btn.dataset.select
             //btn.method = ()=>this.sid = btn.dataset.select
             btn.onclick = ()=>this.sid = btn.dataset.select
-            btn.onkeydown = (e)=>{if([' ', 'Enter'].some(k=>k===e.key)) { this.sid = btn.dataset.select }}
+            btn.onkeydown = (e)=>{if([' ', 'Enter'].some(k=>k===e.key)) { this.sid = btn.dataset.select; e.preventDefault(); }}
         }
     }
 }
