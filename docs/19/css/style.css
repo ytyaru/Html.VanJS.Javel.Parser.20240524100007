@@ -85,4 +85,15 @@ em {
     text-emphasis: var(--em-style) var(--em-color);
     -webkit-text-emphasis: var(--em-style) var(--em-color);
 }
-
+ul.keywords {
+    list-style: none;
+    padding:0;
+    margin:0;
+}
+li.keyword {
+    display: inline-block;
+    border: solid 1px;
+    border-radius: 4%;
+    padding: 0.2em;
+    margin: 0.2em;
+}

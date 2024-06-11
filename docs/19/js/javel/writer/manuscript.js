@@ -23,11 +23,14 @@ class Head {
         this.title = van.state('')
         this.catch = van.state('')
         this.intro = van.state('')
-        this.category = van.state('')
-        this.genre = van.state('')
-        //this.keywords = van.state([])
+        this.category = van.state('web-novel')
+        this.genre = van.state('fantasy')
         this.keywords = van.state('')
-        this.warning = van.state('')
+        this.warning = {
+            sex: van.state(false),
+            violence: van.state(false),
+            cruelty: van.state(false),
+        }
         this.created = van.state('')
         this.updated = van.state('')
         this.published = van.state('')

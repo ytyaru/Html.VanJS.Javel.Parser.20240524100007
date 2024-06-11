@@ -5,7 +5,7 @@ class JavelHeadWriter {
         this._data = this._manuscript.head
         this._ja = {
             'title': {l:'表題', t:'textarea', wcl:100, p:'表題'},
-            'catch': {l:'ｷｬｯﾁｺﾋﾟｰ', t:'text', wcl:35, p:'キャッチコピー'},
+            'catch': {l:'ｷｬｯﾁｺﾋﾟｰ', t:'textarea', wcl:35, p:'キャッチコピー'},
             'intro': {l:'紹介', t:'textarea', wcl:200, p:'紹介文。'},
             'category': {l:'ｶﾃｺﾞﾘ', t:'select', options:{
                 'web-novel':{l:'WEB小説',d:'自己満足小説'}, // （商業化・大衆化しなそうなニッチでマイナーな小説）
@@ -28,18 +28,15 @@ class JavelHeadWriter {
                 'economy':{l:'経済',d:'経済を題材にした物語'}, 
                 'politics':{l:'政治',d:'政治を題材にした物語'},
             }},
-            'keywords': {l:'ｷｰﾜｰﾄﾞ', t:'textarea', wcl:200, p:'語,語,語（カンマ区切り）'},
+            'keywords': {l:'ｷｰﾜｰﾄﾞ', t:'textarea', wcl:100, p:'語,語,語（カンマ区切り）'},
             'warning': {l:'描写', t:'checkbox', items:{'sex':{l:'性',c:false},'violence':{l:'暴力',c:false,},'cruelty':{l:'残酷',c:false}}},
         }
         this._backBtn = DivButton.make(null, ()=>'戻')
         this._backBtn.dataset.select = 'javel-body-writer'
         this._authBtn = DivButton.make(null, ()=>'著者')
         this._authBtn.dataset.select = 'javel-auth-writer'
-        //this._editor = van.tags.div({style:`padding:0;margin:0;`}, this.#makeEls())
-        //this._viewer = new Viewer()
         this._viewer = new Viewer()
         this._viewer = new HeadViewer(this._data, this._ja)
-//        this._editor = new Editor(this._data, this._viewer)
         this._editor = new Editor(this._data, this._ja)
         this._menu = new MenuScreen([this._backBtn, this._authBtn])
         this._layout = new Triple()
@@ -48,22 +45,18 @@ class JavelHeadWriter {
         this._layout.last = this._viewer.el
         this._el = this._layout.el
         van.add(document.body, this._el)
-//        van.derive(()=>this._editor.updateViewer())
+        this._editor.init()
     }
     get el() { return this._el }
 }
 class Editor {
-    //constructor(head, viewer) {
     constructor(head, ja) {
-        //this._manuscript = manuscript
-        //this._data = this._manuscript.head
         this._data = head // this._manuscript.head
         this._ja = ja
-//        this._viewer = viewer
         this._el = van.tags.div({style:`padding:0;margin:0;`}, this.#makeEls())
-        this.#initCheckValues()
     }
     get el() { return this._el }
+    init() { for (let select of document.querySelectorAll('select')) { select.dispatchEvent(new Event('input')) } }
     #makeEls() {
         return van.tags.table({style:`width:100%;padding:0;margin:0;`}, [...Object.entries(this._ja)].map(e=>{
             const el = this.#makeEl(e[0],e[1])
@@ -87,7 +80,7 @@ class Editor {
     #makeLabel(k,v) { return van.tags.label(v.l || k) }
     #makeSelect(k,v) { return [van.tags.select({name:k, oninput:(e)=>{this._data[k].val=e.target.value;console.error(`${k}-summary`, k, this._data[k].val);console.error(this._ja[k].options[e.target.value].l);document.querySelector(`[name="${k}-summary"]`).innerHTML=v.options[e.target.value].d;}}, this.#makeOptions(k,v)), van.tags.span({name:`${k}-summary`,style:`font-size:16px;`}, '')] }
     #makeOptions(k,v) { return [...Object.entries(v.options).map(e=>{console.error(k,e[0],':',this._data,this._data['category'],this._data[k].val);return van.tags.option({value:e[0], selected:(e[0]===this._data[k].val)}, e[1].l)})] }
-    #makeCheckbox(k,v) { return [...Object.entries(v.items)].map(e=>van.tags.label(van.tags.input({type:'checkbox', name:`${k}-${e[0]}`, checked:e[1].c, 'data-key':k, 'data-value':e[0], onchange:(E)=>this._data[k].val[e[0]] = E.target.checked}, e[1].l), e[1].l)) }
+    #makeCheckbox(k,v) { return [...Object.entries(v.items)].map(e=>van.tags.label(van.tags.input({type:'checkbox', name:`${k}-${e[0]}`, checked:e[1].c, 'data-key':k, 'data-value':e[0], onchange:(E)=>{this._data[k][e[0]].val = E.target.checked;console.log(k, e[0], this._data[k][e[0]].val);}}, e[1].l), e[1].l)) }
     #makeText(k,v) { return van.tags.input({name:k, type:'text', maxlength:v.wcl, placeholder:v.p, value:()=>this._data[k].val, oninput:(e)=>this._data[k].val=e.target.value, style:`box-sizing:border-box;width:100%;`}) }
     #makeTextarea(k,v) { return van.tags.textarea({name:k, maxlength:v.wcl, placeholder:v.p, value:()=>this._data[k].val, oninput:(e)=>{this._data[k].val=e.target.value;console.log(this._data)}, style:`box-sizing:border-box;width:100%;resize:none;`}) }
     #makeDefault(k,v) {return van.tags[v.t](((Object.hasOwnProperty(v.o)) ? d.o : null))}
@@ -105,6 +98,7 @@ class Editor {
 }
 class HeadViewer extends Viewer {
     constructor(data, ja) {
+        super()
         this._data = data
         this._ja = ja
         this._title = van.state('')
@@ -113,32 +107,32 @@ class HeadViewer extends Viewer {
         this._category = van.derive(()=>this._ja.category.options[this._data.category.val].l)
         this._genre = van.derive(()=>this._ja.genre.options[this._data.genre.val].l)
         this._keywords = van.state('')
-        this._warning = van.state('')
-        
+        this._warningSex = van.derive(()=>{console.log(this._data.warning.sex.val);return ((this._data.warning.sex.val) ? ` ${this._ja.warning.items.sex.l}` : '')})
+        this._warningViolence = van.derive(()=>{console.log(this._data.warning.violence.val);return ((this._data.warning.violence.val) ? ` ${this._ja.warning.items.violence.l}` : '')})
+        this._warningCruelty = van.derive(()=>{console.log(this._data.warning.cruelty.val);return ((this._data.warning.cruelty.val) ? ` ${this._ja.warning.items.cruelty.l}` : '')})
+        this._warningHead = van.derive(()=>((this._warningSex.val || this._warningViolence.val || this._warningCruelty.val) ? '⚠ ' : ''))
+        this._warningTail = van.derive(()=>((this._warningSex.val || this._warningViolence.val || this._warningCruelty.val) ? ' 描写あり' : ''))
+
         this.children = [
                 van.tags.h1(()=>this._data.title.val),
                 van.tags.h2(()=>this._data.catch.val),
                 van.tags.p(()=>this._data.intro.val),
                 van.tags.p(()=>`${this._category.val}　${this._genre.val}`),
-                /*
-                van.tags.p(()=>{
-                    console.error(this._data.category.val, this._data.genre.val)
-                    if (!this._data.category.val || !this._data.genre.val) { return null }
-                    console.log(this._ja.category.options[this._data.category.val], this._ja.genre.options[this._data.genre.val])
-//                    console.log(this._ja.category.options[this._data.category.val].l, this._ja.genre.options[this._data.genre.val].l)
-                    return this._ja.category.options[this._data.category.val].l + '　' + this._ja.genre.options[this._data.genre.val].l}),
-//                    return this._ja.category.options[this._data.category.val] + '　' + this._ja.genre.options[this._data.genre.val]}),
-//                    return this._data.category.val + '/' + this._data.genre.val}),
-//                    return ((this._data.category.val + '/' + this._data.genre.val) ? this._ja.category.options[this._data.category.val].l + '　' + this._ja.genre.options[this._data.genre.val].l : '')}),
-                */
-                van.tags.p(()=>this._data.keywords.val),
-                van.tags.p(()=>((this._data.warning.val.sex) ? `⚠ ${this._ja.warning.items.sex.l}描写あり` : null)),
-                van.tags.p(()=>((this._data.warning.val.violence) ? `⚠ ${this._ja.warning.items.violence.l}描写あり` : null)),
-                van.tags.p(()=>((this._data.warning.val.cruelty) ? `⚠ ${this._ja.warning.items.cruelty.l}描写あり` : null)),
+                //van.tags.p(()=>this._data.keywords.val),
+                //van.tags.p(()=>this._data.keywords.val.split(',').filter(v=>v).join(' ')),
+                //van.tags.p(()=>this._data.keywords.val.split(',').filter(v=>v).map(k=>van.tags.span(k))),
+                //van.tags.ul(()=>this._data.keywords.val.split(',').filter(v=>v).map(k=>van.tags.li(k))),
+                //van.tags.ul(this._data.keywords.val.split(',').filter(v=>v).map(k=>van.tags.li(k))),
+                ()=>van.tags.ul({class:`keywords`},this._data.keywords.val.split(',').filter(v=>v).map(k=>van.tags.li({class:`keyword`},k))),
+                van.tags.p(
+                    ()=>`${this._warningHead.val}`, 
+                    ()=>van.tags.span(()=>`${this._warningSex.val}`), 
+                    ()=>van.tags.span(()=>`${this._warningViolence.val}`), 
+                    ()=>van.tags.span(()=>`${this._warningCruelty.val}`),
+                    ()=>`${this._warningTail.val}`, 
+                ),
         ]
     }
 }
-/*
-*/
 window.JavelHeadWriter = JavelHeadWriter
 })()
