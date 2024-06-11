@@ -31,10 +31,10 @@ class Head {
             violence: van.state(false),
             cruelty: van.state(false),
         }
-        this.created = van.state('')
+        this.created = van.state(Date.toIso())
         this.updated = van.state('')
         this.published = van.state('')
-        this.uuid = van.state('')
+        this.uuid = van.state(crypto.randomUUID())
         this.writeWordCount = van.state(0)
         this.printWordCount = van.state(0)
         this.readWordCount = van.state(0)
