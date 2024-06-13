@@ -11,34 +11,23 @@ class JavelAuthWriter {
     get el() { return this._el }
     #createEls() {
         this._el = van.tags.div(van.tags.h1('JavelAuthWriter'), this.#createTable(), this._backBtn)
-        /*
-        //this._el = van.tags.div(van.tags.h1('JavelAuthWriter'), this._backBtn)
-        this._el = van.tags.div(van.tags.h1('JavelAuthWriter'), this._backBtn,
-            van.tags.input({id:`author-name`, maxlength:20, placeholder:`山田《やまだ》太郎《たろう》`, oninput:(e)=>this._head.author.name.val=e.target.val}),
-            van.tags.input({id:`mona-coin-address`, maxlength:100, placeholder:``, oninput:(e)=>this._head.author.coin.mona.val=e.target.val}),
-            van.tags.input({id:`github-user-url`, maxlength:100, placeholder:``, oninput:(e)=>this._head.author.sns.silo.github.val=e.target.val}),
-            van.tags.input({id:`twitter-user-url`, maxlength:100, placeholder:``, oninput:(e)=>this._head.author.sns.silo.twitter.val=e.target.val}),
-            van.tags.textarea({id:`mastodon-user-urls`, maxlength:500, placeholder:``, oninput:(e)=>{try{const domain=new URL(e.target.value).origin;this._head.author.mastodon[domain].val=e.target.val;}catch(err){}}}),
-            van.tags.textarea({id:`misskey-user-urls`, maxlength:500, placeholder:``, oninput:(e)=>{try{const domain=new URL(e.target.value).origin;this._head.author.misskey[domain].val=e.target.val;}catch(err){}}}),
-        )
-        */
     }
     #createTable() { return van.tags.table(
         van.tags.tr(
             van.tags.th('名前'),
-            van.tags.td(van.tags.input({id:`author-name`, maxlength:20, placeholder:`山田《やまだ》太郎《たろう》`, oninput:(e)=>this._head.author.name.val=e.target.val})),
+            van.tags.td(van.tags.input({id:`author-name`, maxlength:20, placeholder:`山田《やまだ》太郎《たろう》`, oninput:(e)=>this._head.author.name.val=e.target.value})),
         ),
         van.tags.tr(
             van.tags.th('MONAコインアドレス'),
-            van.tags.td(van.tags.input({id:`mona-coin-address`, maxlength:100, placeholder:``, oninput:(e)=>this._head.author.coin.mona.val=e.target.val})),
+            van.tags.td(van.tags.input({id:`mona-coin-address`, maxlength:100, placeholder:``, oninput:(e)=>this._head.author.coin.mona.val=e.target.value})),
         ),
         van.tags.tr(
             van.tags.th('GitHubユーザURL'),
-            van.tags.td(van.tags.input({id:`github-user-url`, maxlength:100, placeholder:``, oninput:(e)=>this._head.author.sns.silo.github.val=e.target.val})),
+            van.tags.td(van.tags.input({id:`github-user-url`, maxlength:100, placeholder:``, oninput:(e)=>this._head.author.sns.silo.github.val=e.target.value})),
         ),
         van.tags.tr(
             van.tags.th('TwitterユーザURL'),
-            van.tags.td(van.tags.input({id:`twitter-user-url`, maxlength:100, placeholder:``, oninput:(e)=>this._head.author.sns.silo.twitter.val=e.target.val})),
+            van.tags.td(van.tags.input({id:`twitter-user-url`, maxlength:100, placeholder:``, oninput:(e)=>this._head.author.sns.silo.twitter.val=e.target.value})),
         ),
         van.tags.tr(
             van.tags.th('MastodonユーザURL'),
