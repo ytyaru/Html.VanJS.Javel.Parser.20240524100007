@@ -114,7 +114,29 @@ class HeadViewer extends Viewer {
         this._warningCruelty = van.derive(()=>{console.log(this._data.warning.cruelty.val);return ((this._data.warning.cruelty.val) ? ` ${this._ja.warning.items.cruelty.l}` : '')})
         this._warningHead = van.derive(()=>((this._warningSex.val || this._warningViolence.val || this._warningCruelty.val) ? '⚠ ' : ''))
         this._warningTail = van.derive(()=>((this._warningSex.val || this._warningViolence.val || this._warningCruelty.val) ? ' 描写あり' : ''))
+        /*
+        van.derive(()=>this.children=[
+            van.tags.h1(()=>this._data.title.val),
+            van.tags.h2(()=>this._data.catch.val),
+            van.tags.p(()=>this._data.intro.val),
+            van.tags.p(()=>`${this._category.val}　${this._genre.val}`),
+            ()=>van.tags.ul({class:`keywords`},this._data.keywords.val.split(',').filter(v=>v).map(k=>van.tags.li({class:`keyword`},k))),
+            van.tags.p(
+                ()=>`${this._warningHead.val}`, 
+                ()=>van.tags.span(()=>`${this._warningSex.val}`), 
+                ()=>van.tags.span(()=>`${this._warningViolence.val}`), 
+                ()=>van.tags.span(()=>`${this._warningCruelty.val}`),
+                ()=>`${this._warningTail.val}`, 
+            ),
+            van.tags.p(()=>`${this._data.readWordCount.val}字`),
 
+            // 著者
+            van.tags.p(()=>`${this._data.author.name.val}`),
+            van.tags.p(()=>`${this._data.author.coin.mona.val}`),
+            van.tags.p(()=>this._data.author.coin.mona.val),
+            ()=>this.#getContacts(),
+        ])
+        */
         this.children = [
                 van.tags.h1(()=>this._data.title.val),
                 van.tags.h2(()=>this._data.catch.val),
@@ -132,27 +154,9 @@ class HeadViewer extends Viewer {
 
                 // 著者
                 van.tags.p(()=>`${this._data.author.name.val}`),
-                van.tags.p(()=>`${this._data.author.coin.mona.val}`),
-                van.tags.p(()=>this._data.author.coin.mona.val),
-                ()=>this.#getContacts(),
-                //van.tags.p(()=>{console.error(this._data.author.coin.mona.val, this._data.author.coin.mona.val.length); return this._data.author.coin.mona.val}),
-                //van.tags.p(()=>this._data.author.coin.mona.val ? this._data.author.coin.mona.val : null),
-                //van.tags.p(()=>((0===this._data.author.coin.mona.val.length) ? null : van.tags.img({src:`../asset/image/icon/coin/mona/mona-line-black.svg`,width:64,height:64,title:()=>this._data.author.coin.mona.val}))),
-                //van.tags.p(()=>{console.error(this._data.author.coin.mona.val.length, this._data.author.coin.mona.val); return ((0===this._data.author.coin.mona.val.length) ? null : van.tags.img({src:`../asset/image/icon/coin/mona/mona-line-black.svg`,width:64,height:64,title:()=>this._data.author.coin.mona.val}))}),
-//                ()=>van.tags.ul([...Object.entries(this._data.author.coin)].map(([k,v])=>[k,v.val]).filter(([k,v])=>v).map()),
-//                van.tags.img({src:`../asset/image/icon/coin/mona/mona-line-black.svg`,width:64,height:64,title:()=>this._data.author.coin.mona.val}),
-//                ()=>((this._data.author.coin.mona.val) ? van.tags.img({src:`../asset/image/icon/coin/mona/mona-line-black.svg`,width:64,height:64,title:()=>this._data.author.coin.mona.val}) : null),
-//                ()=>((0 < this._data.author.coin.mona.val.length) ? van.tags.img({src:`../asset/image/icon/coin/mona/mona-line-black.svg`,width:64,height:64,title:()=>this._data.author.coin.mona.val}) : null),
-//                van.tags.ul(
-//                    van.tags.li(()=>((0 < this._data.author.coin.mona.val.length) ? van.tags.img({src:`../asset/image/icon/coin/mona/mona-line-black.svg`,width:64,height:64,title:()=>this._data.author.coin.mona.val}) : null)),
-//                ),
-//                van.tags.ul(()=>{
-//                    console.error(this._data.author.coin.mona.val, this._data.author.coin.mona.val.length)
-//                    if (0===this._data.author.coin.mona.val.length) { return null }
-//                    return van.tags.li(()=>van.tags.img({src:`../asset/image/icon/coin/mona/mona-line-black.svg`,width:64,height:64,title:()=>this._data.author.coin.mona.val}))
-//                    return ((0 < this._data.author.coin.mona.val.length) ? van.tags.img({src:`../asset/image/icon/coin/mona/mona-line-black.svg`,width:64,height:64,title:()=>this._data.author.coin.mona.val}) : null)
-//                    ,
-//                }),
+                ()=>van.tags.ul([...Object.entries(this._data.author.coin)].filter(([k,v])=>0<v.val.trim().length).map(([k,v])=>van.tags.li(van.tags.img({src:`../asset/image/icon/coin/svg/icon/${k}.svg`,width:64,height:64,title:()=>v.val})))),
+//                ()=>van.tags.ul([...Object.entries(this._data.author.coin)].filter(([k,v])=>0<v.val.trim().length).map(([k,v])=>van.tags.li(van.tags.img({src:`../asset/image/icon/coin/mona/mona-line-black.svg`,width:64,height:64,title:()=>v.val})))),
+                ()=>van.tags.ul([...Object.entries(this._data.author.sns)].map(([k,v])=>[...Object.entries(v)].filter(([K,V])=>V.val)).map(([K,V])=>van.tags.li(van.tags.img({src:`../asset/image/icon/sns/${K}.svg`,width:64,height:64,title:()=>V.val})))
         ]
     }
     #getContacts() {
@@ -163,7 +167,8 @@ class HeadViewer extends Viewer {
         van.add(ul, ()=>this._data.author.coin.mona.val ? van.tags.li(()=>this._data.author.coin.mona.val) : null)
         return ul
         */
-        return van.tags.ul(()=>this._data.author.coin.mona.val ? van.tags.li(()=>this._data.author.coin.mona.val) : null)
+        //return van.tags.ul(()=>this._data.author.coin.mona.val ? van.tags.li(()=>this._data.author.coin.mona.val) : null)
+        ()=>((0 < this._data.author.coin.mona.val.length) ? van.tags.img({src:`../asset/image/icon/coin/mona/mona-line-black.svg`,width:64,height:64,title:()=>this._data.author.coin.mona.val}) : null)
     }
 }
 window.JavelHeadWriter = JavelHeadWriter

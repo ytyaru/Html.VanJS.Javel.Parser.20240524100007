@@ -1,0 +1,23 @@
+<style>
+</style>
+<script src="../../../docs/lib/van/1.2.6/nomodule.min.js"></script>
+<script>
+window.addEventListener('DOMContentLoaded', (event) => {
+    const data = {
+        values: van.state([]),
+    }
+    const listbox = van.tags.select({multiple:true}, [['a','A'],['b','B'],['c','C']].map(([k,v])=>van.tags.option({value:k},v)))
+    van.add(document.body,
+        van.tags.select({multiple:true,
+               onchange:(e)=>{console.log(e.target.value, e.target.options, [...e.target.options].filter(o=>o.selected).map(o=>o.value));data.values.val=[...e.target.options].filter(o=>o.selected).map(o=>o.value);},
+            }, 
+            [['a','A'],['b','B'],['c','C']].map(([k,v])=>van.tags.option({value:k},v))),
+        //van.tags.ul(data.values.val.map(v=>van.tags.li(v))),
+        //van.tags.ul(()=>data.values.val.map(v=>van.tags.li(v))),
+        //()=>van.tags.ul(()=>data.values.val.map(v=>van.tags.li(v))),
+        ()=>van.tags.ul(data.values.val.map(v=>van.tags.li(v))),
+    )
+    document.querySelector('input,select,textarea').focus()
+});
+</script>
+

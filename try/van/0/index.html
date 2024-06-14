@@ -1,0 +1,21 @@
+<style>
+</style>
+<script src="../../../docs/lib/van/1.2.6/nomodule.min.js"></script>
+<script>
+window.addEventListener('DOMContentLoaded', (event) => {
+    const data = {
+        address: van.state(''),
+    }
+    van.add(document.body,
+        van.tags.input({value:()=>data.address.val, oninput:(e)=>data.address.val=e.target.value}),
+//        ()=>((0<data.address.val.trim().length) ? van.tags.img({src:`../../../docs/asset/image/icon/coin/mona/mona-line-black.svg`,width:64,height:64,title:()=>data.address.val}) : null),
+//        ()=>((true) ? van.tags.p(data.address.val) : null),
+//        van.tags.div(((true) ? data.address.val : null)),
+//        ()=>van.tags.div(((true) ? data.address.val : null)),
+//        ()=>van.tags.div(((true) ? van.tags.p(data.address.val) : null)),
+        ()=>van.tags.div(((true) ? van.tags.p(data.address.val) : null)),
+    )
+    document.querySelector('input').focus()
+});
+</script>
+
