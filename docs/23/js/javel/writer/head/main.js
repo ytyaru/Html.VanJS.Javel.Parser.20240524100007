@@ -156,7 +156,19 @@ class HeadViewer extends Viewer {
                 van.tags.p(()=>`${this._data.author.name.val}`),
                 ()=>van.tags.ul([...Object.entries(this._data.author.coin)].filter(([k,v])=>0<v.val.trim().length).map(([k,v])=>van.tags.li(van.tags.img({src:`../asset/image/icon/coin/svg/icon/${k}.svg`,width:64,height:64,title:()=>v.val})))),
 //                ()=>van.tags.ul([...Object.entries(this._data.author.coin)].filter(([k,v])=>0<v.val.trim().length).map(([k,v])=>van.tags.li(van.tags.img({src:`../asset/image/icon/coin/mona/mona-line-black.svg`,width:64,height:64,title:()=>v.val})))),
-                ()=>van.tags.ul([...Object.entries(this._data.author.sns)].map(([k,v])=>[...Object.entries(v)].filter(([K,V])=>V.val)).map(([K,V])=>van.tags.li(van.tags.img({src:`../asset/image/icon/sns/${K}.svg`,width:64,height:64,title:()=>V.val})))
+                //()=>van.tags.ul([...Object.entries(this._data.author.sns)].map(([k,v])=>[...Object.entries(v)].filter(([K,V])=>V.val)).map(([K,V])=>van.tags.li(van.tags.img({src:`../asset/image/icon/sns/${K}.svg`,width:64,height:64,title:()=>V.val})))),
+                //()=>van.tags.ul([...Object.entries(this._data.author.sns)].map(([k,v])=>[...Object.entries(v)].filter(([K,V])=>V.val)).map(([K,V])=>{console.log(K,V);return van.tags.li(van.tags.img({src:`../asset/image/icon/sns/${K}.svg`,width:64,height:64,title:()=>V.val}));})),
+                ()=>van.tags.ul(
+                    [...Object.entries(this._data.author.sns)].map(([k,v])=>{
+                        console.log(k,v)
+                        return [...Object.entries(v)]
+                            .filter(([K,V])=>V.val)
+                            .map(([K,V])=>{
+                                console.log(K,V)
+                                return van.tags.li(van.tags.img({src:`../asset/image/icon/sns/${K}.svg`,width:64,height:64,title:()=>V.val}))
+                            })
+                    })
+                )
         ]
     }
     #getContacts() {

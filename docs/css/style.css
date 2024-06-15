@@ -40,4 +40,7 @@ em {
     text-emphasis: var(--em-style) var(--em-color);
     -webkit-text-emphasis: var(--em-style) var(--em-color);
 }
-
+svg > path {
+    color: var(--color)
+    fill: currentColor;
+}
