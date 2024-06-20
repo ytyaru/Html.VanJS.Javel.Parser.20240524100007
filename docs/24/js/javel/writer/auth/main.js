@@ -13,28 +13,83 @@ class JavelAuthWriter {
     #createEls() {
         this._el = van.tags.div(van.tags.h1('JavelAuthWriter'), this.#createTable(), this._backBtn)
     }
+    #makeIcon(id) {
+        const C = { // Crypto
+            'mona':{h:'https://ja.wikipedia.org/wiki/Monacoin'},
+            'btc':{h:'https://ja.wikipedia.org/wiki/Bitcoin'},
+            'ltc':{h:'https://ja.wikipedia.org/wiki/%E3%83%A9%E3%82%A4%E3%83%88%E3%82%B3%E3%82%A4%E3%83%B3'},
+            'doge':{h:'https://ja.wikipedia.org/wiki/%E3%83%89%E3%83%BC%E3%82%B8%E3%82%B3%E3%82%A4%E3%83%B3'},
+            'eth':{h:'https://ja.wikipedia.org/wiki/%E3%82%A4%E3%83%BC%E3%82%B5%E3%83%AA%E3%82%A2%E3%83%A0'},
+            'sol':{h:'https://en.wikipedia.org/wiki/Solana_(blockchain_platform)'},
+        }
+        const P = { // POSSE
+            'mastodon':{h:'https://ja.wikipedia.org/wiki/%E3%83%9E%E3%82%B9%E3%83%88%E3%83%89%E3%83%B3_(%E3%83%9F%E3%83%8B%E3%83%96%E3%83%AD%E3%82%B0)'},
+            'misskey':{h:'https://ja.wikipedia.org/wiki/Misskey'},
+            'peertube':{h:'https://ja.wikipedia.org/wiki/PeerTube'},
+        }
+        const S = { // Silo
+            'github':{h:'https://github.co.jp/'},
+            'twitter':{h:'https://twitter.com/?lang=ja'},
+            'amazon':{h:'https://www.amazon.co.jp/'},
+            'dropbox':{h:'https://www.dropbox.com/ja/'},
+        }
+        const N = { // Silo-Novel
+            'kakuyomu':{h:'https://kakuyomu.jp/',l:'カクヨム'}, // カクヨム（角川）
+            'narou':{h:'https://syosetu.com/',l:'小説家になろう'}, // 小説家になろう
+            'alpha-police':{h:'https://www.alphapolis.co.jp/',l:'アルファポリス'}, // アルファポリス
+            'suteki':{h:'https://sutekibungei.com/',l:'ステキブンゲイ'}, // ステキブンゲイ
+            'novel-days':{h:'https://novel.daysneo.com/beginner.html',l:'Novel Days'}, // Novel Days（講談社）
+            'monogatary':{h:'https://monogatary.com/',l:'Monogatary'},
+            'estar':{h:'https://estar.jp/',l:'エブリスタ'}, // エブリスタ
+            'no-ichigo':{h:'https://www.no-ichigo.jp/',l:'野いちご'}, // 野いちご
+            'maho':{h:'https://maho.jp/',l:'魔法のⅰランド'}, // 角川
+            'note':{h:'https://note.com/',l:'Note'}, 
+            'novelup':{h:'https://novelup.plus/',l:'ノベルアップ＋'}, // 
+            'prologue':{h:'https://prologue-nola.com/',l:'Prologue'}, // 
+            'pixiv':{h:'https://www.pixiv.net/',l:'Pixiv'}, // 
+            'ssg':{h:'https://short-short.garden/',l:'SS庭'}, // 
+            'novelba':{h:'https://novelba.com/help',l:'ノベルバ'}, // 
+        }
+        const [h,l] = this.#makeLabel(id,C,P,S,N)
+        return van.tags.a({href:h,target:'_blank',rel:'noopener noreferrer',style:`text-decoration:none;`}, van.tags.ruby({style:`ruby-position:under;`},van.tags.i({class:`icon-${id}`}), van.tags.rt(l)))
+    }
+    #makeLabel(id,C,P,S,N) {
+        if (C.hasOwnProperty(id)) { return [C[id].h, id.toUpperCase()] }
+        else if (P.hasOwnProperty(id)) { return [P[id].h, id.Title] }
+        else if (S.hasOwnProperty(id)) { return [S[id].h, id.Title] }
+        else if (N.hasOwnProperty(id)) { return [N[id].h, N[id].l] }
+        else {
+            try {
+                const url = new URL(id)
+                return [url.href, url.domain]
+            } catch (e) { throw new Error(`アイコン情報の取得に失敗！`) }
+        }
+    }
     #createTable() { return van.tags.table(
         van.tags.tr(
+            van.tags.th(van.tags.ruby({style:`ruby-position:under;`},'👤',van.tags.rt('著者'))),
             van.tags.th('名前'),
             van.tags.td(van.tags.input({id:`author-name`, maxlength:20, placeholder:`山田《やまだ》太郎《たろう》`, oninput:(e)=>this._head.author.name.val=e.target.value})),
         ),
         van.tags.tr(
-            van.tags.th('MONAコインアドレス'),
+            van.tags.th(this.#makeIcon('mona')),
+            van.tags.th('アドレス'),
             van.tags.td(van.tags.input({id:`mona-coin-address`, maxlength:100, placeholder:``, oninput:(e)=>{this._head.author.coin.mona.val=e.target.value;console.log(this._head.author.coin.mona.val);}})),
-            //van.tags.td(van.tags.input({id:`mona-coin-address`, maxlength:100, placeholder:``, oninput:(e)=>this._head.author.coin.mona.val=e.target.value})),
-            //van.tags.td(van.tags.input({id:`mona-coin-address`, maxlength:100, placeholder:``, oninput:(e)=>this._head.author.coin.mona.val=((0===e.target.value.trim().length) ? null : e.target.value)})),
         ),
+
         van.tags.tr(
-            van.tags.th('GitHubユーザURL'),
+            van.tags.th(this.#makeIcon('github')),
+            van.tags.th('ユーザURL'),
             van.tags.td(van.tags.input({id:`github-user-url`, maxlength:100, placeholder:``, oninput:(e)=>this._head.author.sns.silo.github.val=e.target.value})),
         ),
         van.tags.tr(
-            van.tags.th('TwitterユーザURL'),
+            van.tags.th(this.#makeIcon('twitter')),
+            van.tags.th('ユーザURL'),
             van.tags.td(van.tags.input({id:`twitter-user-url`, maxlength:100, placeholder:``, oninput:(e)=>this._head.author.sns.silo.twitter.val=e.target.value})),
         ),
         van.tags.tr(
-            van.tags.th('MastodonユーザURL'),
-            //van.tags.td(van.tags.textarea({id:`mastodon-user-urls`, maxlength:500, placeholder:``, oninput:(e)=>{try{const domain=new URL(e.target.value).origin;this._head.author.mastodon[domain].val=e.target.val;}catch(err){}}})),
+            van.tags.th(this.#makeIcon('mastodon')),
+            van.tags.th('ユーザURL'),
             van.tags.td(van.tags.textarea({id:`mastodon-user-urls`, maxlength:500, placeholder:``})),
             /*
             van.tags.td(van.tags.textarea({id:`mastodon-user-urls`, maxlength:500, placeholder:``, oninput:(e)=>
@@ -53,7 +108,8 @@ class JavelAuthWriter {
             */
         ),
         van.tags.tr(
-            van.tags.th('MisskeyユーザURL'),
+            van.tags.th(this.#makeIcon('misskey')),
+            van.tags.th('ユーザURL'),
             //van.tags.td(van.tags.textarea({id:`misskey-user-urls`, maxlength:500, placeholder:``, oninput:(e)=>{try{const domain=new URL(e.target.value).origin;this._head.author.misskey[domain].val=e.target.val;}catch(err){console.warn(err)}}})),
             van.tags.td(van.tags.textarea({id:`misskey-user-urls`, maxlength:500, placeholder:``})),
             /*
@@ -76,7 +132,8 @@ class JavelAuthWriter {
             */
         ),
         van.tags.tr(
-            van.tags.th('他URL'),
+            van.tags.th(van.tags.ruby({style:`ruby-position:under;`},'🔗',van.tags.rt('他サイト'))),
+            van.tags.th('URL'),
             van.tags.td(van.tags.textarea({id:`site-urls`, maxlength:500, placeholder:``, oninput:(e)=>{
                 try {
                     const urls=e.target.value.split('\n').map(url=>{try{return new URL(url)}catch(err){return null}}).filter(v=>v)
