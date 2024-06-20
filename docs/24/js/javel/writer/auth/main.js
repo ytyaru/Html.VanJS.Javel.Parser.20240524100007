@@ -11,7 +11,7 @@ class JavelAuthWriter {
     }
     get el() { return this._el }
     #createEls() {
-        this._el = van.tags.div(van.tags.h1('JavelAuthWriter'), this.#createTable(), this._backBtn)
+        this._el = van.tags.div(this.#createTable(), this._backBtn)
     }
     #makeIcon(id) {
         const C = { // Crypto
@@ -74,23 +74,23 @@ class JavelAuthWriter {
         van.tags.tr(
             van.tags.th(this.#makeIcon('mona')),
             van.tags.th('アドレス'),
-            van.tags.td(van.tags.input({id:`mona-coin-address`, maxlength:100, placeholder:``, oninput:(e)=>{this._head.author.coin.mona.val=e.target.value;console.log(this._head.author.coin.mona.val);}})),
+            van.tags.td(van.tags.input({id:`mona-coin-address`, maxlength:100, placeholder:'x'.repeat(34), oninput:(e)=>{this._head.author.coin.mona.val=e.target.value;console.log(this._head.author.coin.mona.val);}})),
         ),
 
         van.tags.tr(
             van.tags.th(this.#makeIcon('github')),
             van.tags.th('ユーザURL'),
-            van.tags.td(van.tags.input({id:`github-user-url`, maxlength:100, placeholder:``, oninput:(e)=>this._head.author.sns.silo.github.val=e.target.value})),
+            van.tags.td(van.tags.input({id:`github-user-url`, maxlength:100, placeholder:`https://github.com/ユーザ名`, oninput:(e)=>this._head.author.sns.silo.github.val=e.target.value})),
         ),
         van.tags.tr(
             van.tags.th(this.#makeIcon('twitter')),
             van.tags.th('ユーザURL'),
-            van.tags.td(van.tags.input({id:`twitter-user-url`, maxlength:100, placeholder:``, oninput:(e)=>this._head.author.sns.silo.twitter.val=e.target.value})),
+            van.tags.td(van.tags.input({id:`twitter-user-url`, maxlength:100, placeholder:`http://twitter.com/ユーザー名`, oninput:(e)=>this._head.author.sns.silo.twitter.val=e.target.value})),
         ),
         van.tags.tr(
             van.tags.th(this.#makeIcon('mastodon')),
             van.tags.th('ユーザURL'),
-            van.tags.td(van.tags.textarea({id:`mastodon-user-urls`, maxlength:500, placeholder:``})),
+            van.tags.td(van.tags.textarea({id:`mastodon-user-urls`, maxlength:500, placeholder:`https://mstdn.jp/@ユーザー名\nhttps://kmy.blue/@ユーザー名`})),
             /*
             van.tags.td(van.tags.textarea({id:`mastodon-user-urls`, maxlength:500, placeholder:``, oninput:(e)=>
                 try {
@@ -111,7 +111,7 @@ class JavelAuthWriter {
             van.tags.th(this.#makeIcon('misskey')),
             van.tags.th('ユーザURL'),
             //van.tags.td(van.tags.textarea({id:`misskey-user-urls`, maxlength:500, placeholder:``, oninput:(e)=>{try{const domain=new URL(e.target.value).origin;this._head.author.misskey[domain].val=e.target.val;}catch(err){console.warn(err)}}})),
-            van.tags.td(van.tags.textarea({id:`misskey-user-urls`, maxlength:500, placeholder:``})),
+            van.tags.td(van.tags.textarea({id:`misskey-user-urls`, maxlength:500, placeholder:`https://misskey.design/@ユーザ名\nhttps://novelskey.tarbin.net/@ユーザ名`})),
             /*
             van.tags.td(van.tags.textarea({id:`misskey-user-urls`, maxlength:500, placeholder:``, oninput:(e)=>{
                 try {
@@ -132,9 +132,24 @@ class JavelAuthWriter {
             */
         ),
         van.tags.tr(
+            van.tags.th(this.#makeIcon('kakuyomu')),
+            van.tags.th('ユーザURL'),
+            van.tags.td(van.tags.input({id:`kakuyomu-user-url`, maxlength:100, placeholder:`https://kakuyomu.jp/users/ユーザ名`, oninput:(e)=>this._head.author.sns.silo.github.val=e.target.value})),
+        ),
+        van.tags.tr(
+            van.tags.th(this.#makeIcon('narou')),
+            van.tags.th('ユーザURL'),
+            van.tags.td(van.tags.input({id:`narou-user-url`, maxlength:100, placeholder:`https://mypage.syosetu.com/ユーザID`, oninput:(e)=>this._head.author.sns.silo.github.val=e.target.value})),
+        ),
+        van.tags.tr(
+            van.tags.th(this.#makeIcon('alpha-police')),
+            van.tags.th('ユーザURL'),
+            van.tags.td(van.tags.input({id:`alpha-police-user-url`, maxlength:100, placeholder:`https://www.alphapolis.co.jp/author/detail/ユーザID`, oninput:(e)=>this._head.author.sns.silo.github.val=e.target.value})),
+        ),
+        van.tags.tr(
             van.tags.th(van.tags.ruby({style:`ruby-position:under;`},'🔗',van.tags.rt('他サイト'))),
             van.tags.th('URL'),
-            van.tags.td(van.tags.textarea({id:`site-urls`, maxlength:500, placeholder:``, oninput:(e)=>{
+            van.tags.td(van.tags.textarea({id:`site-urls`, maxlength:500, placeholder:`https://note.com/ユーザ名\nhttps://profile.hatena.ne.jp/ユーザ名/\nhttps://ユーザ名.hatenablog.com/`, oninput:(e)=>{
                 try {
                     const urls=e.target.value.split('\n').map(url=>{try{return new URL(url)}catch(err){return null}}).filter(v=>v)
                     this._head.author.sites.val = urls.map(url=>`${url}`)
