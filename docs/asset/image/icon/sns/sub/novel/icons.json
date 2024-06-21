@@ -1,0 +1,61 @@
+{
+    category:{id:'novel', name:'小説', summary:'小説投稿サイト'},
+    items:{
+		'alpha-police':{rt:'アルファポリス',h:''},
+		'berrys-cafe':{rt:'ベリーズカフェ',h:''},
+		'estar':{rt:'エブリスタ',h:''},
+		'kakuyomu':{rt:'カクヨム',h:''},
+		'kakuzoo':{rt:'Kakuzoo',h:''},
+		'lanove-street':{rt:'ラノベストリート',h:''},
+		'monogatary':{rt:'monogatary',h:''},
+		'narou':{rt:'小説家になろう',h:''},
+		'no-ichigo':{rt:'野いちご',h:''},
+		'nola-novel':{rt:'NolaNovel',h:''},
+		'novel-up-plus':{rt:'ノベルアップ＋',h:''},
+		'novelba':{rt:'ノベルバ',h:''},
+		'novema':{rt:'ノベマ',h:''},
+		'pri-novel':{rt:'プリ小説',h:''},
+		'prologue':{rt:'Prologue',h:''},
+		'tugi-kuru':{rt:'ツギクル',h:''},
+		'suteki':{rb:'㋜', rt:'ステキブンゲイ',h:''},
+		'novel-days':{rb:'Ⓝ', rt:'Novel Days',h:''},
+		'maho':{rb:'ⓘ', rt:'魔法のⅰランド',h:''},
+		'ssg':{rb:'SSG', rt:'ｼｮｰﾄｼｮｰﾄｶﾞｰﾃﾞﾝ',h:''},
+		'hameln':{rb:'㋩',rt:'ハーメルン',h:''},
+		'novel-pia':{rt:'ノベルピア',h:'https://novelpia.jp/'},
+		'tie-up':{rt:'たいあっぷ',h:'https://tieupnovels.com/'},
+		'':{rt:'',h:''},
+		'':{rt:'',h:''},
+		'':{rt:'',h:''},
+		'':{rt:'',h:''},
+		'':{rt:'',h:''},
+
+
+		'tap-novel':{rt:'',h:''},
+		'':{rt:'',h:''},
+		'':{rt:'',h:''},
+		'':{rt:'',h:''},
+		'':{rt:'',h:''},
+		'':{rt:'',h:''},
+		'':{rt:'',h:''},
+		'':{rt:'',h:''},
+.svg
+.svg
+.svg
+.svg
+.svg
+.svg
+.svg
+.svg
+nola-novel-book.svg
+.svg
+.svg
+.svg
+.svg
+.svg
+.svg
+.svg
+.svg
+
+    }
+}
