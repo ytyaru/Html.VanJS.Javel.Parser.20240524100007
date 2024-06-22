@@ -131,20 +131,24 @@ class JavelAuthWriter {
             }})),
             */
         ),
+        
         van.tags.tr(
             van.tags.th(this.#makeIcon('kakuyomu')),
             van.tags.th('ユーザURL'),
-            van.tags.td(van.tags.input({id:`kakuyomu-user-url`, maxlength:100, placeholder:`https://kakuyomu.jp/users/ユーザ名`, oninput:(e)=>this._head.author.sns.silo.github.val=e.target.value})),
+            //van.tags.td(van.tags.input({id:`kakuyomu-user-url`, maxlength:100, placeholder:`https://kakuyomu.jp/users/ユーザ名`, oninput:(e)=>this._head.author.sns.silo.github.val=e.target.value})),
+            van.tags.td(van.tags.input({id:`kakuyomu-user-url`, maxlength:100, placeholder:`https://kakuyomu.jp/users/ユーザ名`, oninput:(e)=>this._head.author.sns.novel['kakuyomu'].val = e.target.value})),
         ),
         van.tags.tr(
             van.tags.th(this.#makeIcon('narou')),
             van.tags.th('ユーザURL'),
-            van.tags.td(van.tags.input({id:`narou-user-url`, maxlength:100, placeholder:`https://mypage.syosetu.com/ユーザID`, oninput:(e)=>this._head.author.sns.silo.github.val=e.target.value})),
+            //van.tags.td(van.tags.input({id:`narou-user-url`, maxlength:100, placeholder:`https://mypage.syosetu.com/ユーザID`, oninput:(e)=>this._head.author.sns.silo.github.val=e.target.value})),
+            van.tags.td(van.tags.input({id:`narou-user-url`, maxlength:100, placeholder:`https://mypage.syosetu.com/ユーザID`, oninput:(e)=>this._head.author.sns.novel['narou'].val = e.target.value})),
         ),
         van.tags.tr(
             van.tags.th(this.#makeIcon('alpha-police')),
             van.tags.th('ユーザURL'),
-            van.tags.td(van.tags.input({id:`alpha-police-user-url`, maxlength:100, placeholder:`https://www.alphapolis.co.jp/author/detail/ユーザID`, oninput:(e)=>this._head.author.sns.silo.github.val=e.target.value})),
+            //van.tags.td(van.tags.input({id:`alpha-police-user-url`, maxlength:100, placeholder:`https://www.alphapolis.co.jp/author/detail/ユーザID`, oninput:(e)=>this._head.author.sns.silo.github.val=e.target.value})),
+            van.tags.td(van.tags.input({id:`alpha-police-user-url`, maxlength:100, placeholder:`https://www.alphapolis.co.jp/author/detail/ユーザID`, oninput:(e)=>this._head.author.sns.novel['alpha-police'].val = e.target.value})),
         ),
         van.tags.tr(
             van.tags.th(van.tags.ruby({style:`ruby-position:under;`},'🔗',van.tags.rt('他サイト'))),

@@ -1,9 +1,12 @@
-{
-    "category":{"id":"novel", "name":"小説", "summary":"小説投稿サイト"},
-    "lists":{
-        "evening-moon":{"rb":"午後の月","h":"https://eveningmoon.net/novelsite/"}
-    },
-    "items":{
+<style>
+body {
+  background-color:green;
+}
+</style>
+<script src="../../../../lib/van/1.5.0/nomodule.min.js"></script>
+<script>
+window.addEventListener('DOMContentLoaded', (event) => {
+    const novels = {
         "alpha-police":{"rt":"アルファポリス","h":"https://www.alphapolis.co.jp/","start":"2014"},
         "berrys-cafe":{"rt":"ベリーズカフェ","h":"https://www.berrys-cafe.jp/","o":"starts","start":"2011","features":"女性向け"},
         "estar":{"rt":"エブリスタ","h":"https://estar.jp/","start":"2010"},
@@ -29,8 +32,8 @@
         "novelism":{"rb":"lism","rt":"ノベリズム","h":"https://novelism.jp/","start":"2020","o":"株式会社viviON"},
         "novelist":{"rb":"list","rt":"ノベリスト","h":"https://2.novelist.jp/","start":"2009","o":"株式会社シンカネット"},
         "novelabo":{"rb":"labo","rt":"ノベラボ","h":"https://www.novelabo.com/","start":"2015","o":"デザインエッグ株式会社"}
-    },
-    "operator":{
+    }
+    const operators = {
         "kadokawa":{"rb":"角川","rt":"KADOKAWA","h":"https://tp.kadokawa.co.jp/"},
         "kodansha":{"rb":"講談社","rt":"こうだんしゃ","h":"https://www.kodansha.co.jp/"},
         "starts":{"rb":"スターツ出版","rt":"","h":"https://starts-pub.jp/"},
@@ -39,8 +42,34 @@
         "individual":{"rb":"個人","rt":"こじん"},
         "nakamura-kou":{"rb":"中村航","rt":"なかむらこう","h":"https://ja.wikipedia.org/wiki/%E4%B8%AD%E6%9D%91%E8%88%AA"},
         "tamaru-masatomo":{"rb":"田丸雅智","rt":"たまるまさとも","h":"https://ja.wikipedia.org/wiki/%E7%94%B0%E4%B8%B8%E9%9B%85%E6%99%BA"}
-    },
-    "black-list":{
-        "novel-pia":{"rt":"ノベルピア","h":"https://novelpia.jp/","start":"2022","why":"PV報酬がなくなった。実質詐欺。https://note.com/oumikado/n/n4bdae20fca9c"}
     }
-}
+    for (let [k,v] of Object.entries(novels)) {
+        van.add(document.body,
+            van.tags.a({href:v.h, target:'_blank', rel:'noopener noreferrer'},
+                van.tags.ruby({style:`ruby-position:under;`},
+                    ((v.hasOwnProperty('rb')) ? v.rb : van.tags.img({src:`sub/novel/${k}.svg`,width:64,height:64})),
+                    van.tags.rt(v.rt)
+                )
+            )
+        )
+    }
+});
+</script>
+<!--
+<img src="alpha-police.svg" width="64" height="64">
+<img src="amazon.svg" width="64" height="64">
+<img src="booth.svg" width="64" height="64">
+<img src="github.svg" width="64" height="64">
+<img src="mastodon.svg" width="64" height="64">
+<img src="kakuyomu.svg" width="64" height="64">
+<img src="misskey.svg" width="64" height="64">
+<img src="narou.svg" width="64" height="64">
+<img src="note.svg" width="64" height="64">
+<img src="notion.svg" width="64" height="64">
+<img src="pixiv.svg" width="64" height="64">
+<img src="spotify.svg" width="64" height="64">
+<img src="twitter.svg" width="64" height="64">
+<img src="wikipedia.svg" width="64" height="64">
+<img src="x.svg" width="64" height="64">
+<img src="youtube.svg" width="64" height="64">
+-->

@@ -1,0 +1,108 @@
+<style>
+:root{
+  --writing-mode:horizontal-tb;
+  --text-orientation:mixed;
+}
+body {
+  writing-mode: var(--writing-mode);
+  text-orientation: var(--text-orientation);
+}
+ruby.w{ display:inline-table; line-height:1em; vertical-align:middle; text-align:center; }
+ruby.w>rbc{ display:table-row-group; text-align:center; vertical-align:middle; }
+ruby.w>rtc:nth-of-type(1){ display:table-header-group; font-size:50%; line-height:1em; text-align:center; vertical-align:middle; }
+ruby.w>rtc:nth-of-type(2){ display:table-footer-group; font-size:50%; line-height:1em; text-align:center; vertical-align:middle; }
+ruby.w>rbc>rb{ display:table-cell; }
+ruby.w>rtc>rt{ display:table-cell; }
+pre {
+  letter-spacing:0;
+  line-height:1em;
+  background-color:#eee;
+  padding:0;margin:0;
+}
+figure { padding-block:0.5em;margin:0; }
+figcaption { padding:0;margin:0;font-size:16px;line-height:1em; }
+</style>
+<script src="../../../docs/lib/van/1.5.0/nomodule.min.js"></script>
+<script>
+window.addEventListener('DOMContentLoaded', (event) => {
+    const select = van.tags.select({onchange:(e)=>{
+        console.log(e.target.value)
+        document.querySelector(':root').style.setProperty('--writing-mode', e.target.value)
+        document.querySelector(':root').style.setProperty('--text-orientation', (('vertical-rl'===e.target.value) ? 'upright' : 'mixed'))
+    }},
+        ['horizontal-tb','vertical-rl'].map(v=>van.tags.option({value:v}, v)),
+    )
+//    van.add(document.body, select)
+    document.body.prepend(select, van.tags.br())
+    select.focus()
+})
+</script>
+
+<ruby class="w">
+<rbc><rb>新</rb><rb>垣</rb><rb>結</rb><rb>衣</rb></rbc>
+<rtc><rt>あら</rt><rt>がき</rt><rt>ゆ</rt><rt>い</rt></rtc>
+<rtc><rt>ガ</rt><rt>ッ</rt><rt>キ</rt><rt>ー</rt></rtc>
+</ruby>
+<br>
+<ruby class="w">
+<rbc><rb>新垣</rb><rb>結衣</rb></rbc>
+<rtc><rt>あらがき</rt><rt>ゆい</rt></rtc>
+<rtc><rt>ガッ</rt><rt>キー</rt></rtc>
+</ruby>
+<br>
+<ruby class="w">
+<rbc><rb>新垣結衣</rb></rbc>
+<rtc><rt>あらがきゆい</rt></rtc>
+<rtc><rt>ガッキー</rt></rtc>
+</ruby>
+
+<p>パラグラフの中で両面ルビを使ってみると<ruby class="w"><rbc><rb>新垣結衣</rb></rbc><rtc><rt>あらがきゆい</rt></rtc><rtc><rt>ガッキー</rt></rtc></ruby>のようになります。</p>
+
+<p><ruby class="w"><rbc><rb>Ｂ</rb></rbc><rtc><rt>BTC</rt></rtc><rtc><rt>ビットコイン</rt></rtc></ruby>のように使う。</p>
+
+<p>
+ひとつしかないパターンも
+<ruby>新垣結衣<rt>あらがきゆい</rt></ruby>
+<ruby style="ruby-position:under;">新垣結衣<rt>ガッキー</rt></ruby>
+このようになります。
+</p>
+
+<p>
+<ruby class="w"><rbc><rb>新垣結衣</rb></rbc><rtc><rt>あらがきゆい</rt></rtc><rtc><rt>ガッキー</rt></rtc></ruby>
+<ruby>新垣結衣<rt>あらがきゆい</rt></ruby>
+<ruby style="ruby-position:under;">新垣結衣<rt>ガッキー</rt></ruby>
+</p>
+
+<figcaption>CSS</figcaption>
+<pre>
+ruby.w{ display:inline-table; line-height:1em; vertical-align:middle; }
+ruby.w>rbc{ display:table-row-group; text-align:center; }
+ruby.w>rtc:nth-of-type(1){ display:table-header-group; font-size:50%; line-height:1em; text-align:center; }
+ruby.w>rtc:nth-of-type(2){ display:table-footer-group; font-size:50%; line-height:1em; text-align:center; }
+ruby.w>rbc>rb{ display:table-cell; }
+ruby.w>rtc>rt{ display:table-cell; }
+</pre>
+</figure>
+<figure>
+<figcaption>簡易書式（願望）</figcaption>
+<figure>
+<figcaption>HTML</figcaption>
+<pre>
+&lt;ruby&gt;
+&lt;rbc&gt;&lt;rb&gt;新垣結衣&lt;/rb&gt;&lt;/rbc&gt;
+&lt;rtc&gt;&lt;rt&gt;あらがきゆい&lt;/rt&gt;&lt;/rtc&gt;
+&lt;rtc&gt;&lt;rt&gt;ガッキー&lt;/rt&gt;&lt;/rtc&gt;
+&lt;/ruby&gt;
+</pre>
+</figure>
+<pre>｜新垣結衣《あらがきゆい｜ガッキー》</pre>
+</figure>
+
+<ul>
+<li>廃止された<code>&lt;rbc&gt;</code>,<code>&lt;rb&gt;</code>,<code>&lt;rtc&gt;</code>を使用している
+<li>CSSで強引に位置合わせとサイズ調整している
+<li>フォントによっては縦書きにすると長音が横のまま……
+<li>よくみると両面ルビの部分がブロック進行方向にずれている……
+</ul>
+
+

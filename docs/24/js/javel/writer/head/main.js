@@ -138,37 +138,42 @@ class HeadViewer extends Viewer {
         ])
         */
         this.children = [
-                van.tags.h1(()=>this._data.title.val),
-                van.tags.h2(()=>this._data.catch.val),
-                van.tags.p(()=>this._data.intro.val),
-                van.tags.p(()=>`${this._category.val}　${this._genre.val}`),
-                ()=>van.tags.ul({class:`keywords`},this._data.keywords.val.split(',').filter(v=>v).map(k=>van.tags.li({class:`keyword`},k))),
-                van.tags.p(
-                    ()=>`${this._warningHead.val}`, 
-                    ()=>van.tags.span(()=>`${this._warningSex.val}`), 
-                    ()=>van.tags.span(()=>`${this._warningViolence.val}`), 
-                    ()=>van.tags.span(()=>`${this._warningCruelty.val}`),
-                    ()=>`${this._warningTail.val}`, 
-                ),
-                van.tags.p(()=>`${this._data.readWordCount.val}字`),
+            van.tags.h1(()=>this._data.title.val),
+            van.tags.h2(()=>this._data.catch.val),
+            van.tags.p(()=>this._data.intro.val),
+            van.tags.p(()=>`${this._category.val}　${this._genre.val}`),
+            ()=>van.tags.ul({class:`keywords`},this._data.keywords.val.split(',').filter(v=>v).map(k=>van.tags.li({class:`keyword`},k))),
+            van.tags.p(
+                ()=>`${this._warningHead.val}`, 
+                ()=>van.tags.span(()=>`${this._warningSex.val}`), 
+                ()=>van.tags.span(()=>`${this._warningViolence.val}`), 
+                ()=>van.tags.span(()=>`${this._warningCruelty.val}`),
+                ()=>`${this._warningTail.val}`, 
+            ),
+            van.tags.p(()=>`${this._data.readWordCount.val}字`),
 
-                // 著者
-                van.tags.p(()=>`${this._data.author.name.val}`),
-                ()=>van.tags.ul([...Object.entries(this._data.author.coin)].filter(([k,v])=>0<v.val.trim().length).map(([k,v])=>van.tags.li(van.tags.img({src:`../asset/image/icon/coin/svg/icon/${k}.svg`,width:64,height:64,title:()=>v.val})))),
+            // 著者
+            van.tags.p(()=>`${this._data.author.name.val}`),
+            ()=>van.tags.ul([...Object.entries(this._data.author.coin)].filter(([k,v])=>0<v.val.trim().length).map(([k,v])=>van.tags.li(van.tags.img({src:`../asset/image/icon/coin/svg/icon/${k}.svg`,width:64,height:64,title:()=>v.val})))),
 //                ()=>van.tags.ul([...Object.entries(this._data.author.coin)].filter(([k,v])=>0<v.val.trim().length).map(([k,v])=>van.tags.li(van.tags.img({src:`../asset/image/icon/coin/mona/mona-line-black.svg`,width:64,height:64,title:()=>v.val})))),
-                //()=>van.tags.ul([...Object.entries(this._data.author.sns)].map(([k,v])=>[...Object.entries(v)].filter(([K,V])=>V.val)).map(([K,V])=>van.tags.li(van.tags.img({src:`../asset/image/icon/sns/${K}.svg`,width:64,height:64,title:()=>V.val})))),
-                //()=>van.tags.ul([...Object.entries(this._data.author.sns)].map(([k,v])=>[...Object.entries(v)].filter(([K,V])=>V.val)).map(([K,V])=>{console.log(K,V);return van.tags.li(van.tags.img({src:`../asset/image/icon/sns/${K}.svg`,width:64,height:64,title:()=>V.val}));})),
-                ()=>van.tags.ul(
-                    [...Object.entries(this._data.author.sns)].map(([k,v])=>{
-                        console.log(k,v)
-                        return [...Object.entries(v)]
-                            .filter(([K,V])=>V.val)
-                            .map(([K,V])=>{
-                                console.log(K,V)
-                                return van.tags.li(van.tags.img({src:`../asset/image/icon/sns/${K}.svg`,width:64,height:64,title:()=>V.val}))
-                            })
-                    })
-                )
+            //()=>van.tags.ul([...Object.entries(this._data.author.sns)].map(([k,v])=>[...Object.entries(v)].filter(([K,V])=>V.val)).map(([K,V])=>van.tags.li(van.tags.img({src:`../asset/image/icon/sns/${K}.svg`,width:64,height:64,title:()=>V.val})))),
+            //()=>van.tags.ul([...Object.entries(this._data.author.sns)].map(([k,v])=>[...Object.entries(v)].filter(([K,V])=>V.val)).map(([K,V])=>{console.log(K,V);return van.tags.li(van.tags.img({src:`../asset/image/icon/sns/${K}.svg`,width:64,height:64,title:()=>V.val}));})),
+            /*
+            ()=>van.tags.ul(
+                [...Object.entries(this._data.author.sns)].map(([k,v])=>{
+                    console.log(k,v)
+                    return [...Object.entries(v)]
+                        .filter(([K,V])=>V.val)
+                        .map(([K,V])=>{
+                            console.log(K,V)
+                            return van.tags.li(van.tags.img({src:`../asset/image/icon/sns/${K}.svg`,width:64,height:64,title:()=>V.val}))
+                        })
+                })
+            ),
+            ()=>van.tags.ul(()=>this._data.author.sites.val.map(href=>this.#getIcon(href))),
+            */
+            ()=>van.tags.ul({style:`list-style:none;padding:0;`,role:'list'},[...Object.entries(this._data.author.sns.silo)].filter(([k,v])=>v.val).map(([k,v])=>van.tags.a({href:v.val,target:'_blank',rel:'noopener noreferrer'}, van.tags.li({style:`display:inline-block;`},van.tags.i({class:`icon-${k}`}))))),
+            ()=>van.tags.ul({style:`list-style:none;padding:0;`,role:'list'},[...Object.entries(this._data.author.sns.novel)].filter(([k,v])=>v.val).map(([k,v])=>van.tags.a({href:v.val,target:'_blank',rel:'noopener noreferrer'},van.tags.li({style:`display:inline-block;`},van.tags.i({class:`icon-${k}`}))))),
         ]
     }
     #getContacts() {
@@ -181,6 +186,50 @@ class HeadViewer extends Viewer {
         */
         //return van.tags.ul(()=>this._data.author.coin.mona.val ? van.tags.li(()=>this._data.author.coin.mona.val) : null)
         ()=>((0 < this._data.author.coin.mona.val.length) ? van.tags.img({src:`../asset/image/icon/coin/mona/mona-line-black.svg`,width:64,height:64,title:()=>this._data.author.coin.mona.val}) : null)
+    }
+    #getIcon(href) {
+        const N = {
+            "alpha-police":{"rt":"アルファポリス","h":"https://www.alphapolis.co.jp/","start":"2014"},
+            "berrys-cafe":{"rt":"ベリーズカフェ","h":"https://www.berrys-cafe.jp/","o":"starts","start":"2011","features":"女性向け"},
+            "estar":{"rt":"エブリスタ","h":"https://estar.jp/","start":"2010"},
+            "kakuyomu":{"rt":"カクヨム","h":"https://kakuyomu.jp/","o":"kadokawa","start":"2016"},
+            "novel-days":{"rt":"Novel Days","h":"https://novel.daysneo.com/","o":"kodansha","start":"2016"},
+            "narou":{"rt":"小説家になろう","h":"https://syosetu.com/","start":"2014"},
+            "novel-up-plus":{"rt":"ノベルアップ＋","h":"https://novelup.plus/","start":"2019"},
+            "no-ichigo":{"rt":"野いちご","h":"https://www.no-ichigo.jp/","o":"starts","features":"10代女子向け"},
+            "nola-novel":{"rt":"Nolaノベル","h":"https://story.nola-novel.com/","o":"株式会社indent"},
+            "novelba":{"rt":"ノベルバ","h":"https://novelba.com/","start":"2017"},
+            "novema":{"rt":"ノベマ","h":"https://novema.jp/","o":"starts","start":"2020"},
+            "pri-novel":{"rt":"プリ小説","h":"https://novel.prcm.jp/","o":"gmo","features":"10代女子向け"},
+            "prologue":{"rt":"Prologue","h":"https://prologue-nola.com/","features":"2000字上限"},
+            "tugi-kuru":{"rt":"ツギクル","h":"https://www.tugikuru.jp/","o":"ツギクル株式会社","start":"2016"},
+            "lanove-street":{"rt":"ラノベストリート","h":"https://ln-street.com/","o":"nakamura-kou"},
+            "monogatary":{"rt":"monogatary","h":"https://monogatary.com/","o":"sony-music","features":"楽曲化、映画化コンテストが多い"},
+            "suteki":{"rb":"㋜", "rt":"ステキブンゲイ","h":"https://sutekibungei.com/","o":"nakamura-kou","features":"一般文芸に特化","start":"2020"},
+            "maho":{"rb":"ⓘ", "rt":"魔法のⅰランド","h":"https://maho.jp/","start":"1999","o":"kadokawa","features":"女性向け"},
+            "ssg":{"rb":"SSG", "rt":"ｼｮｰﾄｼｮｰﾄｶﾞｰﾃﾞﾝ","h":"https://short-short.garden/","features":"400字上限"},
+            "hameln":{"rb":"㋩","rt":"ハーメルン","h":"https://syosetu.org/","o":"individual","features":"二次創作","start":"2012"},
+            "tie-up":{"rb":"tie","rt":"たいあっぷ","h":"https://tieupnovels.com/"},
+            "teller":{"rb":"tel","rt":"テラーノベル","h":"https://teller.jp/","start":"2017"},
+            "novelism":{"rb":"lism","rt":"ノベリズム","h":"https://novelism.jp/","start":"2020","o":"株式会社viviON"},
+            "novelist":{"rb":"list","rt":"ノベリスト","h":"https://2.novelist.jp/","start":"2009","o":"株式会社シンカネット"},
+            "novelabo":{"rb":"labo","rt":"ノベラボ","h":"https://www.novelabo.com/","start":"2015","o":"デザインエッグ株式会社"}
+        }
+        console.log(href)
+        const url = new URL(href)
+        for (let [k,v] of Object.entries(N)) {
+            if (href.startsWith(v.h)) {
+                return van.tags.a({href:href, target:'_blank', rel:'noopener noreferrer'},
+                    van.tags.ruby({style:`ruby-position:under;`},
+//                        ((v.hasOwnProperty('rb')) ? v.rb : van.tags.img({src:`sub/novel/${k}.svg`,width:64,height:64})),
+                        ((v.hasOwnProperty('rb')) ? v.rb : van.tags.img({src:`../asset/image/icon/sns/sub/novel/${k}.svg`,width:64,height:64})),
+//                        ((v.hasOwnProperty('rb')) ? v.rb : van.tags.i({class:`icon-${k}`,width:64,height:64})),
+                        van.tags.rt(v.rt)
+                    )
+                )
+            }
+        }
+        return van.tags.a({href:url.href, target:'_blank', rel:'noopener noreferrer'}, van.tags.span(url.domain))
     }
 }
 window.JavelHeadWriter = JavelHeadWriter

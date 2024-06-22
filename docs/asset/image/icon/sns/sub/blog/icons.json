@@ -1,0 +1,8 @@
+{
+    "category":{"id":"blog", "name":"Blog", "summary":"ブログ"},
+    "items":{
+        "note":{"rt":"note","h":"https://note.com/"},
+        "notion":{"rt":"Notion","h":"https://www.notion.so/ja-jp"},
+        "monaledge":{"rb":"Monaledge","rt":"モナレッジ","h":"https://monaledge.com/"},
+    }
+}

@@ -1,0 +1,9 @@
+{
+    "category":{"id":"complex", "name":"複合", "summary":"複合投稿サイト"},
+    "items":{
+        "pixiv":{"rt":"Pixiv","h":"","start":"2010"},
+        "kakuzoo":{"rt":"Kakuzoo","h":""},
+        "tap-novel":{"rt":"タップノベル","h":""},
+        "plicy":{"rb":"PLiCy","rt":"プリシー","h":"https://plicy.net/"},
+    }
+}

@@ -1,0 +1,36 @@
+<style>
+ruby{ display:inline-table; line-height:1em; }
+ruby>rbc{ display:table-row-group }
+ruby>rtc:nth-of-type(1){ display:table-header-group; font-size:50%; line-height:1em; }
+ruby>rtc:nth-of-type(2){ display:table-footer-group; font-size:50%; line-height:1em; }
+/*
+ruby>rtc:nth-of-type(1).rbspan {display:table-caption; caption-side:top;}
+ruby>rtc:nth-of-type(2).rbspan {display:table-caption; caption-side:bottom;}
+*/
+ruby>rbc>rb{ display:table-cell; }
+ruby>rtc>rt{ display:table-cell; }
+</style>
+
+<ruby>
+<rbc><rb>新</rb><rb>垣</rb><rb>結</rb><rb>衣</rb></rbc>
+<rtc><rt>あら</rt><rt>がき</rt><rt>ゆ</rt><rt>い</rt></rtc>
+<rtc><rt>ガ</rt><rt>ッ</rt><rt>キ</rt><rt>ー</rt></rtc>
+</ruby>
+<br>
+<ruby>
+<rbc><rb>新垣</rb><rb>結衣</rb></rbc>
+<rtc><rt>あらがき</rt><rt>ゆい</rt></rtc>
+<rtc><rt>ガッ</rt><rt>キー</rt></rtc>
+</ruby>
+<br>
+<ruby>
+<rbc><rb>新垣結衣</rb></rbc>
+<rtc><rt>あらがきゆい</rt></rtc>
+<rtc><rt>ガッキー</rt></rtc>
+</ruby>
+
+<ul>
+<li>廃止された<code>&lt;rbc&gt;</code>,<code>&lt;rb&gt;</code>,<code>&lt;rtc&gt;</code>を使用している
+<li>CSSで強引に位置合わせとサイズ調整している
+<li>表示位置が左寄せになっている。中央寄せしてほしいのに……
+</ul>

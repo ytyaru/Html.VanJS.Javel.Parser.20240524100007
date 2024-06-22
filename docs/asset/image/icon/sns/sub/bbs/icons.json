@@ -1,0 +1,6 @@
+{
+    "category":{"id":"bbs", "name":"掲示板", "summary":"掲示板"},
+    "items":{
+        "ask-mona-3":{"rb":"Ⓐ","rt":"Ask Mona 3.0","h":"https://web3.askmona.org/"}
+    }
+}

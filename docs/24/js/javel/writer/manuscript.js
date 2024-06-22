@@ -46,24 +46,51 @@ class Head {
         this.author = {
             name: van.state(''),
             coin: { // コインID:アドレス
-                mona: van.state(''),
+                mona: van.state(null),
             },
             sns: {
                 silo: {// silo:{サービス名:ユーザ名／ユーザID／ユーザページURL}
-                    github: van.state(''),
-                    twitter: van.state(''),
-                    dropbox: van.state(''),
-                    youtube: van.state(''),
+                    github: van.state(null),
+                    twitter: van.state(null),
+                    dropbox: van.state(null),
+                    youtube: van.state(null),
                 },
                 // サービス名:{インスタンスドメイン名:ユーザ名／ユーザID／ユーザページURL}
                 mastodon: {
-                    'mstdn.jp': van.state(''),
+                    'mstdn.jp': van.state(null),
                 },
                 misskey: {
-                    'mi.nakn.jp': van.state(''),
+                    'mi.nakn.jp': van.state(null),
                 },
+                novel: {
+                    'kakuyomu': van.state(null),
+                    'narou': van.state(null),
+                    'alpha-police': van.state(null),
+                    'berrys-cafe': van.state(null),
+                    'estar': van.state(null),
+                    'novel-days': van.state(null),
+                    'novel-up-plus': van.state(null),
+                    'no-ichigo': van.state(null),
+                    'nola-novel': van.state(null),
+                    'novelba': van.state(null),
+                    'novema': van.state(null),
+                    'pri-novel': van.state(null),
+                    'prologue': van.state(null),
+                    'tugi-kuru': van.state(null),
+                    'lanove-street': van.state(null),
+                    'monogatary': van.state(null),
+                    'suteki': van.state(null),
+                    'maho': van.state(null),
+                    'ssg': van.state(null),
+                    'hameln': van.state(null),
+                    'tie-up': van.state(null),
+                    'teller': van.state(null),
+                    'novelism': van.state(null),
+                    'novelist': van.state(null),
+                    'novelabo': van.state(null),
+                }
             },
-            sites: van.state(['']), // サイトURL
+            sites: van.state([]), // サイトURL
             created: van.state(Date.toIso()),
             uuid: van.state(crypto.randomUUID()),
         }
