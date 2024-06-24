@@ -39,7 +39,7 @@ class JavelHeadWriter {
         this._viewer = new Viewer()
         this._viewer = new HeadViewer(this._data, this._ja)
         this._editor = new Editor(this._data, this._ja)
-        this._menu = new MenuScreen([this._backBtn, this._authBtn])
+        this._menu = new MenuScreen([this._authBtn, this._backBtn])
         this._layout = new Triple()
         this._layout.first = this._editor.el
         this._layout.menu = this._menu.el

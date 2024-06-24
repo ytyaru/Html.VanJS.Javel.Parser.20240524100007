@@ -48,6 +48,19 @@ class Head {
             coin: { // コインID:アドレス
                 mona: van.state(null),
             },
+            contacts: {
+                sns: {
+                    twitter: van.state(null),
+                },
+                revision: {
+                    github: van.state(null),
+                },
+                hosts: van.state(null),
+                novels: van.state(null),
+                mastodons: van.state(null),
+                misskeys: van.state(null),
+                urls: van.state(null),
+            },
             sns: {
                 silo: {// silo:{サービス名:ユーザ名／ユーザID／ユーザページURL}
                     github: van.state(null),
@@ -57,10 +70,21 @@ class Head {
                 },
                 // サービス名:{インスタンスドメイン名:ユーザ名／ユーザID／ユーザページURL}
                 mastodon: {
+                    'pawoo.net': van.state(null),
+                    'ichiji.social': van.state(null),
+                    'fedibird.com': van.state(null),
+                    'otadon.com': van.state(null),
                     'mstdn.jp': van.state(null),
+                    'mastodon-japan.net': van.state(null),
                 },
                 misskey: {
+                    'novelskey.tarbin.net': van.state(null),
+                    'misskey.design': van.state(null),
+                    'misskey.art': van.state(null),
+                    'maniakey.com': van.state(null),
                     'mi.nakn.jp': van.state(null),
+                    'sushi.ski': van.state(null),
+                    'misskey.io': van.state(null),
                 },
                 novel: {
                     'kakuyomu': van.state(null),

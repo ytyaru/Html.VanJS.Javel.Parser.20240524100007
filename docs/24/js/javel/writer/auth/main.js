@@ -51,7 +51,7 @@ class JavelAuthWriter {
             'novelba':{h:'https://novelba.com/help',l:'ノベルバ'}, // 
         }
         const [h,l] = this.#makeLabel(id,C,P,S,N)
-        return van.tags.a({href:h,target:'_blank',rel:'noopener noreferrer',style:`text-decoration:none;`}, van.tags.ruby({style:`ruby-position:under;`},van.tags.i({class:`icon-${id}`}), van.tags.rt(l)))
+        return van.tags.a({tabindex:-1, href:h,target:'_blank',rel:'noopener noreferrer',style:`text-decoration:none;color:var(--fg-color);backgorund-color:var(--bg-color);`}, van.tags.ruby({style:`ruby-position:under;`},van.tags.i({class:`icon-${id}`}), van.tags.rt(l)))
     }
     #makeLabel(id,C,P,S,N) {
         if (C.hasOwnProperty(id)) { return [C[id].h, id.toUpperCase()] }
@@ -67,7 +67,8 @@ class JavelAuthWriter {
     }
     #createTable() { return van.tags.table(
         van.tags.tr(
-            van.tags.th(van.tags.ruby({style:`ruby-position:under;`},'👤',van.tags.rt('著者'))),
+            //van.tags.th(van.tags.ruby({style:`ruby-position:under;`},'👤',van.tags.rt('著者'))),
+            van.tags.th(van.tags.ruby({style:`ruby-position:under;`},van.tags.i({class:'icon-person'}),van.tags.rt('著者'))),
             van.tags.th('名前'),
             van.tags.td(van.tags.input({id:`author-name`, maxlength:20, placeholder:`山田《やまだ》太郎《たろう》`, oninput:(e)=>this._head.author.name.val=e.target.value})),
         ),
@@ -90,7 +91,7 @@ class JavelAuthWriter {
         van.tags.tr(
             van.tags.th(this.#makeIcon('mastodon')),
             van.tags.th('ユーザURL'),
-            van.tags.td(van.tags.textarea({id:`mastodon-user-urls`, maxlength:500, placeholder:`https://mstdn.jp/@ユーザー名\nhttps://kmy.blue/@ユーザー名`})),
+            van.tags.td(van.tags.textarea({id:`mastodon-user-urls`, placeholder:`https://mstdn.jp/@ユーザー名\nhttps://kmy.blue/@ユーザー名`, oninput:(e)=>this.#setList('mastodons', e)})),
             /*
             van.tags.td(van.tags.textarea({id:`mastodon-user-urls`, maxlength:500, placeholder:``, oninput:(e)=>
                 try {
@@ -111,7 +112,7 @@ class JavelAuthWriter {
             van.tags.th(this.#makeIcon('misskey')),
             van.tags.th('ユーザURL'),
             //van.tags.td(van.tags.textarea({id:`misskey-user-urls`, maxlength:500, placeholder:``, oninput:(e)=>{try{const domain=new URL(e.target.value).origin;this._head.author.misskey[domain].val=e.target.val;}catch(err){console.warn(err)}}})),
-            van.tags.td(van.tags.textarea({id:`misskey-user-urls`, maxlength:500, placeholder:`https://misskey.design/@ユーザ名\nhttps://novelskey.tarbin.net/@ユーザ名`})),
+            van.tags.td(van.tags.textarea({id:`misskey-user-urls`, placeholder:`https://misskey.design/@ユーザ名\nhttps://novelskey.tarbin.net/@ユーザ名`, oninput:(e)=>this.#setList('misskeys', e)})),
             /*
             van.tags.td(van.tags.textarea({id:`misskey-user-urls`, maxlength:500, placeholder:``, oninput:(e)=>{
                 try {
@@ -131,7 +132,18 @@ class JavelAuthWriter {
             }})),
             */
         ),
-        
+        van.tags.tr(
+            van.tags.th(this.#makeIcon('kakuyomu')),
+            van.tags.th('ユーザURL'),
+            van.tags.td(van.tags.textarea({id:`novels-user-urls`, placeholder:`https://kakuyomu.jp/users/ユーザ名\nhttps://mypage.syosetu.com/ユーザID`, oninput:(e)=>this.#setList('novels', e)})),
+        ),
+        van.tags.tr(
+            //van.tags.th(van.tags.ruby({style:`ruby-position:under;`},'🔗',van.tags.rt('他サイト'))),
+            van.tags.th(van.tags.ruby({style:`ruby-position:under;`},van.tags.i({class:'icon-link'}),van.tags.rt('他サイト'))),
+            van.tags.th('URL'),
+            van.tags.td(van.tags.textarea({id:`other-urls`, placeholder:`https://some.com/\nhttps://any.org/`, oninput:(e)=>this.#setList('urls', e)})),
+        ),
+          
         van.tags.tr(
             van.tags.th(this.#makeIcon('kakuyomu')),
             van.tags.th('ユーザURL'),
@@ -151,7 +163,8 @@ class JavelAuthWriter {
             van.tags.td(van.tags.input({id:`alpha-police-user-url`, maxlength:100, placeholder:`https://www.alphapolis.co.jp/author/detail/ユーザID`, oninput:(e)=>this._head.author.sns.novel['alpha-police'].val = e.target.value})),
         ),
         van.tags.tr(
-            van.tags.th(van.tags.ruby({style:`ruby-position:under;`},'🔗',van.tags.rt('他サイト'))),
+            //van.tags.th(van.tags.ruby({style:`ruby-position:under;`},'🔗',van.tags.rt('他サイト'))),
+            van.tags.th(van.tags.ruby({style:`ruby-position:under;`},van.tags.i({class:'icon-link'}),van.tags.rt('他サイト'))),
             van.tags.th('URL'),
             van.tags.td(van.tags.textarea({id:`site-urls`, maxlength:500, placeholder:`https://note.com/ユーザ名\nhttps://profile.hatena.ne.jp/ユーザ名/\nhttps://ユーザ名.hatenablog.com/`, oninput:(e)=>{
                 try {
@@ -181,5 +194,16 @@ class JavelAuthWriter {
                 } else {this._head.author.sns[serviceName][domain] = van.state(`${url}`)}
             }
         } catch(err) {console.error(err)}
+    }
+    #setList(key, e) {
+        const list = []
+        for (let href of e.target.value.split('\n').filter(v=>v)) {
+            try {
+                const url = new URL(href)
+                list.push(href)
+            } catch (e) { console.warn(`URL不正値：${href}`) }
+        }
+        this._head.author.contacts[key].val = Array.from(new Set(list))
+        console.log(key, this._head.author.contacts[key].val)
     }
 }

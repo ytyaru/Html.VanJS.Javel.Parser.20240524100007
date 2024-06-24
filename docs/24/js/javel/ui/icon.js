@@ -1,34 +1,95 @@
-class Icon {
-    constructor() { this._color = van.state(Css.get(`--color`)) }
-    get color( ) { return this._color.val }
-    set color(v) { this._color.val = v }
-       
+class Icon { // URLからIcoMoonアイコン用IDを返す
+    constructor() {
+        this._map = {
+            mastodon: [
+                'pawoo.net',
+                'ichiji.social',
+                'fedibird.com',
+                'otadon.com',
+                'mstdn.jp',
+                'mastodon-japan.net',
+            ],
+            misskey: [
+                'novelskey.tarbin.net',
+                'misskey.design',
+                'misskey.art',
+                'maniakey.com',
+                'mi.nakn.jp',
+                'sushi.ski',
+                'misskey.io',
+            ],
+            twitter: ['twitter.com'],
+            github: ['github.co.jp'],
+            amazon: ['www.amazon.co.jp'],
+            dropbox: ['www.dropbox.com'],
+            youtube: ['www.youtube.com'],
+            novel: {
+                'alpha-police':{d:'www.alphapolis.co.jp',l:'アルファポリス'},
+                'berrys-cafe':{d:'www.berrys-cafe.jp',l:'ベリーズカフェ',start:'2011',o:'starts',features:'女性向け'},
+                'estar':{d:'estar.jp',l:'エブリスタ',start:'2010'},
+                'kakuyomu':{d:'kakuyomu.jp',l:'カクヨム',start:'2016',o:'kadokawa'},
+                'novel-days':{d:'novel.daysneo.com',l:'Novel Days',start:'2016',o:'kodansha'},
+                'narou':{d:'syosetu.com',l:'小説家になろう',start:'2014'},
+                'novelup':{d:'novelup.plus',l:'ノベルアップ＋',start:'2019'},
+                'no-ichigo':{d:'www.no-ichigo.jp',l:'野いちご',o:'starts',features:'10代女子向け'},
+                'nola-novel':{d:'story.nola-novel.com',l:'Nolaノベル',o:'株式会社indent'},
+                'novelba':{d:'novelba.com',l:'ノベルバ',start:'2017'},
+                'novema':{d:'novema.jp',l:'ノベマ',o:'starts',start:'2020'},
+                'pri-novel':{d:'novel.prcm.jp',l:'プリ小説',o:'gmo',features:'10代女子向け'},
+                'prologue':{d:'prologue-nola.com',l:'Prologue',features:'2000字上限'},
+                'tugi-kuru':{d:'www.tugikuru.jp',l:'ツギクル',o:'ツギクル株式会社',start:'2016'},
+                'lanove-street':{d:'https://ln-street.com/',l:'ラノベストリート',o:'nakamura-kou'},
+                'monogatary':{d:'monogatary.com',l:'Monogatary',o:'sony-music',features:'楽曲化、映画化コンテストが多い'},
+                'suteki':{d:'sutekibungei.com',l:'ステキブンゲイ',rb:'㋜',start:'2020',o:'nakamura-kou',features:'一般文芸に特化'},
+                'maho':{d:'maho.jp',l:'魔法のⅰランド',rb:'ⓘ',start:'1999',o:'kadokawa',features:'女性向け'},
+                'ssg':{d:'short-short.garden',l:'SSG',rb:'SSG',rt:'ｼｮｰﾄｼｮｰﾄｶﾞｰﾃﾞﾝ',features:'400字上限'},
+                'hameln':{d:'syosetu.org',l:'ハーメルン',rb:'㋩',rt:'ハーメルン',o:'individual',features:'二次創作',start:'2012'},
+                'tie-up':{d:'https://tieupnovels.com/',l:'たいあっぷ',rb:'tie',rt:'たいあっぷ'},
+                'teller':{d:'teller.jp',l:'テラーノベル',rb:'tel',rt:'テラーノベル',start:'2017'},
+                'novelism':{d:'novelism.jp',l:'ノベリズム',rb:'lism',rt:'ノベリズム',start:'2020',o:'株式会社viviON'},
+                'novelist':{d:'2.novelist.jp',l:'ノベリスト',rb:'list',rt:'ノベリスト',start:'2009',o:'株式会社シンカネット'},
+                'novelabo':{d:'www.novelabo.com',l:'ノベラボ',rb:'labo',rt:'ノベラボ',start:'2015',o:'デザインエッグ株式会社'}
+            },
+            review: {
+                'ono-log':{d:'onolog.net',l:'オノログ'},
+            },
+            blog: {
+                'note':{d:'note.com',l:'Note'}, 
+                'notion':{d:'www.notion.so',l:'Notion'}, 
+                'monaledge':{d:'monaledge.com',l:'Monaledge'}, 
+            },
+            complex: {
+                'pixiv':{d:'www.pixiv.net',l:'Pixiv'},
+                'kakuzoo':{d:'storie.jp', l:'Kakuzoo'},
+                'tap-novel':{d:'tapnovel.com',l:'タップノベル'},
+                'plicy':{d:'plicy.net',l:'PLiCy'},
+            },
+            bbs: {
+                'ask-mona-3':{d:'web3.askmona.org', l:'Ask Mona 3.0', rb:'Ⓐ'},
+            },
+        }
     }
-    get(id, isColor=false, size=64) {
-
+    #getId(href) { // id, cid, l, rb（識別子,カテゴリID,ラベル,rb）
+        try {
+            const url = new URL(href)
+            for (let [k,v] of Object.entries(this._map)) {
+                if (Type.isAry(v)) {
+                    if (v.includes(url.domain)) { return [k, k, k.Title, null] }
+                }
+                else if (Type.isObj(v)) {
+                    for (let [K,V] of Object.entries(v)) {
+                        if (V===url.domain) { return [K, k, ((V.hasOwnProperty('l')) ? V.l : V.d), ((V.hasOwnProperty('rb')) ? V.rb : null)] }
+                    }
+                }
+            }
+        } catch(e) { return [null, null, null, null] }
+        return [null, null, null, null]
     }
-    use(id, size) { // use('sns-github')
-        const {svg, use} = van.tags('http://www.w3.org/2000/svg')
-        return ()=>svg(use({xlink:`#svg-icon-${id}`}))
-    }
-    #add() {
-        const {svg, defs, symbol, use, path, circle} = van.tags('http://www.w3.org/2000/svg')
-        return ()=> svg({xmlns:'http://www.w3.org/2000/svg', width:size.val, height:size.val, viewBox:`0 0 ${size.val} ${size.val}`},
-            defs(
-                symbol({id:`svg-icon-sns-github`, width:()=>size.val, height:()=>size.val, viewBox:()=>`0 0 ${size.val} ${size.val}`}
-                    path({fill:()=>this._color.val, d:`M16 32C7.163 32 0 24.837 0 16S7.163 0 16 0s16 7.163 16 16-7.163 16-16 16zm7.53-18.586L22.105 7l-2.797 4.414a14.096 14.096 0 00-6.617 0L9.902 7l-1.43 6.414C6.937 14.642 6 16.247 6 18.009c0 3.86 4.476 6.989 9.997 6.989s9.997-3.13 9.997-6.989c-.001-1.762-.93-3.367-2.465-4.595zM10.442 16.35h-.666l1.627-1.876h1.184l-2.145 1.876zm5.504 4.584l-2.766-4.872.683-.39.617 1.085h3.021l.644-1.09.676.402-2.875 4.865zm5.613-4.584l-2.146-1.876h1.192l1.625 1.876h-.671zm-5.6 3.015l1.075-1.82h-2.108l1.033 1.82z`}, ),
-                ),
-            ),
-        )
-/tmp/work/Html.VanJS.Javel.Parser.20240524100007/docs/asset/image/icon/sns/youtube.svg
-/tmp/work/Html.VanJS.Javel.Parser.20240524100007/docs/asset/image/icon/sns/twitter.svg
-/tmp/work/Html.VanJS.Javel.Parser.20240524100007/docs/asset/image/icon/sns/misskey.svg
-/tmp/work/Html.VanJS.Javel.Parser.20240524100007/docs/asset/image/icon/sns/mastodon.svg
-/tmp/work/Html.VanJS.Javel.Parser.20240524100007/docs/asset/image/icon/sns/github.svg
-
-    van.jjj
-<svg width="1024" height="1024" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path fill-rule="evenodd" clip-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8C0 11.54 2.29 14.53 5.47 15.59C5.87 15.66 6.02 15.42 6.02 15.21C6.02 15.02 6.01 14.39 6.01 13.72C4 14.09 3.48 13.23 3.32 12.78C3.23 12.55 2.84 11.84 2.5 11.65C2.22 11.5 1.82 11.13 2.49 11.12C3.12 11.11 3.57 11.7 3.72 11.94C4.44 13.15 5.59 12.81 6.05 12.6C6.12 12.08 6.33 11.73 6.56 11.53C4.78 11.33 2.92 10.64 2.92 7.58C2.92 6.71 3.23 5.99 3.74 5.43C3.66 5.23 3.38 4.41 3.82 3.31C3.82 3.31 4.49 3.1 6.02 4.13C6.66 3.95 7.34 3.86 8.02 3.86C8.7 3.86 9.38 3.95 10.02 4.13C11.55 3.09 12.22 3.31 12.22 3.31C12.66 4.41 12.38 5.23 12.3 5.43C12.81 5.99 13.12 6.7 13.12 7.58C13.12 10.65 11.25 11.33 9.47 11.53C9.76 11.78 10.01 12.26 10.01 13.01C10.01 14.08 10 14.94 10 15.21C10 15.42 10.15 15.67 10.55 15.59C13.71 14.53 16 11.53 16 8C16 3.58 12.42 0 8 0Z" transform="scale(64)" fill="currentColor"/>
-</svg>
+    getEl(href, hasRuby=false, isOver=false) {
+        const [id, cid, l, rb] = this.#getId(href)
+        const icon = id || 'link'
+        const i = van.tags.i({class:`icon-${icon}`})
+        //return (hasRuby) ? van.tags.ruby({style:`ruby-position:under;`}, i, van.tags.rt(l)) : i
+        return (hasRuby) ? van.tags.ruby(((isOver) ? ({}) : ({style:`ruby-position:under;`})), i, van.tags.rt(l)) : i
     }
 }

@@ -11,7 +11,7 @@ class JavelBodyWriter {
         this.layout = new Triple()
         this.viewer = new Viewer() 
         this.editor = new Editor(this._manuscript, null, this.counter)
-        const headBtn = DivButton.make(()=>{alert('表紙設定')}, '題')
+        const headBtn = DivButton.make(()=>{/*alert('表紙設定')*/}, '題')
         headBtn.dataset.select = 'javel-head-writer'
         this._anyoneBtn = new AnyOneButton(this._manuscript, this.editor.el, this.exporter)
         this.editor.AnyoneBtn = this._anyoneBtn
