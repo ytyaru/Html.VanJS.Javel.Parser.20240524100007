@@ -188,6 +188,7 @@ class Viewer {
     set children(v) { this._children.val = v }
     #style() { return `${this.#writingMode()}${this.#break()}` }
     #writingMode() { return `writing-mode:${this._writingMode.val};text-orientation:${this._textOrient.val};overflow-${this._overflow.val}:scroll;` }
+    //#writingMode() { return `writing-mode:${this._writingMode.val};text-orientation:${this._textOrient.val};overflow-${this._overflow.val}:auto;` }
     #break() { return `word-break:break-all;overflow-wrap:anywhere;hyphens:auto;` }
     #onWheel(e) {
         if ('vertical-rl'===this._writingMode.val) {

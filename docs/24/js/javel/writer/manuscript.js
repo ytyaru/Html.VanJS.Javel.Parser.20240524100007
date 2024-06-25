@@ -48,18 +48,18 @@ class Head {
             coin: { // コインID:アドレス
                 mona: van.state(null),
             },
-            contacts: {
+            contact: {
                 sns: {
                     twitter: van.state(null),
                 },
                 revision: {
                     github: van.state(null),
                 },
-                hosts: van.state(null),
-                novels: van.state(null),
-                mastodons: van.state(null),
-                misskeys: van.state(null),
-                urls: van.state(null),
+                host: van.state([]),
+                novel: van.state([]),
+                mastodon: van.state([]),
+                misskey: van.state([]),
+                url: van.state([]),
             },
             sns: {
                 silo: {// silo:{サービス名:ユーザ名／ユーザID／ユーザページURL}

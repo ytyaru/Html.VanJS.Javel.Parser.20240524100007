@@ -36,7 +36,7 @@ class JavelHeadWriter {
         this._backBtn.dataset.select = 'javel-body-writer'
         this._authBtn = DivButton.make(null, ()=>'著者')
         this._authBtn.dataset.select = 'javel-auth-writer'
-        this._viewer = new Viewer()
+//        this._viewer = new Viewer()
         this._viewer = new HeadViewer(this._data, this._ja)
         this._editor = new Editor(this._data, this._ja)
         this._menu = new MenuScreen([this._authBtn, this._backBtn])
@@ -137,6 +137,7 @@ class HeadViewer extends Viewer {
             ()=>this.#getContacts(),
         ])
         */
+        console.log(this._data.author.contact.mastodon)
         this.children = [
             van.tags.h1(()=>this._data.title.val),
             van.tags.h2(()=>this._data.catch.val),
@@ -154,7 +155,8 @@ class HeadViewer extends Viewer {
 
             // 著者
             van.tags.p(()=>`${this._data.author.name.val}`),
-            ()=>van.tags.ul([...Object.entries(this._data.author.coin)].filter(([k,v])=>0<v.val.trim().length).map(([k,v])=>van.tags.li(van.tags.img({src:`../asset/image/icon/coin/svg/icon/${k}.svg`,width:64,height:64,title:()=>v.val})))),
+            //()=>van.tags.ul([...Object.entries(this._data.author.coin)].filter(([k,v])=>0<v.val.trim().length).map(([k,v])=>van.tags.li(van.tags.img({src:`../asset/image/icon/coin/svg/icon/${k}.svg`,width:64,height:64,title:()=>v.val})))),
+            ()=>van.tags.ul([...Object.entries(this._data.author.coin)].filter(([k,v])=>v.val).map(([k,v])=>van.tags.li(van.tags.img({src:`../asset/image/icon/coin/svg/icon/${k}.svg`,width:64,height:64,title:()=>v.val})))),
 //                ()=>van.tags.ul([...Object.entries(this._data.author.coin)].filter(([k,v])=>0<v.val.trim().length).map(([k,v])=>van.tags.li(van.tags.img({src:`../asset/image/icon/coin/mona/mona-line-black.svg`,width:64,height:64,title:()=>v.val})))),
             //()=>van.tags.ul([...Object.entries(this._data.author.sns)].map(([k,v])=>[...Object.entries(v)].filter(([K,V])=>V.val)).map(([K,V])=>van.tags.li(van.tags.img({src:`../asset/image/icon/sns/${K}.svg`,width:64,height:64,title:()=>V.val})))),
             //()=>van.tags.ul([...Object.entries(this._data.author.sns)].map(([k,v])=>[...Object.entries(v)].filter(([K,V])=>V.val)).map(([K,V])=>{console.log(K,V);return van.tags.li(van.tags.img({src:`../asset/image/icon/sns/${K}.svg`,width:64,height:64,title:()=>V.val}));})),
@@ -174,6 +176,23 @@ class HeadViewer extends Viewer {
             */
             ()=>van.tags.ul({style:`list-style:none;padding:0;`,role:'list'},[...Object.entries(this._data.author.sns.silo)].filter(([k,v])=>v.val).map(([k,v])=>van.tags.a({href:v.val,target:'_blank',rel:'noopener noreferrer'}, van.tags.li({style:`display:inline-block;`},van.tags.i({class:`icon-${k}`}))))),
             ()=>van.tags.ul({style:`list-style:none;padding:0;`,role:'list'},[...Object.entries(this._data.author.sns.novel)].filter(([k,v])=>v.val).map(([k,v])=>van.tags.a({href:v.val,target:'_blank',rel:'noopener noreferrer'},van.tags.li({style:`display:inline-block;`},van.tags.i({class:`icon-${k}`}))))),
+
+            // Mastodon
+            ()=>van.tags.ul({style:`list-style:none;padding:0;`,role:'list'},
+                this._data.author.contact.mastodon.val.map(href=>van.tags.li({style:`display:inline-block;`}, van.tags.a({href:href, target:'_blank', rel:'noopener noreferrer', style:`text-decoration:none;color:var(--fg-color);background-color:var(--bg-color);`}, Icon.getDomainEl('mastodon',href,true)))),
+            ),
+            // Misskey
+            ()=>van.tags.ul({style:`list-style:none;padding:0;`,role:'list'},
+                this._data.author.contact.misskey.val.map(href=>van.tags.li({style:`display:inline-block;`}, van.tags.a({href:href, target:'_blank', rel:'noopener noreferrer', style:`text-decoration:none;color:var(--fg-color);background-color:var(--bg-color);`}, Icon.getDomainEl('misskey',href,true)))),
+            ),
+            // Novel
+            ()=>van.tags.ul({style:`list-style:none;padding:0;`,role:'list'},
+                this._data.author.contact.novel.val.map(href=>van.tags.li({style:`display:inline-block;`}, van.tags.a({href:href, target:'_blank', rel:'noopener noreferrer', style:`text-decoration:none;color:var(--fg-color);background-color:var(--bg-color);`}, Icon.getEl(href,true)))),
+            ),
+            // Other
+            ()=>van.tags.ul({style:`list-style:none;padding:0;`,role:'list'},
+                this._data.author.contact.url.val.map(href=>van.tags.li({style:`display:inline-block;`}, van.tags.a({href:href, target:'_blank', rel:'noopener noreferrer', style:`text-decoration:none;color:var(--fg-color);background-color:var(--bg-color);`}, Icon.getEl(href,true)))),
+            ),
         ]
     }
     #getContacts() {

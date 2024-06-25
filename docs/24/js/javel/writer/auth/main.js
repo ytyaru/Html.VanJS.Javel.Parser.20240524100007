@@ -1,9 +1,10 @@
+(function(){
 class JavelAuthWriter {
     constructor(manuscript) {
         this._manuscript = manuscript
         this._head = this._manuscript.head
-        //this._backBtn = DivButton.make(null, ()=>'戻')
-        this._backBtn = DivButton.make(()=>this.#setUrls(), ()=>'戻')
+        this._backBtn = DivButton.make(null, ()=>'戻')
+//        this._backBtn = DivButton.make(()=>this.#setUrls(), ()=>'戻')
         this._backBtn.dataset.select = 'javel-head-writer'
 //        this._el = van.tags.div(van.tags.h1('JavelAuthWriter'), this._backBtn)
         this.#createEls()
@@ -11,7 +12,25 @@ class JavelAuthWriter {
     }
     get el() { return this._el }
     #createEls() {
-        this._el = van.tags.div(this.#createTable(), this._backBtn)
+        this._editor = new Editor(this._head)
+        this._menu = new MenuScreen([this._backBtn])
+        this._viewer = new Viewer()
+        this._layout = new Triple()
+        this._layout.first = this._editor.el
+        this._layout.menu = this._menu.el
+        this._layout.last = this._viewer.el
+        this._el = this._layout.el
+        //this._el = van.tags.div(this.#createTable(), this._backBtn)
+    }
+}
+//class Editor extends layout.Single {
+class Editor extends Viewer {
+    constructor(head) {
+        super()
+        this._head = head
+        this.setHorizontal()
+        this.children = [this.#createTable()]
+//        this._el = van.tags.div({style:`padding:0;margin:0;`}, this.#createTable())
     }
     #makeIcon(id) {
         const C = { // Crypto
@@ -91,7 +110,7 @@ class JavelAuthWriter {
         van.tags.tr(
             van.tags.th(this.#makeIcon('mastodon')),
             van.tags.th('ユーザURL'),
-            van.tags.td(van.tags.textarea({id:`mastodon-user-urls`, placeholder:`https://mstdn.jp/@ユーザー名\nhttps://kmy.blue/@ユーザー名`, oninput:(e)=>this.#setList('mastodons', e)})),
+            van.tags.td(van.tags.textarea({id:`mastodon-user-urls`, placeholder:`https://mstdn.jp/@ユーザー名\nhttps://kmy.blue/@ユーザー名`, oninput:(e)=>this.#setList('mastodon', e)})),
             /*
             van.tags.td(van.tags.textarea({id:`mastodon-user-urls`, maxlength:500, placeholder:``, oninput:(e)=>
                 try {
@@ -112,7 +131,7 @@ class JavelAuthWriter {
             van.tags.th(this.#makeIcon('misskey')),
             van.tags.th('ユーザURL'),
             //van.tags.td(van.tags.textarea({id:`misskey-user-urls`, maxlength:500, placeholder:``, oninput:(e)=>{try{const domain=new URL(e.target.value).origin;this._head.author.misskey[domain].val=e.target.val;}catch(err){console.warn(err)}}})),
-            van.tags.td(van.tags.textarea({id:`misskey-user-urls`, placeholder:`https://misskey.design/@ユーザ名\nhttps://novelskey.tarbin.net/@ユーザ名`, oninput:(e)=>this.#setList('misskeys', e)})),
+            van.tags.td(van.tags.textarea({id:`misskey-user-urls`, placeholder:`https://misskey.design/@ユーザ名\nhttps://novelskey.tarbin.net/@ユーザ名`, oninput:(e)=>this.#setList('misskey', e)})),
             /*
             van.tags.td(van.tags.textarea({id:`misskey-user-urls`, maxlength:500, placeholder:``, oninput:(e)=>{
                 try {
@@ -135,13 +154,73 @@ class JavelAuthWriter {
         van.tags.tr(
             van.tags.th(this.#makeIcon('kakuyomu')),
             van.tags.th('ユーザURL'),
-            van.tags.td(van.tags.textarea({id:`novels-user-urls`, placeholder:`https://kakuyomu.jp/users/ユーザ名\nhttps://mypage.syosetu.com/ユーザID`, oninput:(e)=>this.#setList('novels', e)})),
+            van.tags.td(van.tags.textarea({id:`novels-user-urls`, placeholder:`https://kakuyomu.jp/users/ユーザ名\nhttps://mypage.syosetu.com/ユーザID`, oninput:(e)=>this.#setList('novel', e)})),
         ),
         van.tags.tr(
             //van.tags.th(van.tags.ruby({style:`ruby-position:under;`},'🔗',van.tags.rt('他サイト'))),
             van.tags.th(van.tags.ruby({style:`ruby-position:under;`},van.tags.i({class:'icon-link'}),van.tags.rt('他サイト'))),
             van.tags.th('URL'),
-            van.tags.td(van.tags.textarea({id:`other-urls`, placeholder:`https://some.com/\nhttps://any.org/`, oninput:(e)=>this.#setList('urls', e)})),
+            van.tags.td(van.tags.textarea({id:`other-urls`, placeholder:`https://some.com/\nhttps://any.org/`, oninput:(e)=>this.#setList('url', e), value:`
+https://www.alphapolis.co.jp/
+https://www.berrys-cafe.jp/
+https://estar.jp/
+https://kakuyomu.jp/
+https://novel.daysneo.com/
+https://syosetu.com/
+https://novelup.plus/
+https://www.no-ichigo.jp/
+https://story.nola-novel.com/
+https://novelba.com/
+https://novema.jp/
+https://novel.prcm.jp/
+https://prologue-nola.com/
+https://www.tugikuru.jp/
+https://ln-street.com/
+https://monogatary.com/
+https://sutekibungei.com/
+https://maho.jp/
+https://short-short.garden/
+https://syosetu.org/
+https://tieupnovels.com/
+https://teller.jp/
+https://novelism.jp/
+https://2.novelist.jp/
+https://www.novelabo.com/
+
+https://pawoo.net/
+https://ichiji.social/
+https://fedibird.com/
+https://otadon.com/
+https://mstdn.jp/
+https://mastodon-japan.net/
+
+https://novelskey.tarbin.net/
+https://misskey.design/
+https://misskey.art/
+https://maniakey.com/
+https://mi.nakn.jp/
+https://sushi.ski/
+https://misskey.io/
+
+https://twitter.com/
+https://github.co.jp/
+https://www.amazon.co.jp/
+https://www.dropbox.com/
+https://www.youtube.com/
+
+https://onolog.net/
+
+https://note.com/
+https://www.notion.so/
+https://monaledge.com/
+
+https://www.pixiv.net/
+https://storie.jp/
+https://tapnovel.com/
+https://plicy.net/
+
+https://web3.askmona.org/
+            `})),
         ),
           
         van.tags.tr(
@@ -162,6 +241,7 @@ class JavelAuthWriter {
             //van.tags.td(van.tags.input({id:`alpha-police-user-url`, maxlength:100, placeholder:`https://www.alphapolis.co.jp/author/detail/ユーザID`, oninput:(e)=>this._head.author.sns.silo.github.val=e.target.value})),
             van.tags.td(van.tags.input({id:`alpha-police-user-url`, maxlength:100, placeholder:`https://www.alphapolis.co.jp/author/detail/ユーザID`, oninput:(e)=>this._head.author.sns.novel['alpha-police'].val = e.target.value})),
         ),
+        /*
         van.tags.tr(
             //van.tags.th(van.tags.ruby({style:`ruby-position:under;`},'🔗',van.tags.rt('他サイト'))),
             van.tags.th(van.tags.ruby({style:`ruby-position:under;`},van.tags.i({class:'icon-link'}),van.tags.rt('他サイト'))),
@@ -173,6 +253,19 @@ class JavelAuthWriter {
                 } catch (err) {console.warn(err)}
             }})),
         ),
+        van.tags.p('あ'),
+        van.tags.p('あ'),
+        van.tags.p('あ'),
+        van.tags.p('あ'),
+        van.tags.p('あ'),
+        van.tags.p('あ'),
+        van.tags.p('あ'),
+        van.tags.p('あ'),
+        van.tags.p('あ'),
+        van.tags.p('あ'),
+        van.tags.p('あ'),
+        van.tags.p('あ'),
+        */
     ) }
     #setUrls() {
         for (let key of ['mastodon','misskey']) {
@@ -203,7 +296,9 @@ class JavelAuthWriter {
                 list.push(href)
             } catch (e) { console.warn(`URL不正値：${href}`) }
         }
-        this._head.author.contacts[key].val = Array.from(new Set(list))
-        console.log(key, this._head.author.contacts[key].val)
+        this._head.author.contact[key].val = Array.from(new Set(list))
+        console.log(key, this._head.author.contact[key].val)
     }
 }
+window.JavelAuthWriter = JavelAuthWriter 
+})()
