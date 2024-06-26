@@ -1,0 +1,135 @@
+<style>
+body{background: #272b2f;color:white}
+input{transition: 0.2s;width:50%;margin:0;box-sizing:border-box;padding:8px;border:1px solid #404449;outline:none;border-radius:4px;background:#212529;color:#e7e7e7}
+
+input:focus{border: 1px solid #db9c2e; box-shadow: 0px 0px 3px 0px #db9c2e;border-radius:4px 4px 0 0;}
+
+datalist {
+  margin-top:-1px;
+  overflow-y: auto;
+  box-sizing: border-box;
+  display: block;
+  position: absolute;
+  background-color: #212529;
+  border: 1px solid #404449;
+  border-radius: 0 0 4px 4px;
+  font-family: sans-serif;
+  padding: 5px;
+  max-height: 10rem;
+  border: 1px solid #db9c2e; box-shadow: 0px 0px 3px 0px #db9c2e;
+}
+
+option {
+  padding: 4px;
+  color: #e7e7e7;
+  margin-bottom: 1px;
+  font-size: 18px;
+  cursor: pointer;
+  display:block;
+}
+
+option:hover{background-color: #3f4348;}
+</style>
+
+
+
+
+<script>
+window.addEventListener('DOMContentLoaded', (event) => {
+  function fancyDropdown(inputId){
+    console.log(inputId)
+    id = document.getElementById(inputId);
+    datalist = id.nextElementSibling;
+    var minWidth = datalist.offsetWidth;
+    console.log(id, datalist)
+    
+  function outputsize(){
+    if (id.offsetWidth < minWidth ){
+      datalist.style.minwidth = id.offsetWidth+'px';
+    }else{
+      datalist.style.width = id.offsetWidth+'px';
+    }
+  }
+
+  new ResizeObserver(outputsize).observe(id);
+
+
+  id.addEventListener("input", function(e){
+    datalist.style.display = "block";
+    var text = id.value.toUpperCase();
+    let hide = 1;
+    for (let option of datalist.options) {
+      if(option.value.toUpperCase().indexOf(text) > -1){
+        option.style.display = "block";
+        hide = 0;
+      }else{
+        option.style.display = "none";
+      }
+    }
+    if (hide){
+        datalist.style.display = "none";
+    }
+  });
+
+
+
+  id.addEventListener("click", function(e){
+  
+    let hide = 1;
+    for (let option of datalist.options) {
+        if (window.getComputedStyle(option, null).display == "block") hide = 0;
+    }
+  
+    if (datalist.style.display == "block" || hide == 1){
+      datalist.style.display = "none";
+    }else{
+      datalist.style.display = "block";
+    }
+  });
+  
+
+  document.addEventListener("click", function(e){
+
+    if (e.target.tagName == "OPTION"){
+      id.value = e.target.value;
+    }
+    if (e.target.tagName !== "DATALIST" && e.target.tagName !== "INPUT"){
+      datalist.style.display = "none";
+    }
+
+  });
+    datalist.style.display = "none";
+}
+  fancyDropdown('product');
+});
+</script>
+
+
+
+
+<body>
+<input type="text" id="product" name="product" list="" />
+<datalist id="mylist">
+  <option value="John Paul Jacobs">John Paul Jacobs</option>
+  <option value="Dorothy Tornado">Dorothy Tornado</option>
+  <option value="Inigo Montoya">Inigo Montoya asdf asdf asdfadfasdfs</option>
+  <option value="John Paul Jacobs">John Paul Jacobs</option>
+  <option value="Dorothy Tornado">Dorothy Tornado</option>
+  <option value="Inigo Montoya">Inigo Montoya asdf asdf asdfadfasdfs</option>
+  <option value="John Paul Jacobs">John Paul Jacobs</option>
+  <option value="Dorothy Tornado">Dorothy Tornado</option>
+  <option value="Inigo Montoya">Inigo Montoya asdf asdf asdfadfasdfs</option>
+  <option value="John Paul Jacobs">John Paul Jacobs</option>
+  <option value="Dorothy Tornado">Dorothy Tornado</option>
+  <option value="Inigo Montoya">Inigo Montoya asdf asdf asdfadfasdfs</option>
+  <option value="John Paul Jacobs">John Paul Jacobs</option>
+  <option value="Dorothy Tornado">Dorothy Tornado</option>
+  <option value="Inigo Montoya">Inigo Montoya asdf asdf asdfadfasdfs</option>
+</datalist>
+
+<div>
+<p>
+putting some stuff here for the big brown fox running over the river to get the turtle to feed to its pet frog.
+</p>
+</div>
+</body>

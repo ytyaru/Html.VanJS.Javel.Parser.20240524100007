@@ -3,6 +3,7 @@ class JavelAuthWriter {
     constructor(manuscript) {
         this._manuscript = manuscript
         this._head = this._manuscript.head
+        this._addCryptos = van.state([]) // 追加した暗号資産ID
         this._backBtn = DivButton.make(null, ()=>'戻')
 //        this._backBtn = DivButton.make(()=>this.#setUrls(), ()=>'戻')
         this._backBtn.dataset.select = 'javel-head-writer'
@@ -12,9 +13,9 @@ class JavelAuthWriter {
     }
     get el() { return this._el }
     #createEls() {
-        this._editor = new Editor(this._head)
+        this._editor = new Editor(this._head, this._addCryptos)
         this._menu = new MenuScreen([this._backBtn])
-        this._viewer = new Intro()
+        this._viewer = new Intro(this._head, this._addCryptos)
         this._layout = new Triple()
         this._layout.first = this._editor.el
         this._layout.menu = this._menu.el
@@ -25,9 +26,28 @@ class JavelAuthWriter {
 }
 //class Editor extends layout.Single {
 class Editor extends Viewer {
-    constructor(head) {
+    constructor(head, addCryptos) {
         super()
         this._head = head
+        this._addCryptos = addCryptos
+        //this._addCryptoTrs = van.state([])
+        this._addCryptoTrs = van.state({})
+        van.derive(()=>{
+            this._addCryptoTrs.val = [...this._addCryptoTrs.val, 
+                van.tags.tr(
+                    van.tags.th(
+                        van.tags.button({'data-id':`delete-${id}`, onclick:()=>{
+                            this._addCryptos.val = this._addCryptos.array.filter(v=>v!==id);
+                        }}, van.tags.ruby(
+                            ('btc,ltc,doge,eth,sol'.split(',').includes(id) ? van.tags.i({class:`icon-${id}`}) : '◯'), 
+                            van.tags.rt(id.toUpperCase())))),
+                    van.tags.td(
+                        van.tags.input({value:'', oninput:(e)=>{this._head.author.coin[k].val=e.target.value;}}),
+                    ),
+                )
+
+            ]
+        })
         this.setHorizontal()
         this.children = [this.#createTable()]
 //        this._el = van.tags.div({style:`padding:0;margin:0;`}, this.#createTable())
@@ -97,6 +117,23 @@ class Editor extends Viewer {
 //            van.tags.th('アドレス'),
             van.tags.td(van.tags.input({id:`mona-coin-address`, maxlength:100, placeholder:'x'.repeat(34), style:'box-sizing:border-box;resize:none;width:100%;height:100%;line-height:1em;letter-spacing:0;padding:0;margin:0;font-family:var(--font-family-mono);', oninput:(e)=>{this._head.author.coin.mona.val=e.target.value;console.log(this._head.author.coin.mona.val);}})),
         ),
+
+        [van.tags.tr(van.tags.th('X'),van.tags.td('Y')), van.tags.tr(van.tags.th('X'),van.tags.td('Y'))],
+        ()=>[van.tags.tr(van.tags.th('X'),van.tags.td('Y')), van.tags.tr(van.tags.th('X'),van.tags.td('Y'))],
+
+        // 追加した暗号資産
+        //()=>[...Object.entries(this._head.author.coin)].filter(([k,v])=>'mona'!==k).map(([k,v])=>van.tags.tr(
+        ()=>this._addCryptos.val.map(id=>van.tags.tr(
+            van.tags.th(
+                van.tags.button({'data-id':`delete-${id}`, onclick:()=>{
+                    this._addCryptos.val = this._addCryptos.array.filter(v=>v!==id);
+                }}, van.tags.ruby(
+                    ('btc,ltc,doge,eth,sol'.split(',').includes(id) ? van.tags.i({class:`icon-${id}`}) : '◯'), 
+                    van.tags.rt(id.toUpperCase())))),
+            van.tags.td(
+                van.tags.input({value:'', oninput:(e)=>{this._head.author.coin[k].val=e.target.value;}}),
+            ),
+        )),
 
         van.tags.tr(
             van.tags.th(this.#makeIcon('github')),
@@ -305,9 +342,11 @@ https://web3.askmona.org/
     }
 }
 class Intro extends Viewer {
-    constructor() {
+    constructor(head, addCryptos) {
         super()
         this.setHorizontal()
+        this._head = head
+        this._addCryptos = addCryptos
         this._map = {
             crypto: {
                 l:'暗号資産',
@@ -498,19 +537,44 @@ class Intro extends Viewer {
     }
     #makeAddCryptoUi() {
         const ID = 'crypto-list'
-        const coins = '$pac,0xbtc,1inch,2give,aave,abt,act,actn,ada,add,adx,ae,aeon,aeur,agi,agrs,aion,algo,amb,amp,ampl,ankr,ant,ape,apex,appc,ardr,arg,ark,arn,arnx,ary,ast,atlas,atm,atom,audr,aury,auto,avax,aywa,bab,bal,band,bat,bay,bcbc,bcc,bcd,bch,bcio,bcn,bco,bcpt,bdl,beam,bela,bix,blcn,blk,block,blz,bnb,bnt,bnty,booty,bos,bpt,bq,brd,bsd,bsv,btc,btcd,btch,btcp,btcz,btdx,btg,btm,bts,btt,btx,burst,bze,call,cc,cdn,cdt,cenz,chain,chat,chips,chsb,chz,cix,clam,cloak,cmm,cmt,cnd,cnx,cny,cob,colx,comp,coqui,cred,crpt,crv,crw,cs,ctr,ctxc,cvc,d,dai,dash,dat,data,dbc,dcn,dcr,deez,dent,dew,dgb,dgd,dlt,dnt,dock,doge,dot,drgn,drop,dta,dth,dtr,ebst,eca,edg,edo,edoge,ela,elec,elf,elix,ella,emb,emc,emc2,eng,enj,entrp,eon,eop,eos,eqli,equa,etc,eth,ethos,etn,etp,eur,evx,exmo,exp,fair,fct,fida,fil,fjc,fldc,flo,flux,fsn,ftc,fuel,fun,game,gas,gbp,gbx,gbyte,generic,gin,glxt,gmr,gmt,gno,gnt,gold,grc,grin,grs,grt,gsc,gto,gup,gusd,gvt,gxs,gzr,hight,hns,hodl,hot,hpb,hsr,ht,html,huc,husd,hush,icn,icp,icx,ignis,ilk,ink,ins,ion,iop,iost,iotx,iq,itc,jnt,jpy,kcs,kin,klown,kmd,knc,krb,ksm,lbc,lend,leo,link,lkk,loom,lpt,lrc,lsk,ltc,lun,maid,mana,matic,max,mcap,mco,mda,mds,med,meetone,mft,miota,mith,mkr,mln,mnx,mnz,moac,mod,mona,msr,mth,mtl,music,mzc,nano,nas,nav,ncash,ndz,nebl,neo,neos,neu,nexo,ngc,nio,nkn,nlc2,nlg,nmc,nmr,npxs,ntbc,nuls,nxs,nxt,oax,ok,omg,omni,one,ong,ont,oot,ost,ox,oxt,oxy,part,pasc,pasl,pax,paxg,pay,payx,pink,pirl,pivx,plr,poa,poe,polis,poly,pot,powr,ppc,ppp,ppt,pre,prl,pungo,pura,qash,qiwi,qlc,qnt,qrl,qsp,qtum,r,rads,rap,ray,rcn,rdd,rdn,ren,rep,repv2,req,rhoc,ric,rise,rlc,rpx,rub,rvn,ryo,safe,safemoon,sai,salt,san,sand,sbd,sberbank,sc,ser,shift,sib,sin,skl,sky,slr,sls,smart,sngls,snm,snt,snx,soc,sol,spacehbit,spank,sphtx,srn,stak,start,steem,storj,storm,stox,stq,strat,stx,sub,sumo,sushi,sys,taas,tau,tbx,tel,ten,tern,tgch,theta,tix,tkn,tks,tnb,tnc,tnt,tomo,tpay,trig,trtl,trx,tusd,tzc,ubq,uma,uni,unity,usd,usdc,usdt,utk,veri,vet,via,vib,vibe,vivo,vrc,vrsc,vtc,vtho,wabi,wan,waves,wax,wbtc,wgr,wicc,wings,wpr,wtc,x,xas,xbc,xbp,xby,xcp,xdn,xem,xin,xlm,xmcc,xmg,xmo,xmr,xmy,xp,xpa,xpm,xpr,xrp,xsg,xtz,xuc,xvc,xvg,xzc,yfi,yoyow,zcl,zec,zel,zen,zest,zil,zilla,zrx'.split(',')
         const datalist = van.tags.datalist({id:ID},
-            coins.map(id=>van.tags.option({value:id}, id))
+            Icon.Cryptos.map(id=>van.tags.option({value:id}, id))
         )
-        const input = van.tags.input({list:ID, style:'box-sizing:border-box;resize:none;width:8em;height:1em;line-height:1em;letter-spacing:0;padding:0;margin:0;'})
+        const input = van.tags.input({id:'add-crypto-id',list:ID, style:'box-sizing:border-box;resize:none;width:8em;height:1em;line-height:1em;letter-spacing:0;padding:0;margin:0;font-family:var(--font-family-mono);'})
         const add = van.tags.button({
-                onclick:(e)=>{
-                    
+                onclick:()=>{
+                    const input = document.querySelector(`#add-crypto-id`)
+                    const id = input.value
+                    if ([...Object.keys(this._head.author.coin)].includes(id)) { return }
+                    this._head.author.coin[id] = van.state(null)
+                    this._addCryptos.val = Array.from(new Set([...this._addCryptos.val, id]))
+                    input.value = ''
+                    input.focus()
+                    // 再描画
+                    console.log(this._head.author.coin)
                 },
             },
             '＋'
         )
         return [input, add, datalist]
+    }
+    #makeTr(id) { return 
+        van.tags.tr(
+            van.tags.th(
+                van.tags.button({'data-id':`delete-${id}`, onclick:()=>{
+                    delete this._addCryptoTrs.val[id]
+                    this._addCryptos.val = this._addCryptos.array.filter(v=>v!==id);
+                }}, van.tags.ruby(
+                    ('btc,ltc,doge,eth,sol'.split(',').includes(id) ? van.tags.i({class:`icon-${id}`}) : '◯'), 
+                    van.tags.rt(id.toUpperCase())))),
+            van.tags.td(
+                van.tags.input({value:'', oninput:(e)=>{this._head.author.coin[k].val=e.target.value;}}),
+            ),
+        )
+    }
+    #deepCopy(obj) {
+        const copy = {}
+        for (let k of Object.keys(obj)) { copy[k] = obj[k] }
     }
 }
 window.JavelAuthWriter = JavelAuthWriter 
