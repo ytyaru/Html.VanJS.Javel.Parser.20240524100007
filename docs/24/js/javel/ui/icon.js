@@ -59,6 +59,11 @@ class Icon { // URLからIcoMoonアイコン用IDを返す
                 'note':{d:'note.com',l:'Note'}, 
                 'notion':{d:'www.notion.so',l:'Notion'}, 
                 'monaledge':{d:'monaledge.com',l:'Monaledge',rb:'Ⓜ'}, 
+                'wordpress': {d:'wordpress.com', l:'WordPress',rb:'Ⓦ'},
+                'hatena': {d:'hatena.blog', l:'Hatena',rb:'？'},
+                'qiita': {d:'qiita.com', l:'Qiita',rb:'Ⓠ'},
+                'zenn': {d:'zenn.dev', l:'Zenn',rb:'Ⓩ'},
+                'scrapbox': {d:'scrapbox.io', l:'ScrapBox',rb:'Ⓢ'},
             },
             complex: {
                 'pixiv':{d:'www.pixiv.net',l:'Pixiv'},
@@ -71,6 +76,8 @@ class Icon { // URLからIcoMoonアイコン用IDを返す
             },
         }
     }
+    get Map() { return this._map }
+    get Ids() { return 'mona,btc,ltc,doge,eth,sol,mona-min,btc-min,ltc-min,doge-min,eth-min,sol-min,github,mastodon,misskey,youtube,spotify,x,twitter,wikipedia,amazon,booth,alpha-police,berrys-cafe,estar,kakuyomu,lanove-street,monogatary,narou,no-ichigo,nola-novel,novel-days,novel-up-plus,novelba,novema,pri-novel,prologue,tugi-kuru,kakuzoo,pixiv,plicy,tap-novel,note,notion,javel,person,link'.split(',') }
     #getId(href) { // id, cid, l, rb（識別子,カテゴリID,ラベル,rb）
         try {
             const url = new URL(href)

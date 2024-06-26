@@ -16,6 +16,9 @@
     --outline-width:2px;
     --button-focus-color:#000;
     --button-focus-background-color:#aa0;
+    --font-family-serif:'Noto Serif JP', 'Source Han Serif JP', 'Noto Color Emoji', serif;
+    --font-family-sans:'Noto Sans JP', 'Source Han Sans JP', 'Noto Color Emoji', sans-serif;
+    --font-family-mono:'DejaVu Sans Mono', monospace;
 }
 body {
     overflow-x:hidden;
@@ -40,7 +43,8 @@ button:focus {
     background-color: var(--button-focus-background-color);
 }
 body, textarea, input, p {
-    font-family: 'Noto Serif JP', 'Source Han Serif JP', 'Noto Color Emoji', serif; 
+    /*font-family: 'Noto Serif JP', 'Source Han Serif JP', 'Noto Color Emoji', serif; */
+    font-family: var(--font-family-serif);
     font-size: var(--font-size);
     line-height: 1.7em;
     letter-spacing: 0.05em;
@@ -59,8 +63,9 @@ a::selection {
     text-shadow: none;
 }
 button { user-select:none; font-size:var(--font-size); padding:0; margin:0; line-height:1em; letter-spacing:0; word-break:break-word; }
-h1,h2,h3,h4,h5,h6,label,fieldset,caption,button,select,option {
-    font-family: 'Noto Sans JP', 'Source Han Sans JP', 'Noto Color Emoji', sans-serif;
+h1,h2,h3,h4,h5,h6,th,label,fieldset,caption,button,select,option {
+    /*font-family: 'Noto Sans JP', 'Source Han Sans JP', 'Noto Color Emoji', sans-serif;*/
+    font-family: var(--font-family-sans);
     color: var(--color);
     background-color: var(--background-color);
     caret-color: var(--caret-color);
@@ -72,6 +77,11 @@ em {
 }
 a:link, a:visited, a:hover, a:active { color: var(--a-color); }
 .tc { text-combine-upright:all; }
+code {
+    font-family: var(--font-family-mono);
+    line-height: 1em;
+    letter-spacing: 0;
+}
 img.icon {
     width: 1em;
     height: 1em;
