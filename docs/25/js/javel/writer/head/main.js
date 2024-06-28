@@ -114,29 +114,6 @@ class HeadViewer extends Viewer {
         this._warningCruelty = van.derive(()=>{console.log(this._data.warning.cruelty.val);return ((this._data.warning.cruelty.val) ? ` ${this._ja.warning.items.cruelty.l}` : '')})
         this._warningHead = van.derive(()=>((this._warningSex.val || this._warningViolence.val || this._warningCruelty.val) ? '⚠ ' : ''))
         this._warningTail = van.derive(()=>((this._warningSex.val || this._warningViolence.val || this._warningCruelty.val) ? ' 描写あり' : ''))
-        /*
-        van.derive(()=>this.children=[
-            van.tags.h1(()=>this._data.title.val),
-            van.tags.h2(()=>this._data.catch.val),
-            van.tags.p(()=>this._data.intro.val),
-            van.tags.p(()=>`${this._category.val}　${this._genre.val}`),
-            ()=>van.tags.ul({class:`keywords`},this._data.keywords.val.split(',').filter(v=>v).map(k=>van.tags.li({class:`keyword`},k))),
-            van.tags.p(
-                ()=>`${this._warningHead.val}`, 
-                ()=>van.tags.span(()=>`${this._warningSex.val}`), 
-                ()=>van.tags.span(()=>`${this._warningViolence.val}`), 
-                ()=>van.tags.span(()=>`${this._warningCruelty.val}`),
-                ()=>`${this._warningTail.val}`, 
-            ),
-            van.tags.p(()=>`${this._data.readWordCount.val}字`),
-
-            // 著者
-            van.tags.p(()=>`${this._data.author.name.val}`),
-            van.tags.p(()=>`${this._data.author.coin.mona.val}`),
-            van.tags.p(()=>this._data.author.coin.mona.val),
-            ()=>this.#getContacts(),
-        ])
-        */
         console.log(this._data.author.contact.mastodon)
         this.children = [
             van.tags.h1(()=>this._data.title.val),
@@ -155,25 +132,21 @@ class HeadViewer extends Viewer {
 
             // 著者
             van.tags.p(()=>`${this._data.author.name.val}`),
-            //()=>van.tags.ul([...Object.entries(this._data.author.coin)].filter(([k,v])=>0<v.val.trim().length).map(([k,v])=>van.tags.li(van.tags.img({src:`../asset/image/icon/coin/svg/icon/${k}.svg`,width:64,height:64,title:()=>v.val})))),
+            // 暗号通貨
             ()=>van.tags.ul([...Object.entries(this._data.author.coin)].filter(([k,v])=>v.val).map(([k,v])=>van.tags.li(van.tags.img({src:`../asset/image/icon/coin/svg/icon/${k}.svg`,width:64,height:64,title:()=>v.val})))),
-//                ()=>van.tags.ul([...Object.entries(this._data.author.coin)].filter(([k,v])=>0<v.val.trim().length).map(([k,v])=>van.tags.li(van.tags.img({src:`../asset/image/icon/coin/mona/mona-line-black.svg`,width:64,height:64,title:()=>v.val})))),
-            //()=>van.tags.ul([...Object.entries(this._data.author.sns)].map(([k,v])=>[...Object.entries(v)].filter(([K,V])=>V.val)).map(([K,V])=>van.tags.li(van.tags.img({src:`../asset/image/icon/sns/${K}.svg`,width:64,height:64,title:()=>V.val})))),
-            //()=>van.tags.ul([...Object.entries(this._data.author.sns)].map(([k,v])=>[...Object.entries(v)].filter(([K,V])=>V.val)).map(([K,V])=>{console.log(K,V);return van.tags.li(van.tags.img({src:`../asset/image/icon/sns/${K}.svg`,width:64,height:64,title:()=>V.val}));})),
-            /*
-            ()=>van.tags.ul(
-                [...Object.entries(this._data.author.sns)].map(([k,v])=>{
-                    console.log(k,v)
-                    return [...Object.entries(v)]
-                        .filter(([K,V])=>V.val)
-                        .map(([K,V])=>{
-                            console.log(K,V)
-                            return van.tags.li(van.tags.img({src:`../asset/image/icon/sns/${K}.svg`,width:64,height:64,title:()=>V.val}))
-                        })
-                })
-            ),
-            ()=>van.tags.ul(()=>this._data.author.sites.val.map(href=>this.#getIcon(href))),
-            */
+            // 連絡先
+            ()=>van.tags.ul({style:`list-style:none;padding:0;`,role:'list'}, [
+//                this._data.author.contact.revision.github.val ? Icon.getEl() : null,
+//                this._data.author.contact.sns.twitter.val ? : null,
+                ...[...Object.entries(this._data.author.contact.revision)].filter(([k,v])=>v.val).map(([k,v])=>this.#makeLi(v.val, Icon.getEl(v.val))),
+                ...[...Object.entries(this._data.author.contact.sns)].filter(([k,v])=>v.val).map(([k,v])=>this.#makeLi(v.val, Icon.getEl(v.val))),
+                ...this._data.author.contact.mastodon.val.filter(v=>v).map(v=>this.#makeLi(v, Icon.getCategoryEl('mastodon'))),
+                ...this._data.author.contact.misskey.val.filter(v=>v).map(v=>this.#makeLi(v, Icon.getCategoryEl('misskey'))),
+                ...this._data.author.contact.novel.val.filter(v=>v).map(v=>this.#makeLi(v, Icon.getEl(v))),
+                ...this._data.author.contact.url.val.filter(v=>v).map(v=>this.#makeLi(v, Icon.getEl(v))),
+            ]),
+
+
             ()=>van.tags.ul({style:`list-style:none;padding:0;`,role:'list'},[...Object.entries(this._data.author.sns.silo)].filter(([k,v])=>v.val).map(([k,v])=>van.tags.a({href:v.val,target:'_blank',rel:'noopener noreferrer'}, van.tags.li({style:`display:inline-block;`},van.tags.i({class:`icon-${k}`}))))),
             ()=>van.tags.ul({style:`list-style:none;padding:0;`,role:'list'},[...Object.entries(this._data.author.sns.novel)].filter(([k,v])=>v.val).map(([k,v])=>van.tags.a({href:v.val,target:'_blank',rel:'noopener noreferrer'},van.tags.li({style:`display:inline-block;`},van.tags.i({class:`icon-${k}`}))))),
 
@@ -195,6 +168,7 @@ class HeadViewer extends Viewer {
             ),
         ]
     }
+    #makeLi(href, children) { return van.tags.li({style:`display:inline-block;`}, Icon.getLink(href, children)) }
     #getContacts() {
         /*
         const ul = van.tags.ul()

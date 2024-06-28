@@ -57,6 +57,7 @@ class Head {
                 },
                 host: van.state([]),
                 novel: van.state([]),
+                review: van.state([]),
                 mastodon: van.state([]),
                 misskey: van.state([]),
                 url: van.state([]),

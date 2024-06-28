@@ -20,7 +20,7 @@ class Icon { // URLからIcoMoonアイコン用IDを返す
                 'misskey.io',
             ],
             twitter: ['twitter.com'],
-            github: ['github.co.jp'],
+            github: ['github.com','github.co.jp'],
             amazon: ['www.amazon.co.jp'],
             dropbox: ['www.dropbox.com'],
             youtube: ['www.youtube.com'],
@@ -101,10 +101,12 @@ class Icon { // URLからIcoMoonアイコン用IDを返す
         const [id, cid, l, rb] = this.#getId(href)
         console.log(id, cid, l, rb, href)
         const icon = id || 'link'
-        const i = van.tags.i({class:`icon-${icon}`})
+//        const i = van.tags.i({class:`icon-${icon}`})
         //return (hasRuby) ? van.tags.ruby({style:`ruby-position:under;`}, i, van.tags.rt(l)) : i
         //return (hasRuby) ? van.tags.ruby(((isOver) ? ({}) : ({style:`ruby-position:under;`})), i, van.tags.rt(l)) : i
-        return (hasRuby) ? van.tags.ruby(((isOver) ? ({}) : ({style:`ruby-position:under;`})), ((rb) ? rb : i), van.tags.rt(l)) : i
+//        return (hasRuby) ? van.tags.ruby(((isOver) ? ({}) : ({style:`ruby-position:under;`})), ((rb) ? rb : i), van.tags.rt(l)) : i
+        const i = rb ? rb : van.tags.i({class:`icon-${icon}`})
+        return (hasRuby) ? van.tags.ruby(((isOver) ? ({}) : ({style:`ruby-position:under;`})), i, van.tags.rt(l)) : i
     }
     getCategoryEl(id, hasRuby=false, isOver=false) {
         console.log([...Object.keys(this._map)], [...Object.keys(this._map)].includes(id))
@@ -122,6 +124,11 @@ class Icon { // URLからIcoMoonアイコン用IDを返す
         //return (hasRuby) ? van.tags.ruby(((isOver) ? ({}) : ({style:`ruby-position:under;`})), i, van.tags.rt(url.host)) : i
         return (hasRuby) ? van.tags.ruby(((isOver) ? ({}) : ({style:`ruby-position:under;`})), ((rb) ? rb : i), van.tags.rt(url.host)) : i
     }
+    getCryptoEl(id, hasRuby=false, isOver=false) {
+        const rb = this.Cryptos.includes(id) ? van.tags.i({class:`icon-${id}`}) : '◯'
+        return (hasRuby) ? van.tags.ruby(((isOver) ? ({}) : ({style:`ruby-position:under;`})), rb, van.tags.rt(id.toUpperCase())) : rb
+    }
+    getLink(href, children) { return van.tags.a({href:href, target:'_blank', rel:'noopener noreferrer', style:`text-decoration:none;color:var(--fg-color);background-color:var(--bg-color);`}, children) }
 }
 window.Icon = new Icon()
 })()

@@ -27,28 +27,8 @@ class Editor extends Viewer {
         this._head = head
         this._addCryptos = addCryptos
         this._addCryptoTrs = van.state({})
-        /*
-        van.derive(()=>{
-            this._addCryptoTrs.val = [...this._addCryptoTrs.val, 
-                van.tags.tr(
-                    van.tags.th(
-                        van.tags.button({'data-id':`delete-${id}`, onclick:()=>{
-                            this._addCryptos.val = this._addCryptos.array.filter(v=>v!==id);
-                        }}, van.tags.ruby(
-                            ('btc,ltc,doge,eth,sol'.split(',').includes(id) ? van.tags.i({class:`icon-${id}`}) : '◯'), 
-                            van.tags.rt(id.toUpperCase())))),
-                    van.tags.td(
-                        van.tags.input({value:'', oninput:(e)=>{this._head.author.coin[k].val=e.target.value;}}),
-                    ),
-                )
-
-            ]
-        })
-        */
         this.setHorizontal()
         this.children = [this.#createTable(), ()=>this.#makeCryptoTable()]
-//        this.children = [this.#createTable()]
-//        this._el = van.tags.div({style:`padding:0;margin:0;`}, this.#createTable())
     }
     #makeIcon(id) {
         const C = { // Crypto
@@ -113,11 +93,15 @@ class Editor extends Viewer {
         ),
         van.tags.tr(
             van.tags.th(this.#makeIcon('github')),
-            van.tags.td(van.tags.input({id:`github-user-url`, maxlength:100, placeholder:`https://github.com/ユーザ名`, style:'box-sizing:border-box;resize:none;width:100%;height:100%;line-height:1em;letter-spacing:0;padding:0;margin:0;font-family:var(--font-family-mono);', oninput:(e)=>this._head.author.sns.silo.github.val=e.target.value})),
+            van.tags.td(van.tags.input({id:`github-user-url`, maxlength:100, placeholder:`https://github.com/ユーザ名`, style:'box-sizing:border-box;resize:none;width:100%;height:100%;line-height:1em;letter-spacing:0;padding:0;margin:0;font-family:var(--font-family-mono);', 
+//            oninput:(e)=>this._head.author.sns.silo.github.val=e.target.value})),
+            oninput:(e)=>this._head.author.contact.revision.github.val=e.target.value})),
         ),
         van.tags.tr(
             van.tags.th(this.#makeIcon('twitter')),
-            van.tags.td(van.tags.input({id:`twitter-user-url`, maxlength:100, placeholder:`http://twitter.com/ユーザー名`, style:'box-sizing:border-box;resize:none;width:100%;height:100%;line-height:1em;letter-spacing:0;padding:0;margin:0;font-family:var(--font-family-mono);', oninput:(e)=>this._head.author.sns.silo.twitter.val=e.target.value})),
+            van.tags.td(van.tags.input({id:`twitter-user-url`, maxlength:100, placeholder:`http://twitter.com/ユーザー名`, style:'box-sizing:border-box;resize:none;width:100%;height:100%;line-height:1em;letter-spacing:0;padding:0;margin:0;font-family:var(--font-family-mono);', 
+//            oninput:(e)=>this._head.author.sns.silo.twitter.val=e.target.value})),
+            oninput:(e)=>this._head.author.contact.sns.twitter.val=e.target.value})),
         ),
         van.tags.tr(
             van.tags.th(this.#makeIcon('mastodon')),
@@ -252,7 +236,8 @@ class Intro extends Viewer {
         this._addCryptos = addCryptos
         this._map = {
             crypto: {
-                l:'暗号資産',
+//                l:'暗号資産',
+                l:van.tags.span(van.tags.ruby({style:`ruby-position:under;`},Icon.getCryptoEl('btc'),van.tags.rt('暗号資産'))),
                 icons:'mona,btc,ltc,doge,eth,sol'.split(','),
                 all:'$pac,0xbtc,1inch,2give,aave,abt,act,actn,ada,add,adx,ae,aeon,aeur,agi,agrs,aion,algo,amb,amp,ampl,ankr,ant,ape,apex,appc,ardr,arg,ark,arn,arnx,ary,ast,atlas,atm,atom,audr,aury,auto,avax,aywa,bab,bal,band,bat,bay,bcbc,bcc,bcd,bch,bcio,bcn,bco,bcpt,bdl,beam,bela,bix,blcn,blk,block,blz,bnb,bnt,bnty,booty,bos,bpt,bq,brd,bsd,bsv,btc,btcd,btch,btcp,btcz,btdx,btg,btm,bts,btt,btx,burst,bze,call,cc,cdn,cdt,cenz,chain,chat,chips,chsb,chz,cix,clam,cloak,cmm,cmt,cnd,cnx,cny,cob,colx,comp,coqui,cred,crpt,crv,crw,cs,ctr,ctxc,cvc,d,dai,dash,dat,data,dbc,dcn,dcr,deez,dent,dew,dgb,dgd,dlt,dnt,dock,doge,dot,drgn,drop,dta,dth,dtr,ebst,eca,edg,edo,edoge,ela,elec,elf,elix,ella,emb,emc,emc2,eng,enj,entrp,eon,eop,eos,eqli,equa,etc,eth,ethos,etn,etp,eur,evx,exmo,exp,fair,fct,fida,fil,fjc,fldc,flo,flux,fsn,ftc,fuel,fun,game,gas,gbp,gbx,gbyte,generic,gin,glxt,gmr,gmt,gno,gnt,gold,grc,grin,grs,grt,gsc,gto,gup,gusd,gvt,gxs,gzr,hight,hns,hodl,hot,hpb,hsr,ht,html,huc,husd,hush,icn,icp,icx,ignis,ilk,ink,ins,ion,iop,iost,iotx,iq,itc,jnt,jpy,kcs,kin,klown,kmd,knc,krb,ksm,lbc,lend,leo,link,lkk,loom,lpt,lrc,lsk,ltc,lun,maid,mana,matic,max,mcap,mco,mda,mds,med,meetone,mft,miota,mith,mkr,mln,mnx,mnz,moac,mod,mona,msr,mth,mtl,music,mzc,nano,nas,nav,ncash,ndz,nebl,neo,neos,neu,nexo,ngc,nio,nkn,nlc2,nlg,nmc,nmr,npxs,ntbc,nuls,nxs,nxt,oax,ok,omg,omni,one,ong,ont,oot,ost,ox,oxt,oxy,part,pasc,pasl,pax,paxg,pay,payx,pink,pirl,pivx,plr,poa,poe,polis,poly,pot,powr,ppc,ppp,ppt,pre,prl,pungo,pura,qash,qiwi,qlc,qnt,qrl,qsp,qtum,r,rads,rap,ray,rcn,rdd,rdn,ren,rep,repv2,req,rhoc,ric,rise,rlc,rpx,rub,rvn,ryo,safe,safemoon,sai,salt,san,sand,sbd,sberbank,sc,ser,shift,sib,sin,skl,sky,slr,sls,smart,sngls,snm,snt,snx,soc,sol,spacehbit,spank,sphtx,srn,stak,start,steem,storj,storm,stox,stq,strat,stx,sub,sumo,sushi,sys,taas,tau,tbx,tel,ten,tern,tgch,theta,tix,tkn,tks,tnb,tnc,tnt,tomo,tpay,trig,trtl,trx,tusd,tzc,ubq,uma,uni,unity,usd,usdc,usdt,utk,veri,vet,via,vib,vibe,vivo,vrc,vrsc,vtc,vtho,wabi,wan,waves,wax,wbtc,wgr,wicc,wings,wpr,wtc,x,xas,xbc,xbp,xby,xcp,xdn,xem,xin,xlm,xmcc,xmg,xmo,xmr,xmy,xp,xpa,xpm,xpr,xrp,xsg,xtz,xuc,xvc,xvg,xzc,yfi,yoyow,zcl,zec,zel,zen,zest,zil,zilla,zrx'.split(','),
                 items: {
@@ -265,7 +250,7 @@ class Intro extends Viewer {
                 }
             },
             mona: {
-                l:'MONA利用',
+                l:van.tags.span(Icon.getCryptoEl('mona',true), '系'),
                 items:{
                     'ask-mona-3': {d:'web3.askmona.org', l:'Ask Mona 3.0',rb:'Ⓐ'},
                     'monaledge': {d:'monaledge.com', l:'Monaledge',rb:'Ⓜ'},
@@ -282,7 +267,7 @@ class Intro extends Viewer {
                 },
             },
             revision: {
-                l:'リビジョン管理',
+                l:'コード', //
                 items: {
                     'github': {d:'github.co.jp', l:'Github'},
                     'gitlab': {d:'about.gitlab.com/ja-jp', l:'GitLab',rb:'Ⓖ'},
@@ -291,7 +276,7 @@ class Intro extends Viewer {
                 },
             },
             host: {
-                l:'HTTPSホスト',
+                l:'ホスト',
                 items: {
                     'github': {d:'github.co.jp', l:'Github Pages'},
                     'firebase': {d:'firebase.google.com', l:'Firebase Hosting',rb:'ⓑ'},
@@ -392,20 +377,13 @@ class Intro extends Viewer {
                 },
             },
         }
-        this.children = [van.tags.h2({style:'text-align:center;'},'外部サイト'), this.#make(), van.tags.p({style:'text-align:center;'},'創作活動に利用できそうなサイト一覧')]
+        this.children = [van.tags.h2({style:'text-align:center;'},'外部サービス'), this.#make(), van.tags.p({style:'text-align:center;'},'創作活動に利用できそうなサービス一覧')]
     }
     #make() {
-//        return van.tags.table(
-//            van.tags.tr(van.tags.th('分類'),van.tags.th('URL')),
-//        )
         return van.tags.table({style:'width:100%;height:100%;border-collapse:collapse;'},
             van.tags.tr({style:'border-block-end-color:var(--fg-color);border-block-end-style:solid;border-block-end-width:1px;'}, van.tags.th('分類'),van.tags.th('URL')),
             [...Object.entries(this._map)].map(([k,v])=>van.tags.tr(
                 van.tags.th({style:'border-inline-end-color:var(--fg-color);border-inline-end-style:solid;border-inline-end-width:1px;'}, v.l),
-//                van.tags.td([...Object.entries(v.items)].map(([K,V])=>Icon.getEl(this.#getHref(V)))),
-//                van.tags.td([...Object.entries(v.items)].map(([K,V])=>V.hasOwnProperty('instance') ? Icon.getDomainEl(K,`https://${K}/`) : Icon.getEl(this.#getHref(V)))),
-                //van.tags.td([...Object.entries(v.items)].map(([K,V])=>this.#getIcon(k,K,V))),
-                //van.tags.td({style:'overflow-wrap:break-word;word-wrap:break-word;white-space:normal;'}, [...Object.entries(v.items)].map(([K,V])=>this.#makeLink(k,K,V))),
                 van.tags.td({style:'overflow-wrap:break-word;word-wrap:break-word;white-space:normal;'}, [...Object.entries(v.items)].map(([K,V])=>this.#makeLink(k,K,V)), ('crypto'===k) ? this.#makeAddCryptoUi() : null),
             ))
         )
@@ -415,8 +393,6 @@ class Intro extends Viewer {
         if (Type.isAry(href)) { return href.map(h=>this.#makeLinkTag(k,K,V,h)) }
         else { return this.#makeLinkTag(k,K,V) }
     }
-    //#makeLinkTag(k,K,V,h) { return van.tags.a({href:(h) ? h : this.#getHref(V), target:'_blank', rel:'noopener noreferrer', style:'color:var(--fg-color);background-color:var(--bg-color);text-decoration:none;'}, this.#getIcon(k,K,V)) }
-    //#makeLinkTag(k,K,V,h) { return van.tags.a({href:(h) ? h : this.#getHref(V), target:'_blank', rel:'noopener noreferrer', style:'color:var(--fg-color);background-color:var(--bg-color);text-decoration:none;'}, V.hasOwnProperty('rb') ? van.tags.span(V.rb) : this.#getIcon(k,K,V)) }
     #makeLinkTag(k,K,V,h) { return van.tags.a({href:(h) ? h : this.#getHref(V), target:'_blank', rel:'noopener noreferrer', style:'color:var(--fg-color);background-color:var(--bg-color);text-decoration:none;', ...this.#onCryptoLinkEvent(k,K)}, V.hasOwnProperty('rb') ? van.tags.span(V.rb) : this.#getIcon(k,K,V)) }
     #onCryptoLinkEvent(k,K) {
         if ('crypto'===k) {
@@ -431,12 +407,6 @@ class Intro extends Viewer {
             else if (V.hasOwnProperty('rb')) { return van.tags.span(V.rb) }
             else { return van.tags.i({class:`icon-link`}) }
         }
-        /*
-        //if ('crypto'===k) { console.warn(k,K,V); return Icon.getCategoryEl(K) }
-        if ('crypto'===k) { console.warn(k,K,V); return van.tags.i({class:`icon-${K}`}) }
-        else if (V.hasOwnProperty('instance')) { return Icon.getDomainEl(K,`https://${K}/`) }
-        else { return Icon.getEl(this.#getHref(V)) }
-        */
     }
     #getHref(v) {
         if (v.hasOwnProperty('d')) { return `https://${v.d}/` }
@@ -450,17 +420,20 @@ class Intro extends Viewer {
         const datalist = van.tags.datalist({id:ID},
             Icon.Cryptos.map(id=>van.tags.option({value:id}, id))
         )
-        const input = van.tags.input({id:'add-crypto-id', list:ID, maxlength:10, style:'box-sizing:border-box;resize:none;width:8em;height:1em;line-height:1em;letter-spacing:0;padding:0;margin:0;font-family:var(--font-family-mono);'})
-        const add = van.tags.button({
+        //const input = van.tags.input({id:'add-crypto-id', list:ID, maxlength:10, style:'box-sizing:border-box;resize:none;width:8em;height:1em;line-height:1em;letter-spacing:0;padding:0;margin:0;font-family:var(--font-family-mono);'})
+        const input = van.tags.input({id:'add-crypto-id', list:ID, maxlength:10, style:'box-sizing:border-box;resize:none;width:8em;height:1em;line-height:1em;letter-spacing:0;padding:0;margin:0;font-family:var(--font-family-mono);', onkeydown:(e)=>{if(' ,Enter'.split(',').includes(e.key)){document.querySelector(`#add-crypto`).dispatchEvent(new Event('click'))}}})
+        const add = van.tags.button({id:'add-crypto',
                 onclick:()=>{
                     const input = document.querySelector(`#add-crypto-id`)
                     const id = input.value.toLowerCase()
                     if (!id.trim()) { return }
-                    if ([...Object.keys(this._head.author.coin)].includes(id)) { return }
+                    //if ([...Object.keys(this._head.author.coin)].includes(id)) { return }
+                    if ([...Object.keys(this._head.author.coin)].includes(id)) { return document.querySelector(`#crypto-${id}-address`).focus() }
                     this._head.author.coin[id] = van.state(null)
                     this._addCryptos.val = Array.from(new Set([...this._addCryptos.val, id]))
                     input.value = ''
-                    input.focus()
+//                    input.focus()
+                    setTimeout(()=>document.querySelector(`#crypto-${id}-address`).focus(), 200)
                     // 再描画
                     console.log(this._head.author.coin)
                 },
@@ -469,26 +442,6 @@ class Intro extends Viewer {
         )
         return [input, add, datalist]
     }
-    /*
-    #makeTr(id) { return 
-        van.tags.tr(
-            van.tags.th({style:'width:3.5em;'},
-                van.tags.button({'data-id':`delete-${id}`, style:'display:block;', onclick:()=>{
-                    delete this._addCryptoTrs.val[id]
-                    this._addCryptos.val = this._addCryptos.array.filter(v=>v!==id);
-                }}, van.tags.ruby(
-                    ('btc,ltc,doge,eth,sol'.split(',').includes(id) ? van.tags.i({class:`icon-${id}`}) : '◯'), 
-                    van.tags.rt(id.toUpperCase())))),
-            van.tags.td(
-                van.tags.input({value:'', oninput:(e)=>{this._head.author.coin[k].val=e.target.value;}}),
-            ),
-        )
-    }
-    #deepCopy(obj) {
-        const copy = {}
-        for (let k of Object.keys(obj)) { copy[k] = obj[k] }
-    }
-    */
 }
 window.JavelAuthWriter = JavelAuthWriter 
 })()
