@@ -200,7 +200,7 @@ https://web3.askmona.org/
             const id = nextTr.querySelector(`input`).id
             setTimeout(()=>document.querySelector(`#${id}`).focus(), 50)
         }
-        else {document.querySelector(`#add-crypto-id`).focus()}
+        else {setTimeout(()=>document.querySelector(`#add-crypto-id`).focus(), 50)}
     }
     #setUrls() {
         for (let key of ['mastodon','misskey']) {
@@ -388,7 +388,8 @@ class Intro extends Viewer {
             van.tags.tr({style:'border-block-end-color:var(--fg-color);border-block-end-style:solid;border-block-end-width:1px;'}, van.tags.th('分類'),van.tags.th('URL')),
             [...Object.entries(this._map)].map(([k,v])=>van.tags.tr(
                 van.tags.th({style:'border-inline-end-color:var(--fg-color);border-inline-end-style:solid;border-inline-end-width:1px;'}, v.l),
-                van.tags.td({style:'overflow-wrap:break-word;word-wrap:break-word;white-space:normal;'}, [...Object.entries(v.items)].map(([K,V])=>this.#makeLink(k,K,V)), ('crypto'===k) ? this.#makeAddCryptoUi() : null),
+                //van.tags.td({style:'overflow-wrap:break-word;word-wrap:break-word;white-space:normal;'}, [...Object.entries(v.items)].map(([K,V])=>this.#makeLink(k,K,V)), ('crypto'===k) ? this.#makeAddCryptoUi() : null),
+                van.tags.td({style:'overflow-wrap:break-word;word-wrap:break-word;white-space:normal;'}, [...Object.entries(v.items)].map(([K,V])=>this.#makeLink(k,K,V)), ('crypto'===k) ? ()=>van.tags.div({style:()=>`display:inline-block;`},this.#makeAddCryptoUi()) : null),
             ))
         )
     }
@@ -421,8 +422,9 @@ class Intro extends Viewer {
     }
     #makeAddCryptoUi() {
         const ID = 'crypto-list'
+        const cryptos = Icon.Cryptos.filter(id=>!this._addCryptos.val.includes(id)) // 全CryptosIDから追加分を削除した差集合
         const datalist = van.tags.datalist({id:ID},
-            Icon.Cryptos.map(id=>van.tags.option({value:id}, id))
+            cryptos.map(id=>van.tags.option({value:id}, id))
         )
         const input = van.tags.input({id:'add-crypto-id', list:ID, maxlength:10, style:'box-sizing:border-box;resize:none;width:8em;height:1em;line-height:1em;letter-spacing:0;padding:0;margin:0;font-family:var(--font-family-mono);', onkeydown:(e)=>{if(' ,Enter'.split(',').includes(e.key)){document.querySelector(`#add-crypto`).dispatchEvent(new Event('click'))}}})
         const add = van.tags.button({id:'add-crypto',
@@ -442,7 +444,8 @@ class Intro extends Viewer {
             },
             '＋'
         )
-        return [input, add, datalist]
+        const count = van.tags.span({style:()=>`font-size:1rem;letter-spacing:0;line-height:1rem;`},`${cryptos.length}`)
+        return [input, add, datalist, count]
     }
 }
 window.JavelAuthWriter = JavelAuthWriter 
