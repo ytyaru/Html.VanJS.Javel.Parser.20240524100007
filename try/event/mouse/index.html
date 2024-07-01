@@ -1,0 +1,39 @@
+<style>
+</style>
+<script src="../../../docs/lib/van/1.5.0/nomodule.min.js"></script>
+<script>
+window.addEventListener('DOMContentLoaded', (event) => {
+    /*
+    const data = {
+        values: van.state([]),
+    }
+    const listbox = van.tags.select({multiple:true}, [['a','A'],['b','B'],['c','C']].map(([k,v])=>van.tags.option({value:k},v)))
+    van.add(document.body,
+        van.tags.select({multiple:true,
+               onchange:(e)=>{console.log(e.target.value, e.target.options, [...e.target.options].filter(o=>o.selected).map(o=>o.value));data.values.val=[...e.target.options].filter(o=>o.selected).map(o=>o.value);},
+            }, 
+            [['a','A'],['b','B'],['c','C']].map(([k,v])=>van.tags.option({value:k},v))),
+        //van.tags.ul(data.values.val.map(v=>van.tags.li(v))),
+        //van.tags.ul(()=>data.values.val.map(v=>van.tags.li(v))),
+        //()=>van.tags.ul(()=>data.values.val.map(v=>van.tags.li(v))),
+        ()=>van.tags.ul(data.values.val.map(v=>van.tags.li(v))),
+    )
+    document.querySelector('input,select,textarea').focus()
+    */
+//    const text = van.state('')
+    van.add(document.body,
+        van.tags.textarea({
+//            value:text.val,
+            style:()=>`width:100%;height:100%;box-sizing:border-box;resize:none;`,
+            onmousedown:(e)=>{
+                console.log(e, e.buttons)
+                e.target.value += `Down: ${e.buttons}, ${e.button}\n`
+            },
+            onwheel:(e)=>{
+                e.target.value += `Wheel: ${e.deltaX}, ${e.deltaY}, ${e.deltaZ}\n`
+            },
+        })
+    )
+});
+</script>
+
