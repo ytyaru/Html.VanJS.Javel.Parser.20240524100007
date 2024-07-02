@@ -105,11 +105,44 @@ class HeadViewer extends Viewer {
         this._data = data
         this._ja = ja
         this._title = van.derive(()=>van.tags.div(Parser.Javel.toElements(Parser.Javel.toBlocks(this._data.title.val))))
+        //this._title = van.derive(()=>van.tags.div([...Parser.Javel.toElements(Parser.Javel.toBlocks(this._data.title.val))[0].children]))
+        //this._title = van.derive(()=>van.tags.div(Parser.Javel.toElements(Parser.Javel.toBlocks(this._data.title.val))[0]))
+        //this._title = van.derive(()=>van.tags.div([Parser.Javel.toElements(Parser.Javel.toBlocks(this._data.title.val))[0]]))
         this._catch = van.derive(()=>van.tags.div(Parser.Javel.toElements(Parser.Javel.toBlocks(this._data.catch.val))))
+        //this._title = van.derive(()=>Parser.Javel.toElements(Parser.Javel.toBlocks(this._data.title.val)))
+        //this._catch = van.derive(()=>Parser.Javel.toElements(Parser.Javel.toBlocks(this._data.catch.val)))
+//        this._title = van.derive(()=>[...Parser.Javel.toElements(Parser.Javel.toBlocks(this._data.title.val)).children])
+//        this._catch = van.derive(()=>[...Parser.Javel.toElements(Parser.Javel.toBlocks(this._data.catch.val)).children])
+//        this._title = van.derive(()=>van.tags.div([...Parser.Javel.toElements(Parser.Javel.toBlocks(this._data.title.val))[0].children]))
+//        this._catch = van.derive(()=>van.tags.div([...Parser.Javel.toElements(Parser.Javel.toBlocks(this._data.catch.val))[0].children]))
+        /*
+        this._title = van.derive(()=>{
+//            console.error([...Parser.Javel.toElements(Parser.Javel.toBlocks(this._data.title.val))[0].children])
+            //return van.tags.div([...Parser.Javel.toElements(Parser.Javel.toBlocks(this._data.title.val))[0].children])
+            //return van.tags.div(()=>[...Parser.Javel.toElements(Parser.Javel.toBlocks(this._data.title.val))[0].children])
+            //return van.tags.div([...Parser.Javel.toElements(Parser.Javel.toBlocks(this._data.title.val))[0].children])
+            const els = Parser.Javel.toElements(Parser.Javel.toBlocks(this._data.title.val))
+//            const p = els[0]
+//            const inlines = [...p.children]
+            //return van.tags.div(()=>van.tags.div(inlines))
+            //return van.tags.div(van.tags.div(inlines))
+            //return van.tags.div(inlines)
+            //return inlines
+            //return els
+            //return van.tags.div(els)
+            //return van.tags.div([...els[0].children])
+            //return van.tags.div(els[0].children[0])
+            //return els[0].children[0]
+            return this._data.title.val
+        })
+        */
+        /*
+        this._catch = van.derive(()=>van.tags.div([...Parser.Javel.toElements(Parser.Javel.toBlocks(this._data.catch.val))[0].children]))
+        */
+//        this._title = van.derive(()=>document.querySelector(`title`).innerHTML = Parser.Javel.toHtml(Parser.Javel.toBlocks(this._data.title.val)))
+//        this._catch = van.derive(()=>document.querySelector(`title`).innerHTML = Parser.Javel.toHtml(Parser.Javel.toBlocks(this._data.catch.val)))
+
         this._intro = van.derive(()=>van.tags.div(Parser.Javel.toElements(Parser.Javel.toBlocks(this._data.intro.val))))
-//        this._title = van.state('')
-//        this._catch = van.state('')
-//        this._intro = van.state('')
         this._category = van.derive(()=>this._ja.category.options[this._data.category.val].l)
         this._genre = van.derive(()=>this._ja.genre.options[this._data.genre.val].l)
         this._keywords = van.state('')
@@ -119,22 +152,21 @@ class HeadViewer extends Viewer {
         this._warningHead = van.derive(()=>((this._warningSex.val || this._warningViolence.val || this._warningCruelty.val) ? '⚠ ' : ''))
         this._warningTail = van.derive(()=>((this._warningSex.val || this._warningViolence.val || this._warningCruelty.val) ? ' 描写あり' : ''))
         console.log(this._data.author.contact.mastodon)
-//        this._author = {
-//            name: van.derive(()=>Parser.Javel.toElements(Parser.Javel.toBlocks(this._data.author.name.val))[0]),
-//        }
         this.children = [
-//            van.tags.h1(()=>this._data.title.val),
-//            van.tags.h2(()=>this._data.catch.val),
-//            van.tags.p(()=>this._data.intro.val),
-//            van.tags.h1(this._data.title.val),
-//            van.tags.h2(this._data.catch.val),
-//            van.tags.p(this._data.intro.val),
-            van.tags.h1(this._title),
-            van.tags.h2(this._catch),
-            van.tags.p(this._intro),
-//            van.tags.h1(()=>van.tags.div(Parser.Javel.toElements(Parser.Javel.toBlocks(this._data.title.val)))),
-//            van.tags.h2(()=>van.tags.div(Parser.Javel.toElements(Parser.Javel.toBlocks(this._data.catch.val)))),
-//            van.tags.p(()=>van.tags.div(Parser.Javel.toElements(Parser.Javel.toBlocks(this._data.intro.val)))),
+            van.tags.h1({id:`title`},this._title),
+            //van.tags.h1(this._title.val),
+            //van.tags.h1(()=>this._title.val),
+            //()=>van.tags.div(Parser.Javel.toElements(Parser.Javel.toBlocks(this._data.title.val))),
+            //()=>van.tags.div([...Parser.Javel.toElements(Parser.Javel.toBlocks(this._data.title.val))[0].children]),
+            //()=>van.tags.h1({id:`title`}, ()=>this._data.title.val),
+            //()=>van.tags.h1({id:`title`}, ()=>Parser.Javel.toElements(Parser.Javel.toBlocks(this._data.title.val))),
+            //()=>van.tags.h1({id:`title`}, ()=>van.tags.div(Parser.Javel.toElements(Parser.Javel.toBlocks(this._data.title.val)))),
+            //()=>van.tags.h1({id:`title`}, ()=>van.tags.div([...Parser.Javel.toElements(Parser.Javel.toBlocks(this._data.title.val))[0].children])),
+            //()=>van.tags.h1({id:`title`}, ()=>van.tags.div(Parser.Javel.toElements(Parser.Javel.toBlocks(this._data.title.val))[0])),
+            //()=>van.tags.h1({id:`title`}, van.tags.div(Parser.Javel.toElements(Parser.Javel.toBlocks(this._data.title.val))[0])),
+            //()=>van.tags.h1({id:`title`}, van.tags.div([...Parser.Javel.toElements(Parser.Javel.toBlocks(this._data.title.val))[0].children])),
+            van.tags.h2({id:`catch`},this._catch),
+            van.tags.p({id:`intro`},this._intro),
            van.tags.p(()=>`${this._category.val}　${this._genre.val}`),
             ()=>van.tags.ul({class:`keywords`},this._data.keywords.val.split(',').filter(v=>v).map(k=>van.tags.li({class:`keyword`},k))),
             van.tags.p(
