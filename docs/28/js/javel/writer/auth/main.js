@@ -90,7 +90,7 @@ class Editor extends Viewer {
         ),
         van.tags.tr(
             van.tags.th(this.#makeIcon('mona')),
-            van.tags.td(van.tags.input({id:`mona-coin-address`, maxlength:100, placeholder:'x'.repeat(34), style:'box-sizing:border-box;resize:none;width:100%;height:100%;line-height:1em;letter-spacing:0;padding:0;margin:0;font-family:var(--font-family-mono);', oninput:(e)=>{this._head.author.coin.mona.val=e.target.value;console.log(this._head.author.coin.mona.val);}})),
+            van.tags.td(van.tags.input({id:`crypto-mona-address`, maxlength:100, placeholder:'x'.repeat(34), style:'box-sizing:border-box;resize:none;width:100%;height:100%;line-height:1em;letter-spacing:0;padding:0;margin:0;font-family:var(--font-family-mono);', oninput:(e)=>{this._head.author.coin.mona.val=e.target.value;console.log(this._head.author.coin.mona.val);}})),
         ),
         van.tags.tr(
             van.tags.th(this.#makeIcon('github')),
@@ -240,6 +240,8 @@ class Intro extends Viewer {
         this._head = head
         this._addCryptos = addCryptos
         this._filter = van.state('all')
+        this._count = van.state(0) // フィルタで表示されたアイコン数
+        this._table = null
         this._map = {
             crypto: {
 //                l:'暗号資産',
@@ -283,7 +285,7 @@ class Intro extends Viewer {
             host: {
                 l:'ホスト',
                 items: {
-                    'github': {d:'github.com', l:'Github Pages'},
+//                    'github': {d:'github.com', l:'Github Pages'},
                     'firebase': {d:'firebase.google.com', l:'Firebase Hosting',rb:'ⓑ'},
                     'cloudflare': {d:'www.cloudflare.com', l:'Cloudflare Pages',rb:'Ⓒ'},
                     'vercel': {d:'vercel.com', l:'vercel',rb:'Ⓥ'},
@@ -378,54 +380,52 @@ class Intro extends Viewer {
                     'pixiv':{d:'www.pixiv.net',l:'Pixiv'},
                     'kakuzoo':{d:'storie.jp', l:'Kakuzoo'},
                     'tap-novel':{d:'tapnovel.com',l:'タップノベル',rb:'Ⓣ'},
-                    'plicy':{d:'plicy.net',l:'PLiCy'},
+//                    'plicy':{d:'plicy.net',l:'PLiCy'},
                 },
             },
         }
         this._select = van.tags.select({id:`service-filter`,
                 onchange:(e)=>{
                     this._filter.val = e.target.value
-                    console.log(this._filter.val)
-//                    this.children = [van.tags.h2({style:'text-align:center;'},'外部サービス', this._select), ()=>this.#make(), van.tags.p({style:'text-align:center;'},'創作活動に利用できそうなサービス一覧')]
                 },
             },
             [...Object.entries({all:'すべて',notRegistered:'未入力',registered:'入力済'})].map(([k,v])=>van.tags.option({value:k}, v)),
         )
         //this.children = [van.tags.h2({style:'text-align:center;'},'外部サービス'), this.#make(), van.tags.p({style:'text-align:center;'},'創作活動に利用できそうなサービス一覧')]
-        this.children = [van.tags.h2({style:'text-align:center;'},'外部サービス', this._select), ()=>this.#make(), van.tags.p({style:'text-align:center;'},'創作活動に利用できそうなサービス一覧')]
+        this.children = [van.tags.h2({style:'text-align:center;'},'外部サービス', this._select, ()=>van.tags.span({style:()=>`font-size:1rem;font-weight:normal;`}, ()=>`${this._count.val}`)), ()=>this.#make(), van.tags.p({style:'text-align:center;'},'創作活動に利用できそうなサービス一覧')]
     }
     #make() {
-        return van.tags.table({style:'width:100%;height:100%;border-collapse:collapse;'},
+        this._table = van.tags.table({style:'width:100%;height:100%;border-collapse:collapse;'},
             van.tags.tr({style:'border-block-end-color:var(--fg-color);border-block-end-style:solid;border-block-end-width:1px;'}, van.tags.th('分類'),van.tags.th('URL')),
             [...Object.entries(this._map)].map(([k,v])=>van.tags.tr(
                 van.tags.th({style:'border-inline-end-color:var(--fg-color);border-inline-end-style:solid;border-inline-end-width:1px;'}, v.l),
-                //van.tags.td({style:'overflow-wrap:break-word;word-wrap:break-word;white-space:normal;'}, [...Object.entries(v.items)].map(([K,V])=>this.#makeLink(k,K,V)), ('crypto'===k) ? this.#makeAddCryptoUi() : null),
                 van.tags.td({style:'overflow-wrap:break-word;word-wrap:break-word;white-space:normal;'}, [...Object.entries(v.items)].map(([K,V])=>this.#makeLink(k,K,V)), ('crypto'===k) ? ()=>van.tags.div({style:()=>`display:inline-block;`},this.#makeAddCryptoUi()) : null),
             ))
         )
+        return this._table
     }
     #makeLink(k,K,V) {
         const href = this.#getHref(V)
         if (Type.isAry(href)) { return href.map(h=>this.#makeLinkTag(k,K,V,h)) }
         else { return this.#makeLinkTag(k,K,V) }
     }
-    //#makeLinkTag(k,K,V,h) { return van.tags.a({href:(h) ? h : this.#getHref(V), target:'_blank', rel:'noopener noreferrer', style:'color:var(--fg-color);background-color:var(--bg-color);text-decoration:none;', ...this.#onCryptoLinkEvent(k,K)}, V.hasOwnProperty('rb') ? van.tags.span(V.rb) : this.#getIcon(k,K,V)) }
-    //#makeLinkTag(k,K,V,h) { return van.tags.a({href:(h) ? h : this.#getHref(V), target:'_blank', rel:'noopener noreferrer', style:'color:var(--fg-color);background-color:var(--bg-color);text-decoration:none;', ...this.#onCryptoLinkEvent(k,K)}, this.#getIcon(k,K,V)) }
-    //#makeLinkTag(k,K,V,h) { return van.tags.a({href:(h) ? h : this.#getHref(V), target:'_blank', rel:'noopener noreferrer', style:()=>`color:var(--fg-color);background-color:var(--bg-color);text-decoration:none;display:${this.#makeLinkTagDisplay(h)};`, ...this.#onCryptoLinkEvent(k,K)}, this.#getIcon(k,K,V)) }
     #makeLinkTag(k,K,V,h) {
         const href = (h) ? h : this.#getHref(V)
-        return van.tags.a({href:href, target:'_blank', rel:'noopener noreferrer', style:()=>`color:var(--fg-color);background-color:var(--bg-color);text-decoration:none;display:${this.#makeLinkTagDisplay(k,K,V,href)};`, ...this.#onCryptoLinkEvent(k,K)}, this.#getIcon(k,K,V))
+        return van.tags.a({href:href, class:`intro-service-icon`, target:'_blank', rel:'noopener noreferrer', style:()=>`color:var(--fg-color);background-color:var(--bg-color);text-decoration:none;display:${this.#makeLinkTagDisplay(k,K,V,href)};`, ...this.#onCryptoLinkEvent(k,K)}, this.#getIcon(k,K,V))
     }
-    //#makeLinkTagDisplay(href) {
     #makeLinkTagDisplay(k,K,V,href) {
-        console.error(this._filter.val, this.#isRegistered(href), href)
+        const isShow = this.#isShowLinkTag(k,K,V,href)
+        // ※表示アイコン数だけ繰り返してしまう。最後に一回だけ実行すればいいだけなのに…
+        setTimeout(()=>this._count.val = [...document.querySelectorAll(`table a.intro-service-icon`)].filter(el=>'inline'===Css.get('display', el)).length, 50)
+        return (isShow) ? 'inline' : 'none'
+    }
+    #isShowLinkTag(k,K,V,href) {
         const isRegistered = ('crypto'===k) ? this.#isRegisteredCoin(k,K,V,href) : this.#isRegistered(href)
+        if (isRegistered) console.error(isRegistered, href)
         switch(this._filter.val) {
-            case 'all': return `inline`
-            case 'notRegistered': return `${isRegistered ? 'none' : 'inline'}`
-            case 'registered': return `${isRegistered ? 'inline' : 'none'}`
-//            case 'notRegistered': return `${this.#isRegistered(href) ? 'none' : 'inline'}`
-//            case 'registered': return `${this.#isRegistered(href) ? 'inline' : 'none'}`
+            case 'all': return true
+            case 'notRegistered': return !isRegistered
+            case 'registered': return isRegistered
         }
     }
     #isRegistered(href) { return [
@@ -438,7 +438,9 @@ class Intro extends Viewer {
         ...this._head.author.contact.misskey.val,
         ...this._head.author.contact.url.val,
     ].filter(v=>v).map(v=>v.startsWith(href)).some(v=>v) }
-    #isRegisteredCoin(k,K,V,href) { return [...Object.keys(this._head.author.coin)].includes(K) }
+    //#isRegisteredCoin(k,K,V,href) { return [...Object.keys(this._head.author.coin)].includes(K) }
+    //#isRegisteredCoin(k,K,V,href) { return [...Object.keys(this._head.author.coin)].includes(K) && this._head.author.coin[K].val }
+    #isRegisteredCoin(k,K,V,href) { return this._head.author.coin.hasOwnProperty(K) && this._head.author.coin[K].val }
     #onCryptoLinkEvent(k,K) {
         if ('crypto'===k) {
             return {onclick:()=>document.querySelector(`#add-crypto-id`).value=K, onkeydown:(e)=>{if(' ,Enter'.split(',').includes(e.key)){document.querySelector(`#add-crypto-id`).value=K}}}
