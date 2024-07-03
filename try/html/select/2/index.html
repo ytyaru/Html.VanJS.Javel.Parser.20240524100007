@@ -1,0 +1,13 @@
+<style>
+</style>
+<script src="../../../../docs/lib/van/1.5.0/nomodule.min.js"></script>
+<script>
+window.addEventListener('DOMContentLoaded', (event) => {
+    const value = van.state('')
+    const select = van.tags.select({onchange:(e)=>value.val=e.target.value},
+        [...Object.entries({yamada:'山田',suzuki:'鈴木'})].map(([k,v])=>van.tags.option({value:k}, v))
+    )
+    van.add(document.body, select, ()=>`選択：${value.val}`)
+});
+</script>
+
