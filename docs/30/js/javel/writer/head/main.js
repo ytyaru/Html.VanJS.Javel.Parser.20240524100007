@@ -116,6 +116,7 @@ class HeadViewer extends Viewer {
         this._warningHead = van.derive(()=>((this._warningSex.val || this._warningViolence.val || this._warningCruelty.val) ? '⚠ ' : ''))
         this._warningTail = van.derive(()=>((this._warningSex.val || this._warningViolence.val || this._warningCruelty.val) ? ' 描写あり' : ''))
         console.log(this._data.author.contact.mastodon)
+        this._coinUi = new CoinUi(this._data.author.coin)
         this.children = [
             van.tags.h1({id:`title`},this._title),
             van.tags.h2({id:`catch`},this._catch),
@@ -133,7 +134,12 @@ class HeadViewer extends Viewer {
             // 著者
             ()=>van.tags.div(Parser.Javel.toBlockElements(this._data.author.name.val)),
             // 暗号通貨
-            ()=>van.tags.ul([...Object.entries(this._data.author.coin)].filter(([k,v])=>v.val).map(([k,v])=>van.tags.li(van.tags.img({src:`../asset/image/icon/coin/svg/icon/${k}.svg`,width:64,height:64,title:()=>v.val})))),
+            //()=>van.tags.ul([...Object.entries(this._data.author.coin)].filter(([k,v])=>v.val).map(([k,v])=>van.tags.li(van.tags.img({src:`../asset/image/icon/coin/svg/icon/${k}.svg`,width:64,height:64,title:()=>v.val})))),
+            ()=>van.tags.ul([...Object.entries(this._data.author.coin.val)].filter(([k,v])=>v.val).map(([k,v])=>van.tags.li(van.tags.img({src:`../asset/image/icon/coin/svg/icon/${k}.svg`,width:64,height:64,title:()=>v.val})))),
+            //()=>van.tags.div(this._coinUi.make()),
+            ()=>van.tags.div({style:`white-space:nowrap;overflow:hidden;text-overflow:ellipsis;`}, this._coinUi.make()),
+            //()=>van.tags.div({style:`white-space:nowrap;overflow:hidden;text-overflow:ellipsis;`}, ...this._coinUi.make()),
+
             // 連絡先
             ()=>van.tags.ul({style:`list-style:none;padding:0;`,role:'list'}, [
                 ...[...Object.entries(this._data.author.contact.revision)].filter(([k,v])=>v.val).map(([k,v])=>this.#makeLi(v.val, Icon.getEl(v.val))),

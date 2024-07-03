@@ -90,7 +90,8 @@ class Editor extends Viewer {
         ),
         van.tags.tr(
             van.tags.th(this.#makeIcon('mona')),
-            van.tags.td(van.tags.input({id:`crypto-mona-address`, maxlength:100, placeholder:'x'.repeat(34), style:'box-sizing:border-box;resize:none;width:100%;height:100%;line-height:1em;letter-spacing:0;padding:0;margin:0;font-family:var(--font-family-mono);', oninput:(e)=>{this._head.author.coin.mona.val=e.target.value;console.log(this._head.author.coin.mona.val);}})),
+            //van.tags.td(van.tags.input({id:`crypto-mona-address`, maxlength:100, placeholder:'x'.repeat(34), style:'box-sizing:border-box;resize:none;width:100%;height:100%;line-height:1em;letter-spacing:0;padding:0;margin:0;font-family:var(--font-family-mono);', oninput:(e)=>{this._head.author.coin.mona.val=e.target.value;console.log(this._head.author.coin.mona.val);}})),
+            van.tags.td(van.tags.input({id:`crypto-mona-address`, maxlength:100, placeholder:'x'.repeat(34), style:'box-sizing:border-box;resize:none;width:100%;height:100%;line-height:1em;letter-spacing:0;padding:0;margin:0;font-family:var(--font-family-mono);', oninput:(e)=>{this._head.author.coin.val.mona.val=e.target.value;console.log(this._head.author.coin.val.mona.val);}})),
         ),
         van.tags.tr(
             van.tags.th(this.#makeIcon('github')),
@@ -185,10 +186,17 @@ https://web3.askmona.org/
                     (Icon.Cryptos.includes(id) ? van.tags.i({class:`icon-${id}`}) : '◯'), 
                     van.tags.rt(id.toUpperCase())))),
             van.tags.td(
-                van.tags.input({id:`crypto-${id}-address`,value:(this._head.author.coin.hasOwnProperty(id)) ? this._head.author.coin[id].val : '', placeholder:'x'.repeat(34), style:'box-sizing:border-box;resize:none;width:100%;height:100%;line-height:1em;letter-spacing:0;padding:0;margin:0;font-family:var(--font-family-mono);', onchange:(e)=>{this._head.author.coin[id].val=e.target.value;console.log(this._head.author.coin);}}),
+                //van.tags.input({id:`crypto-${id}-address`,value:(this._head.author.coin.hasOwnProperty(id)) ? this._head.author.coin[id].val : '', placeholder:'x'.repeat(34), style:'box-sizing:border-box;resize:none;width:100%;height:100%;line-height:1em;letter-spacing:0;padding:0;margin:0;font-family:var(--font-family-mono);', onchange:(e)=>{this._head.author.coin[id].val=e.target.value;console.log(this._head.author.coin);}}),
+                van.tags.input({id:`crypto-${id}-address`,value:(this._head.author.coin.val.hasOwnProperty(id)) ? this._head.author.coin.val[id].val : '', placeholder:'x'.repeat(34), style:'box-sizing:border-box;resize:none;width:100%;height:100%;line-height:1em;letter-spacing:0;padding:0;margin:0;font-family:var(--font-family-mono);', onchange:(e)=>{this._head.author.coin.val[id].val=e.target.value;this.#updateCryptoAddrs();console.log(this._head.author.coin.val);}}),
             ),
         )),
     )}
+    #updateCryptoAddrs() {
+        const newObj = {}
+        //for (let key of Object.keys(this._state.val)) { newObj[key] = this._head.author.coin[key] }
+        for (let key of Object.keys(this._head.author.coin.val)) { newObj[key] = this._head.author.coin.val[key] }
+        this._head.author.coin.val = newObj // van.state().valに代入したとき描画更新される
+    }
     #deleteCryptoTr(id) {
         const input = document.querySelector(`#crypto-${id}-address`)
         const tr = input.parentElement.parentElement
@@ -196,7 +204,8 @@ https://web3.askmona.org/
         if (value) { if (!confirm(`暗号資産 ${id} のアドレスを削除します。\n${value}\nよろしいですか？`)) { return } }
         this._addCryptos.val = this._addCryptos.val.filter(v=>v!==id);
         const nextTr = tr.nextElementSibling || tr.previousElementSibling
-        delete this._head.author.coin[id]
+        //delete this._head.author.coin[id]
+        delete this._head.author.coin.val[id]
         if (nextTr) {
             const id = nextTr.querySelector(`input`).id
             setTimeout(()=>document.querySelector(`#${id}`).focus(), 50)
@@ -440,7 +449,8 @@ class Intro extends Viewer {
     ].filter(v=>v).map(v=>v.startsWith(href)).some(v=>v) }
     //#isRegisteredCoin(k,K,V,href) { return [...Object.keys(this._head.author.coin)].includes(K) }
     //#isRegisteredCoin(k,K,V,href) { return [...Object.keys(this._head.author.coin)].includes(K) && this._head.author.coin[K].val }
-    #isRegisteredCoin(k,K,V,href) { return this._head.author.coin.hasOwnProperty(K) && this._head.author.coin[K].val }
+    //#isRegisteredCoin(k,K,V,href) { return this._head.author.coin.hasOwnProperty(K) && this._head.author.coin[K].val }
+    #isRegisteredCoin(k,K,V,href) { return this._head.author.coin.val.hasOwnProperty(K) && this._head.author.coin.val[K].val }
     #onCryptoLinkEvent(k,K) {
         if ('crypto'===k) {
             return {onclick:()=>document.querySelector(`#add-crypto-id`).value=K, onkeydown:(e)=>{if(' ,Enter'.split(',').includes(e.key)){document.querySelector(`#add-crypto-id`).value=K}}}
@@ -474,14 +484,17 @@ class Intro extends Viewer {
                     const input = document.querySelector(`#add-crypto-id`)
                     const id = input.value.toLowerCase()
                     if (!id.trim()) { return }
-                    if ([...Object.keys(this._head.author.coin)].includes(id)) { return document.querySelector(`#crypto-${id}-address`).focus() }
-                    this._head.author.coin[id] = van.state(null)
+                    //if ([...Object.keys(this._head.author.coin)].includes(id)) { return document.querySelector(`#crypto-${id}-address`).focus() }
+                    //this._head.author.coin[id] = van.state(null)
+                    if ([...Object.keys(this._head.author.coin.val)].includes(id)) { return document.querySelector(`#crypto-${id}-address`).focus() }
+                    this._head.author.coin.val[id] = van.state(null)
                     this._addCryptos.val = Array.from(new Set([...this._addCryptos.val, id]))
                     input.value = ''
 //                    input.focus()
                     setTimeout(()=>document.querySelector(`#crypto-${id}-address`).focus(), 200)
                     // 再描画
-                    console.log(this._head.author.coin)
+                    //console.log(this._head.author.coin)
+                    console.log(this._head.author.coin.val)
                 },
             },
             '＋'

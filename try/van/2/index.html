@@ -1,0 +1,61 @@
+<style>
+</style>
+<script src="../../../docs/lib/van/1.2.6/nomodule.min.js"></script>
+<script>
+window.addEventListener('DOMContentLoaded', (event) => {
+    console.log(van)
+    const state = van.state({
+        name: van.state('山田'),
+    })
+    function makeInput() {
+        const inputK = van.tags.input({id:'state-key'})
+        const inputV = van.tags.input({id:'state-value'})
+        const add = van.tags.button({
+            onclick:(e)=>{
+                const key = document.querySelector('#state-key').value
+                const value = document.querySelector('#state-value').value
+                state.val[key] = van.state(value)
+                setState()
+                console.log(state)
+            },
+        }, '＋')
+        return [inputK, inputV, add]
+    }
+    function makeShowTable() {
+        console.log(state)
+        return van.tags.table(
+            van.tags.tr(
+                van.tags.th('Key'),
+                van.tags.th('Value'),
+                van.tags.th('×'),
+            ),
+            [...Object.entries(state.val)].map(([k,v])=>{
+                //console.log(k, v, v.val)
+                //console.log(k, v, v.val, state[k], state[k].val)
+                console.log(k, v, v.val, state[k])
+                return van.tags.tr(
+                    van.tags.td(k),
+                    van.tags.td(v.val),
+                    van.tags.td(van.tags.button({onclick:()=>{delete state.val[k];setState();}}, '×')),
+                )
+            }),
+            /*
+            [...Object.entries(state.val)].map(([k,v])=>van.tags.tr(
+                van.tags.td(k),
+                van.tags.td(v.val),
+                van.tags.td(van.tags.button({onclick:()=>{delete state.val[k];setState();}}, '×')),
+            ))
+            */
+        )
+    }
+//    function setState() { state.val = deepCopy(state.val) } 
+//    function deepCopy(obj) { return JSON.parse(JSON.stringify(obj)) } // structuredClone() 未実装 van.state()の内部実装Proxyインスタンスをディープコピーしたら値取得プロパティvalが消えてしまう！　これはvalがゲッター（メソッド）として実装されているから。ディープコピーは関数をコピーできない仕様。
+    function setState() {
+        const newObj = {}
+        for (let key of Object.keys(state.val)) { newObj[key] = state.val[key] }
+        state.val = newObj // van.state().valに代入したとき描画更新される
+    }
+    van.add(document.body, ...makeInput(), ()=>makeShowTable())
+});
+</script>
+

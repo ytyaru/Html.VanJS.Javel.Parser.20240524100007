@@ -45,9 +45,12 @@ class Head {
         this.revisions = van.state([])
         this.author = {
             name: van.state(''),
-            coin: { // コインID:アドレス
+//            coin: { // コインID:アドレス
+//                mona: van.state(null),
+//            },
+            coin: van.state({ // コインID:アドレス
                 mona: van.state(null),
-            },
+            }),
             contact: {
                 sns: {
                     twitter: van.state(null),

@@ -1,0 +1,49 @@
+<style>
+</style>
+<script src="../../../docs/lib/van/1.5.0/nomodule.min.js"></script>
+<script src="../../../docs/lib/van-x/0.6.0/nomodule.min.js"></script>
+<script>
+window.addEventListener('DOMContentLoaded', (event) => {
+    const state = vanX.reactive({
+        name: '山田',
+    })
+    console.log(state)
+    console.log(state.name)
+    console.log(state['name'])
+    console.log(Object.entries(state))
+    console.log([...Object.entries(state)])
+    function makeInput() {
+        const inputK = van.tags.input({id:'state-key'})
+        const inputV = van.tags.input({id:'state-value'})
+        const add = van.tags.button({
+            onclick:(e)=>{
+                const key = document.querySelector('#state-key').value
+                const value = document.querySelector('#state-value').value
+                state.val[key] = van.state(value)
+                setState()
+            },
+        }, '＋')
+        return [inputK, inputV, add]
+    }
+    function makeShowTable() {
+        return van.tags.table(
+            van.tags.tr(
+                van.tags.th('Key'),
+                van.tags.th('Value'),
+                van.tags.th('×'),
+            ),
+            //[...Object.entries(state.val)].map(([k,v])=>van.tags.tr(
+            [...Object.entries(state)].map(([k,v])=>van.tags.tr(
+                van.tags.td(k),
+                van.tags.td(v.val),
+                van.tags.td(van.tags.button({onclick:()=>{delete state[k];setState();}}, '×')),
+                //van.tags.td(van.tags.button({onclick:()=>{delete state.val[k];setState();}}, '×')),
+            ))
+        )
+    }
+    function setState() { state.val = deepCopy(state.val) } 
+    function deepCopy(obj) { return JSON.parse(JSON.stringify(obj)) }
+    van.add(document.body, ...makeInput(), ()=>makeShowTable())
+});
+</script>
+

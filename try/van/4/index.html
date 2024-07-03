@@ -1,0 +1,76 @@
+<style>
+</style>
+<script src="../../../docs/lib/van/1.2.6/nomodule.min.js"></script>
+<script>
+window.addEventListener('DOMContentLoaded', (event) => {
+    class MyState {
+        constructor() {
+            this._state = van.state({
+                name: van.state('山田'),
+            })
+        }
+        get v( ) { return this._state.val }
+        update() {
+            const newObj = {}
+            for (let key of Object.keys(this._state.val)) { newObj[key] = this._state.val[key] }
+            this._state.val = newObj // van.state().valに代入したとき描画更新される
+        }
+    }
+    const state = new MyState()
+    function makeInput() {
+        const inputK = van.tags.input({id:'state-key'})
+        const inputV = van.tags.input({id:'state-value'})
+        const add = van.tags.button({
+            onclick:(e)=>{
+                const key = document.querySelector('#state-key').value
+                const value = document.querySelector('#state-value').value
+                state.v[key] = van.state(value)
+                state.update()
+                //state.val[key] = van.state(value)
+                //setState()
+                console.log(state)
+            },
+        }, '＋')
+        return [inputK, inputV, add]
+    }
+    function makeShowTable() {
+        console.log(state)
+        return van.tags.table(
+            van.tags.tr(
+                van.tags.th('Key'),
+                van.tags.th('Value'),
+                van.tags.th('×'),
+            ),
+            [...Object.entries(state.v)].map(([k,v])=>{
+            //[...Object.entries(state.val)].map(([k,v])=>{
+                //console.log(k, v, v.val)
+                //console.log(k, v, v.val, state[k], state[k].val)
+                //console.log(k, v, v.val, state[k])
+                console.log(k, v, v.val, state.v[k])
+                return van.tags.tr(
+                    van.tags.td(k),
+                    van.tags.td(v.val),
+                    //van.tags.td(van.tags.button({onclick:()=>{delete state.val[k];setState();}}, '×')),
+                    van.tags.td(van.tags.button({onclick:()=>{delete state.v[k];state.update();}}, '×')),
+                )
+            }),
+            /*
+            [...Object.entries(state.val)].map(([k,v])=>van.tags.tr(
+                van.tags.td(k),
+                van.tags.td(v.val),
+                van.tags.td(van.tags.button({onclick:()=>{delete state.val[k];setState();}}, '×')),
+            ))
+            */
+        )
+    }
+//    function setState() { state.val = deepCopy(state.val) } 
+//    function deepCopy(obj) { return JSON.parse(JSON.stringify(obj)) } // structuredClone() 未実装 van.state()の内部実装Proxyインスタンスをディープコピーしたら値取得プロパティvalが消えてしまう！　これはvalがゲッター（メソッド）として実装されているから。ディープコピーは関数をコピーできない仕様。
+    function setState() {
+        const newObj = {}
+        for (let key of Object.keys(state.val)) { newObj[key] = state.val[key] }
+        state.val = newObj // van.state().valに代入したとき描画更新される
+    }
+    van.add(document.body, ...makeInput(), ()=>makeShowTable())
+});
+</script>
+
