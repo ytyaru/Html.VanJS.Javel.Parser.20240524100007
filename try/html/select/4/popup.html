@@ -1,0 +1,60 @@
+<style>
+</style>
+<script src="../../../../docs/lib/van/1.5.0/nomodule.min.js"></script>
+<script>
+window.addEventListener('DOMContentLoaded', (event) => {
+    class PopupButton {
+        constructor() {
+            this._uuid = crypto.randomUUID()
+            this._children = van.state([])
+            this._css = van.state({
+                display: van.state('none'),
+            })
+            this._showDisplay = van.state('block') // block,inline,inline-block,flex,inline-flex,grid,inline-grid,flow-root,table,
+        }
+        get els() { return [()=>this.#makeEl(), ()=>this.#makeOptEl()] }
+        get children( ) { return this._children.val }
+        set children(v) { if (Array.isArray(v)) { this._children.val = v } }
+        get showDisplay( ) { return this._showDisplay.val }
+        set showDisplay(v) { if (v!=='none') { this._showDisplay.val = v } }
+        toggle() { this._css.val.display.val = ('none'===this._css.val.display.val) ? this.showDisplay : 'none' }
+        show() { this._css.val.display.val = this.showDisplay }
+        hide() { this._css.val.display.val = 'none' }
+        get isShow() { return 'none' !== this._css.val.display.val }
+        get isHide() { return 'none' === this._css.val.display.val }
+        #makeEl() { return van.tags.button({id:`popup-${this._uuid}`,
+                //onclick:(e)=>{this.toggle();this.#focusNext();},
+                onclick:(e)=>{
+                    const isNext = this.isHide
+                    this.toggle();
+                    if (isNext) { this.#focusNext() }
+                },
+            }, '…')
+        }
+        #makeOptEl() { return van.tags.div({
+            id:`popup-option-${this._uuid}`, 
+            style:()=>this.#styles.join('')}, 
+            this.children, 
+            van.tags.button({onclick:(e)=>{
+                this.hide()
+                document.querySelector(`#popup-${this._uuid}`).focus()
+            }}, '×'))
+        }
+        get #styles() { return [...Object.entries(this._css.val)].map(([k,v])=>`${k}:${v.val};`) }
+        #focusNext() {
+            //document.querySelector(`#popup-${this._uuid}`).dispatchEvent(new KeyboardEvent('keydown', {key:'Tab'}))
+            document.dispatchEvent(new KeyboardEvent('keydown', {key:'Tab'}))
+            console.log('focusNext')
+        }
+        #focusPrev() {
+            document.querySelector(`#popup-${this._uuid}`).dispatchEvent(new KeyboardEvent('keydown', {altKey: false, shiftKey: true, key:'Tab' }))
+            //document.querySelector(`#popup-${this._uuid}`).dispatchEvent(new KeyboardEvent('keydown', {keyCode: 40, altKey: false, shiftKey: false, key: "ArrowDown" }))
+        }
+    }
+    const pB = new PopupButton()
+    pB.children = ['オプション', van.tags.ruby('漢字', van.tags.rt('かんじ')), 'あ'.repeat(10)]
+    pB.showDisplay = 'inline-block'
+    van.add(document.body, 'ああああ', pB.els)
+});
+</script>
+

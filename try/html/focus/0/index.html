@@ -1,0 +1,11 @@
+<style>
+</style>
+<script src="../../../../docs/lib/van/1.5.0/nomodule.min.js"></script>
+<script src="focus-looper.js"></script>
+<script>
+window.addEventListener('DOMContentLoaded', (event) => {
+    van.add(document.body, van.tags.h1('フォーカス設定'), 'A,B,C'.split(',').map(v=>van.tags.a({href:''},v)))
+    focuser.setup()
+});
+</script>
+

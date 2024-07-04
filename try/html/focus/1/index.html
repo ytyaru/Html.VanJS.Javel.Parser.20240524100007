@@ -1,0 +1,25 @@
+<style>
+</style>
+<script src="../../../../docs/lib/van/1.5.0/nomodule.min.js"></script>
+<script src="focus-looper.js"></script>
+<script>
+window.addEventListener('DOMContentLoaded', (event) => {
+    const count = van.state(1)
+    van.add(document.body, 
+        van.tags.h1('フォーカス設定'), 
+        van.tags.p('問題：画面更新するとフォーカスが消える……'), 
+        van.tags.ol(
+            van.tags.li('Tabキーで最初の', van.tags.code('＋'), 'ボタン以外にフォーカスを当てる'), 
+            van.tags.li('マウスで', van.tags.code('＋'), 'ボタン押下する（画面更新）'), 
+            van.tags.li('フォーカスが消える！'), 
+        ),
+        van.tags.button({onclick:(e)=>count.val++}, '＋'),
+        'A,B,C'.split(',').map(v=>van.tags.button(v)),
+        ()=>van.tags.div(seq().map(v=>van.tags.button(v))),
+    )
+    function seq() { return [...Array(count.val)].map((_, i) => i) }
+    focuser.setup()
+    focuser.first()
+});
+</script>
+
