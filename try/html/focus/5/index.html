@@ -1,0 +1,47 @@
+<style>
+</style>
+<script src="../../../../docs/lib/van/1.5.0/nomodule.min.js"></script>
+<script src="getXpathByElement.js"></script>
+<script src="focuser.js"></script>
+<script>
+window.addEventListener('DOMContentLoaded', (event) => {
+    const count = van.state(1)
+    van.add(document.body, 
+        van.tags.h1('フォーカス設定'), 
+        van.tags.p('問題：画面更新するとフォーカスが消える……'), 
+        van.tags.ol(
+            van.tags.li('Tabキーで最初の', van.tags.code('＋'), 'ボタン以外にフォーカスを当てる'), 
+            van.tags.li('マウスで', van.tags.code('＋'), 'ボタン押下する（画面更新）'), 
+            van.tags.li('フォーカスが消える！'), 
+        ),
+        van.tags.p('上記はマウスでクリックすると常に起こる。フォーカスが消えたわけではなくアウトライン表示が消えただけだと思われる。その証拠に、マウスクリックした直後にTabキーを押すと、クリックされた要素の次の要素にフォーカスが当たる。ちなみにクリック直後にShiftキーを押すとその場でアウトラインが表示された。'), 
+        van.tags.p(van.tags.a({href:'https://qiita.com/xrxoxcxox/items/2f7ef9e55e6ecc7d7095#focus-visible%E3%81%AE%E6%8C%99%E5%8B%95%E3%81%8C%E3%83%87%E3%83%95%E3%82%A9%E3%83%AB%E3%83%88%E3%81%AB%E3%81%AA%E3%81%A3%E3%81%9F'}, 'マウスクリック時フォーカスリングが表示されなくなるのがデフォルトになった(:focus-visible)')),
+        /*
+        ()=>van.tags.p('フォーカス状態：', 
+            ()=>`${focuser.isFirst ? '[最初]' : null}`, 
+            ()=>`${focuser.isLast ? '[最後]' : null}`, 
+            ()=>`${focuser.isFirst || focuser.isLast ? null : '[' + focuser.index + '番目]'}`), // indexがずれる！
+        */
+        //van.tags.button({onclick:(e)=>count.val++}, '＋'),
+        //van.tags.button({onclick:(e)=>{count.val++;document.querySelector(`input[type="number"]`).max++;}}, '＋'),
+        van.tags.button({onclick:(e)=>{count.val++;document.querySelector(`input[type="number"]`).max=focuser.count;}}, '＋'),
+        van.tags.button({onclick:(e)=>focuser.first()}, '頭'),
+        van.tags.button({onclick:(e)=>focuser.last()}, '尾'),
+        van.tags.button({onclick:(e)=>focuser.prev()}, '前'),
+        van.tags.button({onclick:(e)=>focuser.next()}, '次'),
+        //van.tags.input({type:'number', min:0, max:()=>focuser.count, style:`width:4em;`, oninput:(e)=>focuser.index = e.target.value}, '次'),
+        van.tags.input({type:'number', min:0, max:focuser.count, value:0, style:`width:4em;`, oninput:(e)=>focuser.index = e.target.value}, '次'),
+        'A,B,C'.split(',').map(v=>van.tags.button(v)),
+        ()=>van.tags.div(seq().map(v=>van.tags.button(v))),
+        //van.tags.div(seq().map(v=>van.tags.button(v))),
+    )
+    function seq() { return [...Array(count.val)].map((_, i) => i) }
+    //focuser.setup()
+    //focuser.reset()
+    focuser.first()
+//    focuser.last()
+    document.querySelector(`input[type="number"]`).max = focuser.count - 1
+    
+});
+</script>
+
