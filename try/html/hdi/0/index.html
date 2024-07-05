@@ -1,0 +1,44 @@
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+    document.querySelector(`#get-hid`).addEventListener(`mousedown`, async (e) => {
+        console.log(
+            e.isTrusted,
+            navigator.userActivation.hasBeenActive,
+            navigator.userActivation.isActive,
+        )
+        let devices = await navigator.hid.getDevices();
+        console.log(devices)
+        devices.forEach((device) => {
+            console.log(`HID: ${device.productName}`);
+        });
+    })
+    document.querySelector(`#get-usb`).addEventListener(`mousedown`, async (e) => {
+        console.log(
+            e.isTrusted,
+            navigator.userActivation.hasBeenActive,
+            navigator.userActivation.isActive,
+        )
+        navigator.usb.getDevices().then((devices) => {
+            //console.log(`デバイス数: ${devices.length}`);
+            console.log(`devices:${devices.length}`);
+            devices.forEach((device) => {
+                console.log(
+                    `製品名: ${device.productName} シリアル番号 ${device.serialNumber}`,
+                );
+            });
+        });
+    })
+
+
+    /*
+  const usbs = await navigator.usb.requestDevice()
+  console.log(usbs)
+  usbs.forEach((device) => {
+    console.log(`HID: ${device.productName}`);
+  });
+  */
+
+});
+</script>
+<button id="get-hid">Get HID</button>
+<button id="get-usb">Get USB</button>
